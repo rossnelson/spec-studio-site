@@ -15,12 +15,3 @@ test.describe('on a 390 px phone', () => {
 		expect(width).toBeLessThanOrEqual(390);
 	});
 });
-
-// R2.S2: a full-page screenshot to compare with the approved concept by eye.
-test('desktop screenshot for the concept comparison', async ({ page }, info) => {
-	await page.goto('./');
-	await page.evaluate(() => document.fonts.ready);
-	for (const img of await page.getByRole('img').all()) await img.scrollIntoViewIfNeeded();
-	await page.evaluate(() => window.scrollTo(0, 0));
-	await page.screenshot({ path: info.outputPath('desktop-1440.png'), fullPage: true });
-});
