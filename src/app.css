@@ -1,0 +1,92 @@
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/source-serif-4';
+@import '@fontsource/ibm-plex-mono/400.css';
+
+:root {
+	--paper: #f6f1e6;
+	--ink: #1b1c20;
+	--ink-soft: #4a4a4f;
+	--rule: #1b1c20;
+	--hairline: rgb(27 28 32 / 0.18);
+	--tan: #c9955a;
+	--sky: #8ccbef;
+	--sky-ink: #2f6f95;
+
+	--display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+	--text: 'Source Serif 4 Variable', 'Iowan Old Style', Georgia, serif;
+	--mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+	--page: min(1200px, 100% - 2 * var(--gutter));
+	--gutter: clamp(16px, 5vw, 64px);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	background: var(--paper);
+	color: var(--ink);
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: var(--text);
+	font-size: clamp(1.0625rem, 0.9rem + 0.4vw, 1.25rem);
+	line-height: 1.5;
+	font-optical-sizing: auto;
+	/* A faint paper grain. */
+	background-image: radial-gradient(rgb(27 28 32 / 0.035) 1px, transparent 1px);
+	background-size: 3px 3px;
+	overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--display);
+	font-weight: 700;
+	font-variation-settings: 'SOFT' 0, 'WONK' 0;
+	letter-spacing: -0.02em;
+	line-height: 1.02;
+	margin: 0;
+	text-wrap: balance;
+}
+
+p {
+	margin: 0;
+	text-wrap: pretty;
+}
+
+a {
+	color: inherit;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+:focus-visible {
+	outline: 2px solid var(--sky-ink);
+	outline-offset: 3px;
+}
+
+.page {
+	width: var(--page);
+	margin-inline: auto;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
