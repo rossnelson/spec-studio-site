@@ -31,17 +31,16 @@
 	footer {
 		display: flex;
 		align-items: center;
-		gap: 20px;
-		padding-block: 20px 40px;
-		border-top: 1px solid var(--hairline);
-		font-size: 0.95rem;
+		gap: calc(2.4 * var(--u));
+		padding-block: max(16px, calc(2 * var(--u))) max(32px, calc(4 * var(--u)));
+		border-top: 1.5px solid var(--rule-strong);
+		font-size: max(1rem, calc(1.95 * var(--u)));
 	}
 
 	.name {
-		font-family: var(--display);
 		font-weight: 700;
-		padding-right: 20px;
-		border-right: 1px solid var(--hairline);
+		padding-right: calc(2.4 * var(--u));
+		border-right: 1.5px solid var(--rule-strong);
 	}
 
 	a {

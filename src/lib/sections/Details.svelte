@@ -6,9 +6,9 @@
 	<div class="requirements" data-testid="requirements">
 		<h2>Requirements</h2>
 		<ul>
-			<li>macOS 26 or later, on Apple silicon</li>
+			<li>macOS 26 or later</li>
 			<li>Claude Code installed</li>
-			<li>GitHub CLI (<code>gh</code>) signed in</li>
+			<li>GitHub CLI (gh) signed in</li>
 		</ul>
 	</div>
 
@@ -33,49 +33,39 @@
 </section>
 
 <style>
+	/* Requirements 4.9%-41.5%, a rule at 43%, the changelog from 47.8%. */
 	.details {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-		margin-top: clamp(32px, 5vw, 56px);
-		padding-block: clamp(8px, 2vw, 16px) clamp(32px, 5vw, 56px);
-		border-top: 1.5px solid var(--rule);
-	}
-
-	.details > div {
-		padding-top: clamp(24px, 4vw, 40px);
-	}
-
-	.changelog {
-		padding-left: clamp(24px, 4vw, 56px);
-		border-left: 1px solid var(--hairline);
+		grid-template-columns: minmax(0, 40fr) minmax(0, 53fr);
+		margin-top: calc(1.5 * var(--u));
+		border-top: 1.5px solid var(--rule-strong);
+		padding-block: max(24px, calc(2.6 * var(--u)));
 	}
 
 	.requirements {
-		padding-right: clamp(24px, 4vw, 56px);
+		padding-right: calc(3 * var(--u));
+	}
+
+	.changelog {
+		padding-left: calc(4.6 * var(--u));
+		border-left: 1.5px solid var(--rule-strong);
 	}
 
 	h2 {
-		font-size: clamp(1.875rem, 1.4rem + 1.6vw, 2.75rem);
-		font-weight: 800;
+		font-size: max(1.75rem, calc(4.3 * var(--u)));
+		letter-spacing: -0.015em;
 	}
 
 	ul,
 	ol {
-		margin: 16px 0 0;
+		margin: calc(1.6 * var(--u)) 0 0;
 		padding: 0;
+		font-size: max(1.0625rem, calc(2.16 * var(--u)));
+		line-height: 1.38;
 	}
 
 	ul {
-		padding-left: 1.1em;
-	}
-
-	ul li + li {
-		margin-top: 4px;
-	}
-
-	code {
-		font-family: var(--mono);
-		font-size: 0.88em;
+		padding-left: 1.4em;
 	}
 
 	ol {
@@ -85,21 +75,18 @@
 	ol li {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0 0.5em;
-		padding-block: 4px;
+		gap: 0 0.45em;
+		padding-block: calc(0.25 * var(--u));
+		padding-left: 0.2em;
 	}
 
-	.version {
-		font-family: var(--mono);
-		font-size: 0.95em;
+	.version,
+	time {
+		font-variant-numeric: tabular-nums lining-nums;
 	}
 
 	.dot {
 		color: var(--ink-soft);
-	}
-
-	time {
-		font-variant-numeric: tabular-nums;
 	}
 
 	.notes {
@@ -107,14 +94,16 @@
 	}
 
 	.empty {
-		margin-top: 16px;
+		margin-top: calc(1.6 * var(--u));
 		font-style: italic;
+		font-size: max(1.0625rem, calc(2.05 * var(--u)));
 		color: var(--ink-soft);
 	}
 
 	@media (max-width: 760px) {
 		.details {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
+			row-gap: 24px;
 		}
 
 		.requirements {
@@ -123,9 +112,9 @@
 
 		.changelog {
 			padding-left: 0;
+			padding-top: 24px;
 			border-left: 0;
-			margin-top: 16px;
-			border-top: 1px solid var(--hairline);
+			border-top: 1px solid var(--rule);
 		}
 	}
 </style>
