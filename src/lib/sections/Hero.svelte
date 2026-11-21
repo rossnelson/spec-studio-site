@@ -34,7 +34,7 @@
 				dark={asset('stages/hero-dark.webp')}
 				alt=""
 				width={520}
-				height={262}
+				height={274}
 			/>
 		</div>
 	</div>

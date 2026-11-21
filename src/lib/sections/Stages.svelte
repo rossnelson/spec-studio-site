@@ -135,7 +135,7 @@
 	}
 
 	li :global(.art) {
-		width: calc(16 * var(--u));
+		width: calc(19 * var(--u));
 		margin-block: calc(-0.4 * var(--u));
 		justify-self: end;
 	}
