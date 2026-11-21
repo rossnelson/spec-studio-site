@@ -15,6 +15,18 @@ test.describe('on a 390 px phone', () => {
 		expect(width).toBeLessThanOrEqual(390);
 	});
 
+	test('the copy result does not move the command box', async ({ page, context }) => {
+		await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+		await page.goto('./');
+		const button = page.getByRole('button', { name: 'Copy the install command' });
+		const before = await button.boundingBox();
+		await button.click();
+		await expect(page.getByTestId('copied')).toBeVisible();
+		const after = await button.boundingBox();
+		expect(after?.width).toBe(before?.width);
+		expect(after?.x).toBe(before?.x);
+	});
+
 	test('the whole install command shows, with nothing cut off', async ({ page }) => {
 		await page.goto('./');
 		const code = page.getByText('brew install --cask rossnelson/tap/spec-studio');

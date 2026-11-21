@@ -32,12 +32,15 @@ for (const scheme of ['light', 'dark'] as const) {
 			}
 		});
 
-		// R9.S4
-		test(`every text has enough contrast in the ${scheme} theme`, async ({ page }) => {
-			await page.goto('./');
-			const failures = await contrastFailures(page);
-			expect(failures).toEqual([]);
-		});
+		// R9.S4, on a desktop and on a phone.
+		for (const width of [1440, 390]) {
+			test(`every text has enough contrast in the ${scheme} theme at ${width} px`, async ({ page }) => {
+				await page.setViewportSize({ width, height: 900 });
+				await page.goto('./');
+				const failures = await contrastFailures(page);
+				expect(failures).toEqual([]);
+			});
+		}
 
 		// R2.S2: a screenshot of each theme, to compare with its concept.
 		test(`${scheme} screenshot for the concept comparison`, async ({ page }, info) => {
@@ -52,7 +55,10 @@ for (const scheme of ['light', 'dark'] as const) {
 
 /**
  * Each element with its own text, whose WCAG contrast against the page paper
- * is below 4.5:1, or below 3:1 for large text (24 px, or 18.66 px bold).
+ * is below 4.5:1. R9.S4 lets only large headings use 3:1: text in an h1, h2 or
+ * h3 of 24 px or more (or 18.66 px bold). Body text needs 4.5:1 at every size.
+ * Large decoration that screen readers skip (aria-hidden, such as the 140 px
+ * stage numerals, whose order the list already gives) also gets 3:1.
  * Every section sits on the paper, so the paper is the background.
  */
 async function contrastFailures(page: Page): Promise<string[]> {
@@ -77,7 +83,8 @@ async function contrastFailures(page: Page): Promise<string[]> {
 			const [hi, lo] = [lum(fg), lum(paper)].sort((x, y) => y - x);
 			const ratio = (hi + 0.05) / (lo + 0.05);
 			const size = parseFloat(style.fontSize);
-			const large = size >= 24 || (size >= 18.66 && Number(style.fontWeight) >= 700);
+			const heading = el.closest('h1, h2, h3, [aria-hidden="true"]') !== null;
+			const large = heading && (size >= 24 || (size >= 18.66 && Number(style.fontWeight) >= 700));
 			const need = large ? 3 : 4.5;
 			if (ratio < need) failures.push(`${el.tagName} "${el.textContent!.trim().slice(0, 30)}": ${ratio.toFixed(2)} < ${need}`);
 		}

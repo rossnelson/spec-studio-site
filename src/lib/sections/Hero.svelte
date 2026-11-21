@@ -151,7 +151,8 @@
 		flex: none;
 		display: grid;
 		place-items: center;
-		min-width: max(48px, calc(6 * var(--u)));
+		/* A fixed width, so that "Copied" and "Failed" do not move the command box. */
+		width: max(64px, calc(6 * var(--u)));
 		border: 0;
 		border-left: 1px solid var(--rule);
 		background: none;
