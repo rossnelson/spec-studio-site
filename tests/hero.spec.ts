@@ -9,7 +9,18 @@ test('the copy button puts the install command on the clipboard', async ({ page,
 	await expect(page.getByText(command)).toBeVisible();
 	await page.getByRole('button', { name: 'Copy the install command' }).click();
 	await expect(page.getByTestId('copied')).toHaveText('Copied');
+	await expect(page.getByRole('status')).toHaveText('Copied the install command.');
 	expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(command);
+});
+
+test('a failed copy says so, also to a screen reader', async ({ page }) => {
+	await page.addInitScript(() => {
+		navigator.clipboard.writeText = () => Promise.reject(new Error('denied'));
+	});
+	await page.goto('./');
+	await page.getByRole('button', { name: 'Copy the install command' }).click();
+	await expect(page.getByRole('status')).toHaveText('Could not copy. Select the command and copy it.');
+	await expect(page.getByRole('button', { name: 'Copy the install command' })).toHaveText('Failed');
 });
 
 // R3.S2

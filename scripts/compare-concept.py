@@ -5,7 +5,8 @@ same width. Then each text size can be compared by eye as a share of the
 page width.
 
 Usage: python3 scripts/compare-concept.py <concept.png> <screenshot.png> <out.png>
-Playwright saves the screenshots (tests/layout.spec.ts), in test-results/.
+The theme tests (tests/theme.spec.ts) save the screenshots as
+desktop-1440-light.png and desktop-1440-dark.png, under test-results/.
 """
 import sys
 

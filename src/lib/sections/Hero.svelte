@@ -3,18 +3,19 @@
 	import Sketch from '../Sketch.svelte';
 	import { latest, installCommand, downloadUrl } from '../releases';
 
-	let copied = $state(false);
+	// The result of the last copy: 'copied', 'failed', or '' after 2 seconds.
+	let result = $state<'' | 'copied' | 'failed'>('');
 	let timer: ReturnType<typeof setTimeout> | undefined;
 
 	async function copy() {
 		try {
 			await navigator.clipboard.writeText(installCommand);
+			result = 'copied';
 		} catch {
-			return;
+			result = 'failed';
 		}
-		copied = true;
 		clearTimeout(timer);
-		timer = setTimeout(() => (copied = false), 2000);
+		timer = setTimeout(() => (result = ''), 2000);
 	}
 </script>
 
@@ -44,8 +45,10 @@
 			<div class="command">
 				<code>{installCommand}</code>
 				<button type="button" class="copy" onclick={copy} aria-label="Copy the install command">
-					{#if copied}
-						<span class="copied" data-testid="copied">Copied</span>
+					{#if result === 'copied'}
+						<span class="copied" data-testid="copied" aria-hidden="true">Copied</span>
+					{:else if result === 'failed'}
+						<span class="copied" aria-hidden="true">Failed</span>
 					{:else}
 						<svg viewBox="0 0 20 20" aria-hidden="true">
 							<rect x="6.5" y="6.5" width="10" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5" />
@@ -54,6 +57,10 @@
 					{/if}
 				</button>
 			</div>
+			<!-- Screen readers hear the result of the copy here. -->
+			<span class="visually-hidden" role="status" data-testid="copy-status">
+				{#if result === 'copied'}Copied the install command.{:else if result === 'failed'}Could not copy. Select the command and copy it.{/if}
+			</span>
 			<a class="download" href={downloadUrl(latest)} data-testid="download">Download .dmg</a>
 		</div>
 	{:else}
@@ -162,6 +169,15 @@
 		background: color-mix(in srgb, var(--ink) 6%, transparent);
 	}
 
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
 	.copied {
 		font-family: var(--mono);
 		font-size: max(0.8125rem, calc(1.4 * var(--u)));
@@ -205,6 +221,12 @@
 		.install {
 			grid-template-columns: minmax(0, 1fr);
 			row-gap: 16px;
+		}
+
+		/* The whole command shows on a phone: it wraps at its spaces. */
+		code {
+			white-space: normal;
+			overflow-x: visible;
 		}
 
 		.aside :global(.peek) {
