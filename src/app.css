@@ -1,0 +1,110 @@
+@import '@fontsource-variable/source-serif-4/opsz.css';
+@import '@fontsource-variable/source-serif-4/opsz-italic.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+
+/*
+ * Sizes come from the approved concept (design/concept.png in the app repo),
+ * which Codex drew at 1024 px wide. --u is 1% of the page width up to a
+ * 1440 px window, so each size keeps the concept's share of the width. Each
+ * size also has a minimum, for phones.
+ */
+:root {
+	color-scheme: light;
+
+	--paper: #f6f1e6;
+	--ink: #1b1c20;
+	--ink-soft: #4d4a45;
+	--rule: rgb(27 28 32 / 0.55);
+	--rule-strong: #1b1c20;
+	/* Darker than the concept's tan, for 3:1 contrast with the large numerals. */
+	--tan: #b37a3a;
+	--sky-ink: #2f6f95;
+	--box: rgb(255 255 255 / 0.35);
+	--grain: rgb(27 28 32 / 0.035);
+
+	--serif: 'Source Serif 4 Variable', 'Iowan Old Style', Georgia, serif;
+	--mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+	--u: min(1vw, 14.4px);
+	--gutter: max(16px, calc(4.8 * var(--u)));
+}
+
+/* The dark theme, from the approved dark concept (design/concept-dark.png).
+ * It follows the system setting. The CSS is in the prerendered page, so the
+ * first paint already has the right theme. */
+@media (prefers-color-scheme: dark) {
+	:root {
+		color-scheme: dark;
+
+		--paper: #1a1917;
+		--ink: #f3ebda;
+		--ink-soft: #bdb4a3;
+		--rule: rgb(243 235 218 / 0.5);
+		--rule-strong: #f3ebda;
+		--tan: #d9a66b;
+		--sky-ink: #8ccbef;
+		--box: rgb(243 235 218 / 0.04);
+		--grain: rgb(243 235 218 / 0.025);
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	background: var(--paper);
+	color: var(--ink);
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	background-color: var(--paper);
+	font-family: var(--serif);
+	font-optical-sizing: auto;
+	font-size: max(1.0625rem, calc(2.1 * var(--u)));
+	line-height: 1.32;
+	/* A faint paper grain. */
+	background-image: radial-gradient(var(--grain) 1px, transparent 1px);
+	background-size: 3px 3px;
+	overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+	font-weight: 700;
+	letter-spacing: -0.015em;
+	line-height: 1;
+	margin: 0;
+	text-wrap: balance;
+}
+
+p {
+	margin: 0;
+	text-wrap: pretty;
+}
+
+a {
+	color: inherit;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+:focus-visible {
+	outline: 2px solid var(--sky-ink);
+	outline-offset: 3px;
+}
+
+.page {
+	width: min(100% - 2 * var(--gutter), 1305px);
+	margin-inline: auto;
+}
