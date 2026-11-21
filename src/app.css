@@ -16,7 +16,8 @@
 	--ink-soft: #4d4a45;
 	--rule: rgb(27 28 32 / 0.55);
 	--rule-strong: #1b1c20;
-	--tan: #c48a4a;
+	/* Darker than the concept's tan, for 3:1 contrast with the large numerals. */
+	--tan: #b37a3a;
 	--sky-ink: #2f6f95;
 	--box: rgb(255 255 255 / 0.35);
 	--grain: rgb(27 28 32 / 0.035);
@@ -26,6 +27,25 @@
 
 	--u: min(1vw, 14.4px);
 	--gutter: max(16px, calc(4.8 * var(--u)));
+}
+
+/* The dark theme, from the approved dark concept (design/concept-dark.png).
+ * It follows the system setting. The CSS is in the prerendered page, so the
+ * first paint already has the right theme. */
+@media (prefers-color-scheme: dark) {
+	:root {
+		color-scheme: dark;
+
+		--paper: #1a1917;
+		--ink: #f3ebda;
+		--ink-soft: #bdb4a3;
+		--rule: rgb(243 235 218 / 0.5);
+		--rule-strong: #f3ebda;
+		--tan: #d9a66b;
+		--sky-ink: #8ccbef;
+		--box: rgb(243 235 218 / 0.04);
+		--grain: rgb(243 235 218 / 0.025);
+	}
 }
 
 *,

@@ -6,6 +6,7 @@
 		{
 			id: 'spec',
 			light: asset('stages/spec.webp'),
+			dark: asset('stages/spec-dark.webp'),
 			name: 'Spec',
 			text: 'Write the spec with Claude, one question at a time.',
 			alt: 'The critter writes on a sheet of paper.'
@@ -13,6 +14,7 @@
 		{
 			id: 'plan',
 			light: asset('stages/plan.webp'),
+			dark: asset('stages/plan-dark.webp'),
 			name: 'Plan',
 			text: 'Claude studies the code and plans each repo’s change and merge order.',
 			alt: 'The critter reads an open map.'
@@ -20,6 +22,7 @@
 		{
 			id: 'build',
 			light: asset('stages/build.webp'),
+			dark: asset('stages/build-dark.webp'),
 			name: 'Build',
 			text: 'Claude builds in its own worktrees and opens draft PRs.',
 			alt: 'The critter types at a laptop.'
@@ -27,6 +30,7 @@
 		{
 			id: 'check',
 			light: asset('stages/check.webp'),
+			dark: asset('stages/check-dark.webp'),
 			name: 'Check',
 			text: 'A self-review swarm and scenario checks prove each requirement.',
 			alt: 'The critter holds a clipboard of check marks.'
@@ -34,6 +38,7 @@
 		{
 			id: 'merge',
 			light: asset('stages/merge.webp'),
+			dark: asset('stages/merge-dark.webp'),
 			name: 'Merge',
 			text: 'Merge in order, clean up the worktrees, and the critter gets a party hat.',
 			alt: 'The critter cheers in a party hat.'
@@ -51,7 +56,7 @@
 					<h3>{stage.name}</h3>
 					<p>{stage.text}</p>
 				</div>
-				<Sketch class="art" light={stage.light} alt={stage.alt} width={600} height={400} loading="lazy" />
+				<Sketch class="art" light={stage.light} dark={stage.dark} alt={stage.alt} width={600} height={400} loading="lazy" />
 			</li>
 		{/each}
 	</ol>

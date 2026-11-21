@@ -20,7 +20,7 @@
 
 <header class="hero page" data-testid="hero">
 	<a class="brand" href={resolve('/')}>
-		<Sketch class="logo" light={asset('logo.png')} alt="" width={256} height={256} />
+		<Sketch class="logo" light={asset('logo.png')} dark={asset('logo-dark.png')} alt="" width={256} height={256} />
 		<span>Spec Studio</span>
 	</a>
 
@@ -31,6 +31,7 @@
 			<Sketch
 				class="peek"
 				light={asset('stages/hero.webp')}
+				dark={asset('stages/hero-dark.webp')}
 				alt=""
 				width={520}
 				height={262}

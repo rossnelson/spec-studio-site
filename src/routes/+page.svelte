@@ -13,7 +13,9 @@
 	<meta name="description" content={description} />
 	<meta property="og:title" content="Spec Studio" />
 	<meta property="og:description" content={description} />
-	<meta name="theme-color" content="#f6f1e6" />
+	<meta name="color-scheme" content="light dark" />
+	<meta name="theme-color" content="#f6f1e6" media="(prefers-color-scheme: light)" />
+	<meta name="theme-color" content="#1a1917" media="(prefers-color-scheme: dark)" />
 </svelte:head>
 
 <main>
