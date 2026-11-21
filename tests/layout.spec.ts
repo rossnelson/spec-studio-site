@@ -27,6 +27,21 @@ test.describe('on a 390 px phone', () => {
 		expect(after?.x).toBe(before?.x);
 	});
 
+	test('the copy label fits in its button at a larger text size', async ({ page, context }) => {
+		await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+		await page.goto('./');
+		await page.addStyleTag({ content: 'html { font-size: 24px; }' });
+		await page.getByRole('button', { name: 'Copy the install command' }).click();
+		const label = page.getByTestId('copied');
+		await expect(label).toBeVisible();
+		const fits = await label.evaluate((el) => {
+			const b = el.closest('button')!.getBoundingClientRect();
+			const l = el.getBoundingClientRect();
+			return l.left >= b.left && l.right <= b.right;
+		});
+		expect(fits).toBe(true);
+	});
+
 	test('the whole install command shows, with nothing cut off', async ({ page }) => {
 		await page.goto('./');
 		const code = page.getByText('brew install --cask rossnelson/tap/spec-studio');

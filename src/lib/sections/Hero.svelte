@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { asset, resolve } from '$app/paths';
 	import Sketch from '../Sketch.svelte';
 	import { latest, installCommand, downloadUrl } from '../releases';
@@ -8,6 +9,9 @@
 	let timer: ReturnType<typeof setTimeout> | undefined;
 
 	async function copy() {
+		// Clear the status first, so that a second copy is announced again.
+		result = '';
+		await tick();
 		try {
 			await navigator.clipboard.writeText(installCommand);
 			result = 'copied';
@@ -152,7 +156,7 @@
 		display: grid;
 		place-items: center;
 		/* A fixed width, so that "Copied" and "Failed" do not move the command box. */
-		width: max(64px, calc(6 * var(--u)));
+		width: max(4.5rem, calc(6 * var(--u)));
 		border: 0;
 		border-left: 1px solid var(--rule);
 		background: none;

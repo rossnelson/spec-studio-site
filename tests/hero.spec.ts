@@ -13,6 +13,26 @@ test('the copy button puts the install command on the clipboard', async ({ page,
 	expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(command);
 });
 
+test('a second copy is announced again', async ({ page, context }) => {
+	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+	await page.goto('./');
+	const button = page.getByRole('button', { name: 'Copy the install command' });
+	await button.click();
+	await expect(page.getByRole('status')).toHaveText('Copied the install command.');
+	// Count the changes of the status text during the second copy.
+	await page.getByRole('status').evaluate((el) => {
+		(window as unknown as { changes: string[] }).changes = [];
+		new MutationObserver(() =>
+			(window as unknown as { changes: string[] }).changes.push(el.textContent!.trim())
+		).observe(el, { childList: true, characterData: true, subtree: true });
+	});
+	await button.click();
+	await expect(page.getByRole('status')).toHaveText('Copied the install command.');
+	const changes = await page.evaluate(() => (window as unknown as { changes: string[] }).changes);
+	expect(changes).toContain('');
+	expect(changes.at(-1)).toBe('Copied the install command.');
+});
+
 test('a failed copy says so, also to a screen reader', async ({ page }) => {
 	await page.addInitScript(() => {
 		navigator.clipboard.writeText = () => Promise.reject(new Error('denied'));

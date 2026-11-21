@@ -1,5 +1,12 @@
 <script lang="ts">
 	import { releases, formatDate } from '../releases';
+
+	// The notes are the whole tag message. The first line goes on the row with
+	// the version and the date, as in the concept; the rest goes below it.
+	function split(notes: string) {
+		const [first, ...rest] = notes.split('\n');
+		return { first, rest: rest.join('\n').trim() };
+	}
 </script>
 
 <section class="details page">
@@ -19,12 +26,14 @@
 		{:else}
 			<ol>
 				{#each releases as release (release.version)}
+					{@const notes = split(release.notes)}
 					<li data-testid="release">
 						<span class="version">{release.version}</span>
 						<span class="dot" aria-hidden="true">·</span>
 						<time datetime={release.date}>{formatDate(release.date)}</time>
 						<span class="dot" aria-hidden="true">·</span>
-						<span class="notes">{release.notes}</span>
+						<span class="notes">{notes.first}</span>
+						{#if notes.rest}<span class="more" data-testid="release-more">{notes.rest}</span>{/if}
 					</li>
 				{/each}
 			</ol>
@@ -72,13 +81,12 @@
 		list-style: none;
 	}
 
+	/* Inline text, so that a long first line wraps after the dot like a sentence. */
 	ol li {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0 0.45em;
 		padding-block: calc(0.25 * var(--u));
 		padding-left: 0.2em;
 	}
+
 
 	.version,
 	time {
@@ -86,11 +94,15 @@
 	}
 
 	.dot {
+		margin-inline: 0.3em;
 		color: var(--ink-soft);
 	}
 
-	.notes {
+	.more {
+		display: block;
+		margin-top: 0.2em;
 		white-space: pre-line;
+		color: var(--ink-soft);
 	}
 
 	.empty {
