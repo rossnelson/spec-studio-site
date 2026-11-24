@@ -1,0 +1,9 @@
+#!/bin/sh
+# launch <theme> <support folder> [sessions]: quits the earlier test copy (by its pid) and opens it again.
+S=$(cd "$(dirname "$0")" && pwd)
+TRY="$HOME/Library/Caches/Spec Studio/try/marketing"
+[ -f "$S/try.pid" ] && kill "$(cat "$S/try.pid")" 2>/dev/null && sleep 1.5
+if [ "$3" = sessions ]; then NS=; else NS=1; fi
+SPEC_STUDIO_NO_SESSIONS=$NS SPEC_STUDIO_SUPPORT="$2" nohup "$TRY/Spec Studio.app/Contents/MacOS/SpecStudio" -appTheme "$1" -selectedSpec "/Users/Shared/spec-studio-demo/notes#open-count" -"NSWindow Frame SpecStudioMain" "100 60 1280 800 0 0 1512 949" > "$TRY/app.log" 2>&1 &
+echo $! > "$S/try.pid"; sleep 5
+"$S/windows" "$(cat "$S/try.pid")"

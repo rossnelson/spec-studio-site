@@ -317,3 +317,7 @@ img {
 	border: 1.5px dashed var(--rule-strong);
 	font-weight: 700;
 }
+
+.guide-video {
+	margin-top: 28px;
+}

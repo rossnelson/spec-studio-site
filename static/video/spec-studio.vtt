@@ -1,0 +1,70 @@
+WEBVTT
+
+00:00:02.715 --> 00:00:06.521
+Spec Studio is a Mac app for spec-driven development with Claude Code.
+
+00:00:06.521 --> 00:00:11.631
+You describe a change, and one Claude session takes it from a spec to reviewed pull requests.
+
+00:00:18.412 --> 00:00:19.926
+Make a spec in any repo.
+
+00:00:19.926 --> 00:00:23.585
+Give it a title and say what a user sees when it is done.
+
+00:00:23.585 --> 00:00:31.787
+In Autopilot, Claude writes the spec and the plan, builds the change and opens a draft pull request, with no question in between.
+
+00:00:37.731 --> 00:00:40.094
+Every spec moves through five stages.
+
+00:00:40.094 --> 00:00:49.225
+The reader shows each document while Claude writes it: the spec with its scenarios, the plan, the build with its pull request, and the review.
+
+00:00:49.225 --> 00:00:52.034
+The strip at the top says whose turn it is.
+
+00:00:57.050 --> 00:01:03.971
+In Check, a self review reads the pull request with parallel finders, and three verifiers vote on each finding.
+
+00:01:03.971 --> 00:01:05.717
+Here it found two problems.
+
+00:01:05.717 --> 00:01:09.021
+Claude fixed both, and a second round found nothing.
+
+00:01:09.021 --> 00:01:10.518
+Then it is over to you.
+
+00:01:16.369 --> 00:01:17.497
+Away from the Mac?
+
+00:01:17.497 --> 00:01:20.503
+The relay is a remote MCP server that you host.
+
+00:01:20.503 --> 00:01:27.143
+Claude AI, or Claude Code on another computer, can list your specs, read them, and send a spec a message.
+
+00:01:33.273 --> 00:01:36.700
+The message reaches the spec's session as a message from Claude AI.
+
+00:01:36.700 --> 00:01:40.843
+Claude makes the change and answers, and the answer goes back through the relay.
+
+00:01:48.969 --> 00:01:50.223
+Read it from anywhere.
+
+00:02:04.666 --> 00:02:11.479
+The relay keeps its copy of each spec in a Temporal namespace: Temporal Cloud, or a Temporal that you host.
+
+00:02:11.479 --> 00:02:15.872
+Attachments go to any S3 compatible bucket, such as R2, S3 or MinIO.
+
+00:02:15.872 --> 00:02:18.737
+Run it with Docker Compose, Helm, or Docker.
+
+00:02:22.778 --> 00:02:24.470
+Install Spec Studio with Homebrew.
+
+00:02:24.470 --> 00:02:28.351
+The guides on the site take you through the app, the relay, and its backends.

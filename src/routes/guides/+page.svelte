@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import TopBar from '../../lib/layout/TopBar.svelte';
 	import Footer from '../../lib/layout/Footer.svelte';
+	import Video from '../../lib/Video.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -18,6 +19,8 @@
 <main class="page guide-page">
 	<h1>Guides</h1>
 	<p class="summary">How to use Spec Studio, and how to reach it from Claude AI with the relay. Read them in order.</p>
+
+	<div class="guide-video"><Video /></div>
 
 	<ol class="guide-list" data-testid="guide-list">
 		{#each data.guides as guide (guide.slug)}

@@ -3,6 +3,7 @@
 	import Stages from '../lib/sections/Stages.svelte';
 	import Details from '../lib/sections/Details.svelte';
 	import Footer from '../lib/layout/Footer.svelte';
+	import Video from '../lib/Video.svelte';
 
 	const description =
 		'Spec Studio is a native macOS app for spec-driven development with Claude Code. Write a spec with Claude, and move it through five stages with an approval gate at each one.';
@@ -20,8 +21,17 @@
 
 <main>
 	<Hero />
+	<section class="page demo" aria-label="Demo video">
+		<Video />
+	</section>
 	<Stages />
 	<Details />
 </main>
 
 <Footer />
+
+<style>
+	.demo {
+		margin-block: max(32px, calc(5 * var(--u)));
+	}
+</style>

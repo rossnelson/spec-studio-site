@@ -75,7 +75,8 @@ async function contrastFailures(page: Page): Promise<string[]> {
 		const failures: string[] = [];
 		for (const el of document.querySelectorAll<HTMLElement>('body *')) {
 			const own = [...el.childNodes].some((n) => n.nodeType === Node.TEXT_NODE && n.textContent!.trim());
-			if (!own || el.closest('svg')) continue;
+			// The fallback inside a video element never renders.
+			if (!own || el.closest('svg, video')) continue;
 			const style = getComputedStyle(el);
 			const [r, g, b, a = 1] = rgb(style.color);
 			// Mix a transparent text color into the paper.
