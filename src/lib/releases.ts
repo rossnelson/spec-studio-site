@@ -13,9 +13,9 @@ export type Release = {
 export const releases: Release[] = data;
 export const latest: Release | undefined = releases[0];
 
-export const repo = 'rossnelson/spec-studio-site';
+export const repo = 'spec-studio-app/site';
 export const releasesUrl = `https://github.com/${repo}/releases`;
-export const installCommand = 'brew install --cask rossnelson/tap/spec-studio';
+export const installCommand = 'brew install --cask spec-studio-app/tap/spec-studio';
 
 export function downloadUrl(release: Release): string {
 	return `https://github.com/${repo}/releases/download/v${release.version}/${release.dmg}`;

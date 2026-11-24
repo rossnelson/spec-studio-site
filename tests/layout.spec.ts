@@ -44,7 +44,7 @@ test.describe('on a 390 px phone', () => {
 
 	test('the whole install command shows, with nothing cut off', async ({ page }) => {
 		await page.goto('./');
-		const code = page.getByText('brew install --cask rossnelson/tap/spec-studio');
+		const code = page.getByText('brew install --cask spec-studio-app/tap/spec-studio');
 		await expect(code).toBeVisible();
 		const { scroll, client } = await code.evaluate((el) => ({ scroll: el.scrollWidth, client: el.clientWidth }));
 		expect(scroll).toBeLessThanOrEqual(client);

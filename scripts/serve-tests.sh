@@ -1,11 +1,11 @@
 #!/bin/sh
 # Builds the site once per test fixture and serves each build on its own port.
 # Playwright starts this (playwright.config.ts). GitHub Pages serves the site
-# under /spec-studio-site/, so each build goes into that folder.
+# under /site/, so each build goes into that folder.
 set -e
 build() { # fixture, folder
   rm -rf "test-out/$2"
-  RELEASES_FILE="./tests/fixtures/$1.json" SITE_OUT="test-out/$2/spec-studio-site" npx vite build --logLevel error
+  RELEASES_FILE="./tests/fixtures/$1.json" SITE_OUT="test-out/$2/site" npx vite build --logLevel error
 }
 build two two
 build empty empty
