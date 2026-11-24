@@ -1,9 +1,26 @@
 #!/bin/sh
-# launch <theme> <support folder> [sessions]: quits the earlier test copy (by its pid) and opens it again.
+# launch <theme> <support folder> [sessions]: quits the earlier test copy (by its pid) and opens it
+# again at 1280x800, on the demo spec, with the app and its terminals in the theme.
+#
+# The test copy shares its bundle ID, and so its settings store, with the installed app. The
+# arguments below override settings for this run only, but the app still saves some of them back
+# (the selected spec, the window frame). So the first launch saves those keys, and `./restore`
+# puts them back when you are done.
 S=$(cd "$(dirname "$0")" && pwd)
 TRY="$HOME/Library/Caches/Spec Studio/try/marketing"
+DOMAIN=dev.local.spec-studio
+if [ ! -f "$S/defaults-backup.txt" ]; then
+  for key in selectedSpec "NSWindow Frame SpecStudioMain" sidebarPanel selectedTab; do
+    printf '%s\t%s\n' "$key" "$(defaults read "$DOMAIN" "$key" 2>/dev/null)" >> "$S/defaults-backup.txt"
+  done
+fi
 [ -f "$S/try.pid" ] && kill "$(cat "$S/try.pid")" 2>/dev/null && sleep 1.5
 if [ "$3" = sessions ]; then NS=; else NS=1; fi
-SPEC_STUDIO_NO_SESSIONS=$NS SPEC_STUDIO_SUPPORT="$2" nohup "$TRY/Spec Studio.app/Contents/MacOS/SpecStudio" -appTheme "$1" -selectedSpec "/Users/Shared/spec-studio-demo/notes#open-count" -"NSWindow Frame SpecStudioMain" "100 60 1280 800 0 0 1512 949" > "$TRY/app.log" 2>&1 &
+# The terminals read the Ghostty config, not the app theme: give them their own config folder.
+mkdir -p "$S/xdg/ghostty"
+printf 'theme = %s\n' "$1" > "$S/xdg/ghostty/config"
+XDG_CONFIG_HOME="$S/xdg" SPEC_STUDIO_NO_SESSIONS=$NS SPEC_STUDIO_SUPPORT="$2" nohup "$TRY/Spec Studio.app/Contents/MacOS/SpecStudio" \
+  -appTheme "$1" -selectedSpec "/Users/Shared/spec-studio-demo/notes#open-count" \
+  -"NSWindow Frame SpecStudioMain" "100 60 1280 800 0 0 1512 949" > "$TRY/app.log" 2>&1 &
 echo $! > "$S/try.pid"; sleep 5
 "$S/windows" "$(cat "$S/try.pid")"

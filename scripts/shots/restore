@@ -1,0 +1,15 @@
+#!/bin/sh
+# restore: quits the test copy and puts back the installed app's settings that launch saved.
+S=$(cd "$(dirname "$0")" && pwd)
+if [ -f "$S/try.pid" ]; then
+  PID=$(cat "$S/try.pid"); kill "$PID" 2>/dev/null
+  # The app saves its window frame as it quits: wait for it to end before writing.
+  while kill -0 "$PID" 2>/dev/null; do sleep 0.3; done
+  rm -f "$S/try.pid"
+fi
+[ -f "$S/defaults-backup.txt" ] || exit 0
+while IFS="$(printf '\t')" read -r key value; do
+  if [ -n "$value" ]; then defaults write dev.local.spec-studio "$key" "$value"; else defaults delete dev.local.spec-studio "$key" 2>/dev/null; fi
+done < "$S/defaults-backup.txt"
+rm -f "$S/defaults-backup.txt"
+echo "Restored the installed app's settings."
