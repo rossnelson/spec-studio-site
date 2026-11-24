@@ -51,20 +51,23 @@ The message reaches the spec's session as a message from Claude AI.
 00:01:36.700 --> 00:01:40.843
 Claude makes the change and answers, and the answer goes back through the relay.
 
-00:01:48.969 --> 00:01:50.223
-Read it from anywhere.
+00:01:48.969 --> 00:01:50.999
+Later, ask again from anywhere.
 
-00:02:04.666 --> 00:02:11.479
+00:01:50.999 --> 00:01:56.957
+Claude reads the spec through the relay, with its stage, its pull request, and the answer.
+
+00:02:09.496 --> 00:02:16.309
 The relay keeps its copy of each spec in a Temporal namespace: Temporal Cloud, or a Temporal that you host.
 
-00:02:11.479 --> 00:02:15.872
+00:02:16.309 --> 00:02:20.702
 Attachments go to any S3 compatible bucket, such as R2, S3 or MinIO.
 
-00:02:15.872 --> 00:02:18.737
+00:02:20.702 --> 00:02:23.567
 Run it with Docker Compose, Helm, or Docker.
 
-00:02:22.778 --> 00:02:24.470
+00:02:27.607 --> 00:02:29.299
 Install Spec Studio with Homebrew.
 
-00:02:24.470 --> 00:02:28.351
+00:02:29.299 --> 00:02:33.180
 The guides on the site take you through the app, the relay, and its backends.

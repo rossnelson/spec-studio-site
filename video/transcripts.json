@@ -24,33 +24,34 @@
     ]
   },
   "read": {
-    "prompt": "Did the open-count spec answer me?",
+    "prompt": "Read the open-count spec in my notes repo: what does it change, where is it now, and did it answer my message? Four short lines.",
     "steps": [
       {
-        "tool": "list_specs",
+        "tool": "list_repos",
         "input": {}
       },
       {
-        "tool": "read_messages",
+        "tool": "list_specs",
         "input": {
-          "slug": "open-count",
           "repo": "/Users/Shared/spec-studio-demo/notes"
         }
       },
       {
-        "text": "Yes. The open-count spec answered you at 21:20 UTC today with this message:\n\n> \"Done. The PR body now says how to run the tests: 'Tests: run `node --test` in the repo root (Node 22 or later, no install). 9 tests cover every scenario of the spec.' All 9 tests pass on the branch head.\"\n\n- **PR:** https://github.com/spec-studio-app/notes-demo/pull/1\n- **Status:** The spec is in the check stage and waits for your approval.\n\nI did not run the tests myself. The \"all 9 tests pass\" claim comes from the session."
-      }
-    ]
-  },
-  "list": {
-    "prompt": "Which of my Spec Studio specs are open, and what is each one doing now? Answer in three short lines.",
-    "steps": [
-      {
-        "tool": "list_specs",
-        "input": {}
+        "tool": "read_spec",
+        "input": {
+          "repo": "/Users/Shared/spec-studio-demo/notes",
+          "slug": "open-count"
+        }
       },
       {
-        "text": "You have only one open spec:\n- **Count the open notes** (`open-count`, in the notes repo, autopilot mode) is in the build stage, on step 3 of 3: tests.\n- That spec waits for you. Claude needs your permission before it can continue."
+        "tool": "read_messages",
+        "input": {
+          "repo": "/Users/Shared/spec-studio-demo/notes",
+          "slug": "open-count"
+        }
+      },
+      {
+        "text": "- **Change:** The spec adds a badge next to the Notes heading that shows the number of open notes. It also puts that number in the page title, for example \"Notes (3)\". When no note is open, the badge is hidden and the title is \"Notes\".\n- **Status:** The spec is in the check stage and waits for your approval. Draft PR #1 (https://github.com/spec-studio-app/notes-demo/pull/1) is open, both review findings are fixed, and the second review round found no issues.\n- **Reply:** The session replied at 21:20 UTC. It added test instructions to the PR body (\"run `node --test`, Node 22+, no install\") and reported that all 9 tests pass on the latest commit.\n- **Answered?** Probably yes, but I can't see the message you sent, only the reply. If you asked for test instructions in the PR, the reply covers it."
       }
     ]
   }

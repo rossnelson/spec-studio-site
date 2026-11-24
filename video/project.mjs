@@ -87,10 +87,10 @@ export default {
     },
     {
       name: '06-relay-read', card: false,
-      narration: 'Read it from anywhere.',
+      narration: 'Later, ask again from anywhere. Claude reads the spec through the relay, with its stage, its pull request, and the answer.',
       before: (api) => show(api, 'term=read'),
-      async run({ page }) { await page.evaluate(() => window.replay(9)); },
-      minSeconds: 12,
+      async run({ page }) { await page.evaluate(() => window.replay(12)); },
+      minSeconds: 16,
     },
     {
       name: '07-backends', step: '06', title: 'Your backends', subtitle: 'Temporal, a bucket, and how to run it',
