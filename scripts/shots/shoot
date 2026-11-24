@@ -3,6 +3,7 @@
 S=$(cd "$(dirname "$0")" && pwd)
 TRY="$HOME/Library/Caches/Spec Studio/try/marketing"
 st() { SPEC_STUDIO_SUPPORT="$TRY/support" "$TRY/Spec Studio.app/Contents/Helpers/studio" --home /Users/Shared/spec-studio-demo/notes --spec open-count "$@"; }
+mkdir -p "$S/shots"
 W=$("$S/windows" "$(cat "$S/try.pid")" | head -1 | cut -d' ' -f1)
 for pair in "spec:autopilot" "plan:plan" "check:review" "build:window"; do
   st focus "${pair%%:*}" >/dev/null; sleep 2
