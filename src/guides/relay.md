@@ -38,10 +38,10 @@ Make the payload keys. The relay encrypts every Temporal payload with them. Keep
 docker run --rm ghcr.io/spec-studio-app/relay keys
 ```
 
-Make the bcrypt hash of the owner password. You type this password on the relay's sign-in page.
+Make the bcrypt hash of the owner password. You type this password on the relay's sign-in page. The command asks for the password, so it does not go into your shell history:
 
 ```sh
-printf '%s' 'your password' | docker run --rm -i ghcr.io/spec-studio-app/relay password-hash
+read -rs RELAY_PASSWORD && printf '%s' "$RELAY_PASSWORD" | docker run --rm -i ghcr.io/spec-studio-app/relay password-hash; unset RELAY_PASSWORD
 ```
 
 ## Step 2: Choose a Temporal backend
