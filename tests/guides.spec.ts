@@ -54,9 +54,18 @@ test('Get started goes from the requirements to a first spec, with a screenshot 
 	await expect(guide).toContainText('Claude Code');
 	await expect(guide).toContainText('gh auth login');
 	await expect(guide.locator('code', { hasText: 'brew install --cask spec-studio-app/tap/spec-studio' })).toHaveCount(1);
+	// Each app step has a screenshot between its heading and the next h2.
+	const shots = await guide.evaluate((root) => {
+		const count: Record<string, number> = {};
+		let current = '';
+		for (const el of root.children) {
+			if (el.tagName === 'H2') current = el.id;
+			else if (current) count[current] = (count[current] ?? 0) + el.querySelectorAll('img[data-shot]').length;
+		}
+		return count;
+	});
 	for (const id of ['first-open', 'add-a-repo', 'your-first-spec']) {
-		const section = guide.locator(`h2#${id} ~ *`).filter({ has: page.locator('img[data-shot]') });
-		await expect(section.first()).toBeVisible();
+		expect(shots[id] ?? 0, `screenshots in ${id}`).toBeGreaterThan(0);
 	}
 	await shotsLoad(page);
 });
