@@ -1,6 +1,6 @@
 import { Marked, type Tokens } from 'marked';
 import { asset, resolve } from '$app/paths';
-import { latest, installCommand } from './releases';
+import { latest, installCommand, downloadUrl } from './releases';
 
 /**
  * The guides are Markdown files in src/guides/. Each starts with a front
@@ -71,12 +71,14 @@ function sitePath(href: string): string {
 const shells = new Set(['sh', 'shell', 'bash', 'zsh', 'console']);
 
 /**
- * `{{install}}` on its own line becomes the brew command, or "Coming soon"
- * before the first release, the same as the launch page's hero.
+ * `{{install}}` on its own line becomes the install step: the brew command and
+ * the .dmg download, or only "Coming soon" before the first release, the same
+ * as the launch page's hero.
  */
 export function expandInstall(body: string): string {
 	const replacement = latest
-		? '```sh\n' + installCommand + '\n```'
+		? `Install with [Homebrew](https://brew.sh):\n\n\`\`\`sh\n${installCommand}\n\`\`\`\n\n` +
+			`Or [download the .dmg](${downloadUrl(latest)}) of version ${latest.version}, and drag Spec Studio to Applications.`
 		: '<p class="soon" data-testid="install-soon">Coming soon. The first public build is on its way.</p>';
 	return body.replace(/^\{\{install\}\}$/m, replacement);
 }

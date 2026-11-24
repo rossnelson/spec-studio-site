@@ -15,11 +15,7 @@ Spec Studio is a Mac app for spec-driven development with Claude Code. You descr
 
 ## Install
 
-Install with [Homebrew](https://brew.sh):
-
 {{install}}
-
-Or download the `.dmg` from the [releases](https://github.com/spec-studio-app/site/releases), and drag Spec Studio to Applications.
 
 ## First open
 

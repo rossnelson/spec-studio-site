@@ -14,4 +14,5 @@ test('with no release, Get started says Coming soon in place of the install comm
 	await page.goto('./guides/get-started/');
 	await expect(page.getByTestId('install-soon')).toContainText('Coming soon');
 	await expect(page.getByText('brew install --cask spec-studio-app/tap/spec-studio')).toHaveCount(0);
+	await expect(page.getByTestId('guide').getByText(/Homebrew|\.dmg/)).toHaveCount(0);
 });
