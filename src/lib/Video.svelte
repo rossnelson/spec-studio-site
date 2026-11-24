@@ -17,7 +17,10 @@
 		<track kind="captions" srclang="en" label="English" src={captions} />
 		<a href={src}>Download the demo video (MP4)</a>
 	</video>
-	<figcaption>Spec Studio in under three minutes: the app, the relay and its backends.</figcaption>
+	<figcaption>
+		Spec Studio in under three minutes: the app, the relay and its backends.
+		<a href={src} download>Download the video</a> (MP4, 29 MB).
+	</figcaption>
 </figure>
 
 <style>
