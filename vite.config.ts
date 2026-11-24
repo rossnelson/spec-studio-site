@@ -21,8 +21,8 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
-			// GitHub Pages serves the site at /spec-studio-site/.
-			paths: { base: '/spec-studio-site' },
+			// GitHub Pages serves the site at /site/.
+			paths: { base: '/site' },
 			adapter: adapter({ pages: out, assets: out, strict: true })
 		})
 	]

@@ -48,7 +48,7 @@ test('the download button links to the .dmg of the latest release', async ({ pag
 	await page.goto('./');
 	await expect(page.getByTestId('download')).toHaveAttribute(
 		'href',
-		'https://github.com/spec-studio-app/spec-studio-site/releases/download/v0.2.0/Spec-Studio-0.2.0.dmg'
+		'https://github.com/spec-studio-app/site/releases/download/v0.2.0/Spec-Studio-0.2.0.dmg'
 	);
 	await expect(page.getByTestId('coming-soon')).toHaveCount(0);
 });

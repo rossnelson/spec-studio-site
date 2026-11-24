@@ -8,13 +8,13 @@ export default defineConfig({
 	use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
 	projects: [
 		// The site with two releases (tests/fixtures/two.json).
-		{ name: 'releases', testIgnore: /empty\.spec\.ts/, use: { baseURL: 'http://127.0.0.1:4101/spec-studio-site/' } },
+		{ name: 'releases', testIgnore: /empty\.spec\.ts/, use: { baseURL: 'http://127.0.0.1:4101/site/' } },
 		// The site before the first release (tests/fixtures/empty.json).
-		{ name: 'empty', testMatch: /empty\.spec\.ts/, use: { baseURL: 'http://127.0.0.1:4102/spec-studio-site/' } }
+		{ name: 'empty', testMatch: /empty\.spec\.ts/, use: { baseURL: 'http://127.0.0.1:4102/site/' } }
 	],
 	webServer: {
 		command: './scripts/serve-tests.sh',
-		url: 'http://127.0.0.1:4101/spec-studio-site/',
+		url: 'http://127.0.0.1:4101/site/',
 		reuseExistingServer: !process.env.CI,
 		timeout: 180_000
 	}
