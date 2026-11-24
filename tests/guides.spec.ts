@@ -73,7 +73,7 @@ test('the app guide explains the stages, the modes, the review, the panels and t
 	await expect(stages).toHaveCount(5);
 	const names = (await stages.locator('strong').allInnerTexts()).map((s) => s.replace(/\.$/, ''));
 	expect(names).toEqual(['Spec', 'Plan', 'Build', 'Check', 'Merge']);
-	for (const command of ['studio new', 'studio specs', 'studio --spec open-count show', 'studio status']) {
+	for (const command of ['studio new', 'studio specs', 'studio --home . --spec open-count show', 'studio status']) {
 		await expect(page.getByTestId('guide').locator('pre code', { hasText: command }).first()).toBeVisible();
 	}
 	await shotsLoad(page);

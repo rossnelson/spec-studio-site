@@ -76,7 +76,7 @@ Spec Studio includes the `studio` command, and its Claude sessions use it to cha
 Make a spec in the repo of the current folder, and start its session:
 
 ```sh
-studio new "Count the open notes" --description "Show how many notes are still open, next to the heading." --start
+studio new "Count the open notes" --slug open-count --description "Show how many notes are still open, next to the heading." --start
 ```
 
 List the open specs of your repos, with the stage and the turn of each:
@@ -85,13 +85,13 @@ List the open specs of your repos, with the stage and the turn of each:
 studio specs
 ```
 
-Print the state of one spec:
+Print the state of one spec. `--home` names its repo, here the current folder:
 
 ```sh
-studio --spec open-count show
+studio --home . --spec open-count show
 ```
 
-Start or show the session of a spec:
+Start or show the session of a spec. Spec Studio adds the repo when it is not in its list:
 
 ```sh
 studio start open-count
@@ -100,7 +100,7 @@ studio start open-count
 Change the mode of a spec:
 
 ```sh
-studio --spec open-count mode guided
+studio --home . --spec open-count mode guided
 ```
 
 Inside a spec's session, `studio status` sets the stage's status and the note that the status strip shows. Claude runs it; you rarely need it:
