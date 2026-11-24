@@ -108,3 +108,212 @@ img {
 	width: min(100% - 2 * var(--gutter), 1305px);
 	margin-inline: auto;
 }
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* The guide pages: a narrow text column on the same paper and ink. */
+.guide-page {
+	max-width: 46rem;
+	padding-block: max(24px, calc(4 * var(--u))) max(40px, calc(6 * var(--u)));
+	font-size: 1.125rem;
+	line-height: 1.55;
+}
+
+.guide-page h1 {
+	font-size: clamp(2.25rem, 6vw, 3.5rem);
+	line-height: 1.02;
+	letter-spacing: -0.025em;
+}
+
+.guide-page .summary {
+	margin-top: 12px;
+	font-size: 1.25rem;
+	color: var(--ink-soft);
+}
+
+.guide-page .crumb {
+	margin-bottom: 8px;
+	font-family: var(--mono);
+	font-size: 0.875rem;
+}
+
+.guide-page .crumb a,
+.guide-page .next a,
+.guide-list a {
+	text-underline-offset: 3px;
+}
+
+.guide-page .next {
+	margin-top: 48px;
+	padding-top: 16px;
+	border-top: 1.5px solid var(--rule-strong);
+	font-weight: 700;
+}
+
+.guide-list {
+	list-style: none;
+	counter-reset: guide;
+	margin: 32px 0 0;
+	padding: 0;
+	border-top: 1.5px solid var(--rule-strong);
+}
+
+.guide-list li {
+	counter-increment: guide;
+	display: grid;
+	grid-template-columns: 3rem minmax(0, 1fr);
+	padding-block: 18px;
+	border-bottom: 1px solid var(--rule);
+}
+
+.guide-list li::before {
+	content: counter(guide, decimal-leading-zero);
+	grid-row: span 2;
+	font-family: var(--mono);
+	color: var(--tan);
+}
+
+.guide-list a {
+	font-size: 1.5rem;
+	font-weight: 700;
+}
+
+.guide-list p {
+	color: var(--ink-soft);
+}
+
+.prose {
+	margin-top: 32px;
+}
+
+.prose > * + * {
+	margin-top: 1em;
+}
+
+.prose h2 {
+	margin-top: 2.2em;
+	padding-top: 0.6em;
+	border-top: 1.5px solid var(--rule-strong);
+	font-size: 1.75rem;
+	line-height: 1.1;
+}
+
+.prose h3 {
+	margin-top: 1.8em;
+	font-size: 1.3rem;
+	line-height: 1.2;
+}
+
+.prose ul,
+.prose ol {
+	padding-left: 1.4em;
+}
+
+.prose li + li {
+	margin-top: 0.35em;
+}
+
+.prose code {
+	font-family: var(--mono);
+	font-size: 0.86em;
+	overflow-wrap: anywhere;
+}
+
+.prose .code {
+	position: relative;
+	border: 1.5px solid var(--rule-strong);
+	background: var(--box);
+}
+
+.prose pre {
+	margin: 0;
+	padding: 14px 16px;
+	overflow-x: auto;
+	line-height: 1.45;
+}
+
+.prose pre code {
+	overflow-wrap: normal;
+	white-space: pre;
+}
+
+.prose [data-copy-block] pre {
+	padding-right: 5.5rem;
+}
+
+.prose .copy {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	padding: 4px 10px;
+	border: 1.5px solid var(--rule-strong);
+	background: var(--paper);
+	color: var(--ink);
+	font-family: var(--mono);
+	font-size: 0.8rem;
+	cursor: pointer;
+}
+
+.prose .copy:hover {
+	background: var(--ink);
+	color: var(--paper);
+}
+
+.prose .table {
+	overflow-x: auto;
+}
+
+.prose table {
+	border-collapse: collapse;
+	font-size: 0.95rem;
+	min-width: 100%;
+}
+
+.prose th,
+.prose td {
+	padding: 8px 10px;
+	border-bottom: 1px solid var(--rule);
+	text-align: left;
+	vertical-align: top;
+}
+
+.prose th {
+	border-bottom: 1.5px solid var(--rule-strong);
+}
+
+.prose blockquote {
+	margin-inline: 0;
+	padding-left: 16px;
+	border-left: 3px solid var(--tan);
+	color: var(--ink-soft);
+}
+
+.prose .shot {
+	margin: 1.5em 0;
+}
+
+.prose .shot img {
+	border: 1.5px solid var(--rule-strong);
+}
+
+.prose figcaption {
+	margin-top: 6px;
+	font-size: 0.9rem;
+	color: var(--ink-soft);
+}
+
+.prose .soon {
+	padding: 12px 16px;
+	border: 1.5px dashed var(--rule-strong);
+	font-weight: 700;
+}
