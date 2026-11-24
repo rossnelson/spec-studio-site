@@ -1,6 +1,6 @@
 # The demo video
 
-`project.mjs` is a [demo-video-tool](https://github.com/rossnelson/demo-video-tool) project. The site serves its output from `static/video/`.
+`project.mjs` is a `demo-video-tool` project. The site serves its output from `static/video/`.
 
 - `clips/stages.webm`: the reader of the demo spec moving through Spec, Plan, Build and Check (`scripts/shots/rec`, while `studio focus` changes the section).
 - `clips/relay-message.webm`: a message from Claude Code through the local relay arriving in the demo spec's session, and the answer. Cut so no other session's name shows.
