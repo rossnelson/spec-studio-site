@@ -44,6 +44,6 @@ Click **Add a Repo…**, or choose **File > Add Repository…** (⌘O), and choo
 
 Spec Studio starts a Claude session for the spec. In Autopilot, Claude writes the spec and the plan, builds the change on a new branch in a worktree, opens a draft pull request, and runs a self review that fixes what it finds. You can read each document in the reader while Claude writes it.
 
-![A spec in Autopilot: the Claude session on the left, the spec in the reader on the right](shots/autopilot.webp)
+![A spec in Autopilot: the reader on the left, the Claude session on the right](shots/autopilot.webp)
 
 When the work is ready, Spec Studio notifies you and Claude asks one question: mark the pull requests ready for review, or ask for changes. You can also type to Claude at any time, for example to change the spec while it builds.
