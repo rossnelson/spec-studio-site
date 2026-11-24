@@ -8,8 +8,8 @@ if [ -f "$S/try.pid" ]; then
   rm -f "$S/try.pid"
 fi
 [ -f "$S/defaults-backup.txt" ] || exit 0
-while IFS="$(printf '\t')" read -r key value; do
-  if [ -n "$value" ]; then defaults write dev.local.spec-studio "$key" "$value"; else defaults delete dev.local.spec-studio "$key" 2>/dev/null; fi
+while IFS="$(printf '\t')" read -r key type value; do
+  if [ -n "$value" ]; then defaults write dev.local.spec-studio "$key" "-$type" "$value"; else defaults delete dev.local.spec-studio "$key" 2>/dev/null; fi
 done < "$S/defaults-backup.txt"
 rm -f "$S/defaults-backup.txt"
 echo "Restored the installed app's settings."

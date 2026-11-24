@@ -10,14 +10,21 @@ S=$(cd "$(dirname "$0")" && pwd)
 TRY="$HOME/Library/Caches/Spec Studio/try/marketing"
 DOMAIN=dev.local.spec-studio
 if [ ! -f "$S/defaults-backup.txt" ]; then
-  for key in selectedSpec "NSWindow Frame SpecStudioMain" sidebarPanel selectedTab; do
-    printf '%s\t%s\n' "$key" "$(defaults read "$DOMAIN" "$key" 2>/dev/null)" >> "$S/defaults-backup.txt"
+  # Each line: key, type and value, so restore writes the value with the type the app reads.
+  for pair in selectedSpec:string "NSWindow Frame SpecStudioMain:string" sidebarPanel:int; do
+    key=${pair%:*}; type=${pair##*:}
+    printf '%s\t%s\t%s\n' "$key" "$type" "$(defaults read "$DOMAIN" "$key" 2>/dev/null)" >> "$S/defaults-backup.txt"
   done
 fi
 [ -f "$S/try.pid" ] && kill "$(cat "$S/try.pid")" 2>/dev/null && sleep 1.5
 if [ "$3" = sessions ]; then NS=; else NS=1; fi
-# The terminals read the Ghostty config, not the app theme: give them their own config folder.
-mkdir -p "$S/xdg/ghostty"
+# The terminals read the Ghostty config, not the app theme: give the test copy its own config
+# folder, with its own Ghostty config and a link to every other folder of ~/.config, so gh and
+# the other tools in its sessions stay signed in.
+rm -rf "$S/xdg"; mkdir -p "$S/xdg/ghostty"
+for entry in "${XDG_CONFIG_HOME:-$HOME/.config}"/*; do
+  [ "$(basename "$entry")" = ghostty ] || ln -s "$entry" "$S/xdg/$(basename "$entry")"
+done
 printf 'theme = %s\n' "$1" > "$S/xdg/ghostty/config"
 XDG_CONFIG_HOME="$S/xdg" SPEC_STUDIO_NO_SESSIONS=$NS SPEC_STUDIO_SUPPORT="$2" nohup "$TRY/Spec Studio.app/Contents/MacOS/SpecStudio" \
   -appTheme "$1" -selectedSpec "/Users/Shared/spec-studio-demo/notes#open-count" \
