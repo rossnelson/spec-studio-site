@@ -1,0 +1,21 @@
+wave|The robot waves hello with one short arm raised, happy.
+window|The robot sits in front of a wide computer screen that shows three simple panels (a list, a page of text lines, a terminal with a cursor), seen from the side, pleased.
+describe|The robot writes with a big pencil on a small notepad that shows a few hand-drawn text lines, thoughtful.
+spec|The robot holds up a sheet of paper with a short checklist of three items, each with a check mark, proud.
+plan|The robot studies a large unrolled blueprint with a few simple boxes and arrows drawn on it.
+build|The robot types on an open laptop whose screen shows the symbol </>, focused and happy.
+shell|The robot stands beside a small dark terminal window that shows a prompt symbol >_ and a blinking cursor.
+check|The robot holds a large magnifying glass up to a sheet of paper with lines of text, and looks closely at it, curious.
+palette|The robot holds a painter's palette with four color blobs (blue, orange, pink, green) and a brush.
+thumbsup|The robot gives a cheerful thumbs-up with one short arm.
+antenna|The robot's antenna sends out curved signal waves, and the robot looks up at them, delighted.
+plane|The robot throws a folded paper airplane forward, playful.
+envelope|The robot happily catches an envelope that arrives in front of it.
+bucket|The robot holds a small metal bucket full of paper files and a photo.
+ship|The robot pushes a sturdy cardboard shipping box with a small whale-like container icon on it, determined.
+boxes|The robot sits between two closed storage boxes with no letters on them, a yellow one with paper files sticking out and a purple one with a small clock drawn on it, and looks from one to the other.
+files|The robot hugs a neat stack of paper files with curly braces { } drawn on the top file.
+hourglass|The robot holds a small hourglass with sand running, calm.
+merge|The robot celebrates with both short arms raised, with a little colorful confetti around it.
+plug|The robot holds a cable plug in one short arm and pushes it into a small round wall socket beside it. The cable runs behind the robot, not across its face or body.
+handover|The robot holds out a neat stack of papers toward the viewer with both short arms, offering them, friendly.

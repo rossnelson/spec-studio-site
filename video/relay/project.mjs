@@ -21,7 +21,8 @@ export default {
   subtitle: 'Your specs, away from the Mac',
   url: 'spec-studio-app.github.io/site/guides/relay',
   keys: [],
-  theme: 'paper',
+  // The Spec Studio critter theme (video/theme/). base: where the recorded page finds it.
+  theme: { name: '../theme', options: { base: 'http://127.0.0.1:4210/video/theme/' } },
   open: 'card',
   music: { path: process.env.MUSIC ?? null },
   browser: { profile: null, headless: true, viewport: { width: 1920, height: 1080 } },
@@ -39,17 +40,17 @@ export default {
 
   scenes: [
     {
-      name: '00-intro', kind: 'intro',
+      name: '00-intro', card: { critter: 'antenna' }, kind: 'intro',
       narration: 'The relay is a small MCP server that you host. With it, Claude AI can reach the specs on your Mac from claude.ai, the Claude app, or Claude Code on another computer.',
     },
     {
-      name: '01-ask', step: '01', title: 'Send a spec a message', subtitle: 'From anywhere',
+      name: '01-ask', card: { critter: 'plane' }, step: '01', title: 'Send a spec a message', subtitle: 'From anywhere',
       narration: 'Ask Claude AI to send a spec a message. It finds the spec through the relay, and sends the message.',
       before: (api) => show(api, 'term=send'),
       async run({ page }) { await page.evaluate(() => window.replay(14)); },
     },
     {
-      name: '02-arrives', step: '02', title: 'The message arrives', subtitle: 'And the answer goes back',
+      name: '02-arrives', card: { critter: 'envelope' }, step: '02', title: 'The message arrives', subtitle: 'And the answer goes back',
       narration: 'The message reaches the spec\'s Claude session on the Mac. Claude makes the change and answers, and the answer goes back through the relay.',
       before: (api) => show(api, 'clip=relay-message'),
       async run({ page }) { await page.evaluate(() => window.play(1.4)); },
@@ -63,27 +64,27 @@ export default {
       minSeconds: 16,
     },
     {
-      name: '04-connect', step: '03', title: 'How it connects', subtitle: 'The Mac opens no port',
+      name: '04-connect', card: { critter: 'plug' }, step: '03', title: 'How it connects', subtitle: 'The Mac opens no port',
       narration: 'Claude AI connects to the relay over HTTPS, and signs in with your owner password. The Spec Studio agent on your Mac connects out to the relay, so the Mac opens no port.',
       ...diagram('all', 'link'),
     },
     {
-      name: '05-store', step: '04', title: 'A pluggable store', subtitle: 'JSON files or Temporal',
+      name: '05-store', card: { critter: 'boxes' }, step: '04', title: 'A pluggable store', subtitle: 'JSON files or Temporal',
       narration: 'The relay keeps a copy of each spec, the messages, and the sign-ins in a store. So Claude AI can read your specs, and leave messages, while the Mac is offline. The store is pluggable, and you choose one of two.',
       ...diagram('all', 'store'),
     },
     {
-      name: '06-json', step: '05', title: 'JSON files', subtitle: 'The default',
+      name: '06-json', card: { critter: 'files' }, step: '05', title: 'JSON files', subtitle: 'The default',
       narration: 'The default store is JSON files on a volume. The relay is one container and a volume, with no other service. With no store settings, the relay uses JSON files.',
       ...diagram('store', 'json'),
     },
     {
-      name: '07-temporal', step: '06', title: 'Temporal', subtitle: 'An option, if you run Temporal',
+      name: '07-temporal', card: { critter: 'hourglass' }, step: '06', title: 'Temporal', subtitle: 'An option, if you run Temporal',
       narration: 'If you already run Temporal, the relay can keep the same data in your namespace instead, on Temporal Cloud or self-hosted. Set the Temporal address and your payload keys. The relay encrypts every payload with them.',
       ...diagram('json', 'temporal'),
     },
     {
-      name: '08-bucket', step: '07', title: 'Attachments', subtitle: 'When you set an S3 bucket',
+      name: '08-bucket', card: { critter: 'bucket' }, step: '07', title: 'Attachments', subtitle: 'When you set an S3 bucket',
       narration: 'Attachments are optional. Set the four bucket settings for R2, S3, MinIO, or any S3-compatible service, and messages can carry files. Attachments never go into the store. With no bucket, the relay works the same, but with no attachments.',
       before: (api) => show(api, 'diagram=all'),
       async run({ page, plan, wait }) {
@@ -94,16 +95,16 @@ export default {
       },
     },
     {
-      name: '09-run', step: '08', title: 'Run it your way', subtitle: 'Docker Compose, Helm or Docker',
+      name: '09-run', card: { critter: 'ship' }, step: '08', title: 'Run it your way', subtitle: 'Docker Compose, Helm or Docker',
       narration: 'Run the relay with Docker Compose, the Helm chart, or Docker. Each release publishes a signed image for Intel and Arm, and the chart.',
       ...diagram('all', 'run'),
     },
     {
-      name: '10-outro', kind: 'outro', subtitle: 'The relay guide takes you through each step',
+      name: '10-outro', card: { critter: 'thumbsup' }, kind: 'outro', subtitle: 'The relay guide takes you through each step',
       narration: 'The relay guide takes you through each step, from the password to the connector in Claude AI.',
     },
     {
-      name: '11-end', kind: 'end',
+      name: '11-end', card: { critter: 'wave' }, kind: 'end',
       lines: ['ghcr.io/spec-studio-app/relay', 'Guide: spec-studio-app.github.io/site/guides/relay'],
     },
   ],
