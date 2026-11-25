@@ -158,22 +158,19 @@ test('the backends guide covers each Temporal, bucket and run choice', async ({ 
 
 // R7.S1: the guides and their prototypes take the theme from the first paint.
 const paper = { light: 'rgb(246, 241, 230)', dark: 'rgb(26, 25, 23)' };
-const ink = { light: 'rgb(27, 28, 32)', dark: 'rgb(243, 235, 218)' };
+/** The app's Ghostty themes in the replicas: TokyoNight Day and TokyoNight Storm. */
+const appBg = { light: 'rgb(225, 226, 231)', dark: 'rgb(36, 40, 59)' };
 for (const scheme of ['light', 'dark'] as const) {
 	test.describe(`guides in the ${scheme} theme with JavaScript off`, () => {
 		test.use({ colorScheme: scheme, javaScriptEnabled: false });
 
 		for (const guide of guides) {
-			test(`${guide.title} has the ${scheme} paper and ${scheme} prototypes`, async ({ page }) => {
+			test(`${guide.title} has the ${scheme} paper and ${scheme} replicas`, async ({ page }) => {
 				await page.goto(`./guides/${guide.slug}/`);
 				expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe(paper[scheme]);
 				for (const svg of await page.locator('svg.proto').all()) {
-					const colors = await svg.evaluate((el) => ({
-						window: getComputedStyle(el.querySelector('.p-window, .p-sheet')!).fill,
-						text: el.querySelector('text.p-ink') ? getComputedStyle(el.querySelector('text.p-ink')!).fill : null
-					}));
-					expect(colors.window).toBe(paper[scheme]);
-					if (colors.text) expect(colors.text).toBe(ink[scheme]);
+					const bg = await svg.evaluate((el) => getComputedStyle(el.querySelector('.rp:not(.rp-backdrop), .rp-sheet')!).backgroundColor);
+					expect(bg).toBe(appBg[scheme]);
 				}
 			});
 		}
