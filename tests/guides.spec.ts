@@ -106,8 +106,8 @@ test('the relay guide gives the steps in order, with the Remote Relay screenshot
 	await page.goto('./guides/relay/');
 	const steps = (await headings(page)).filter((h) => h.startsWith('Step '));
 	expect(steps).toEqual([
-		'Step 1: Make the secrets',
-		'Step 2: Choose a Temporal backend',
+		'Step 1: Make the password hash',
+		'Step 2: Choose the store',
 		'Step 3: Choose a bucket (optional)',
 		'Step 4: Run the relay',
 		'Step 5: Pair the Mac',
@@ -130,9 +130,9 @@ test('the tools table gives each tool online and offline', async ({ page }) => {
 });
 
 // R5.S1, R5.S2 and R5.S3
-test('the backends guide covers each Temporal, bucket and run choice', async ({ page }) => {
+test('the backends guide covers each store, bucket and run choice', async ({ page }) => {
 	await page.goto('./guides/backends/');
-	expect(await headings(page)).toEqual(['Temporal', 'The attachment bucket', 'Ways to run the relay', 'Every setting']);
+	expect(await headings(page)).toEqual(['The JSON store', 'The Temporal store', 'Switch between stores', 'The attachment bucket', 'Ways to run the relay', 'Every setting']);
 	expect(await headings(page, 'h3')).toEqual([
 		'Temporal Cloud with an API key',
 		'Temporal Cloud with mTLS',
