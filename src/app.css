@@ -321,3 +321,109 @@ img {
 .guide-video {
 	margin-top: 28px;
 }
+
+/*
+ * The guide prototypes (src/lib/protos/): live SVG drawings of the app.
+ * Every color is a site token, so they follow the light and dark theme.
+ */
+:root {
+	--p-ok: #2f7d4a;
+	--p-warn: #a8641c;
+	--p-important: #b3402f;
+	--p-term: #20222b;
+	--p-term-ink: #d6d9e4;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--p-ok: #8fd19e;
+		--p-warn: #e7b077;
+		--p-important: #f08a76;
+		--p-term: #121316;
+		--p-term-ink: #e3dccb;
+	}
+}
+
+.proto-figure {
+	margin: 1.6em 0;
+}
+
+.proto-figure figcaption {
+	margin-top: 8px;
+	font-size: 0.9rem;
+	color: var(--ink-soft);
+}
+
+.proto {
+	display: block;
+	width: 100%;
+	height: auto;
+	overflow: visible;
+	font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+}
+
+.proto .p-ui { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 13px; }
+.proto .p-mono { font-family: var(--mono); font-size: 12px; }
+.proto .p-small { font-size: 12px; }
+.proto .p-tiny { font-size: 10.5px; }
+.proto .p-title { font-size: 17px; font-weight: 700; }
+.proto .p-head { font-size: 17px; font-weight: 700; }
+.proto .p-bold { font-weight: 700; }
+.proto .p-caps { letter-spacing: 0.06em; font-weight: 600; }
+
+.proto .p-ink { fill: var(--ink); }
+.proto .p-soft { fill: var(--ink-soft); }
+.proto .p-accent { fill: var(--sky-ink); }
+.proto .p-warn { fill: var(--p-warn); }
+.proto .p-ok { fill: var(--p-ok); }
+.proto .p-on-primary { fill: var(--paper); }
+.proto .p-on-tag { fill: var(--paper); }
+.proto .p-on-important { fill: var(--paper); }
+
+.proto .p-window { fill: var(--paper); stroke: var(--rule-strong); stroke-width: 1.5; }
+.proto .p-sheet { fill: var(--paper); stroke: var(--rule-strong); stroke-width: 1.5; }
+.proto .p-side { fill: var(--box); }
+.proto .p-card { fill: var(--box); stroke: var(--rule); stroke-width: 1; }
+.proto .p-banner { fill: color-mix(in srgb, var(--tan) 14%, transparent); }
+.proto .p-field { fill: var(--paper); stroke: var(--rule); stroke-width: 1; }
+.proto .p-chip { fill: color-mix(in srgb, var(--ink) 7%, transparent); }
+.proto .p-selected { fill: color-mix(in srgb, var(--sky-ink) 14%, transparent); }
+.proto .p-segment-on { fill: var(--paper); stroke: var(--rule); stroke-width: 1; }
+.proto .p-button { fill: color-mix(in srgb, var(--sky-ink) 12%, transparent); stroke: var(--rule); stroke-width: 1; }
+.proto .p-primary { fill: var(--sky-ink); }
+.proto .p-tag { fill: var(--ink); }
+.proto .p-glow { fill: color-mix(in srgb, var(--sky-ink) 16%, transparent); stroke: var(--sky-ink); stroke-width: 2; }
+.proto .p-sev-important { fill: var(--p-important); }
+.proto .p-sev-nit { fill: color-mix(in srgb, var(--ink) 10%, transparent); }
+.proto .p-textline { fill: color-mix(in srgb, var(--ink) 16%, transparent); }
+.proto .p-rule { stroke: var(--rule); stroke-width: 1; }
+.proto .p-line { stroke: var(--ink-soft); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.proto .p-accent-line { stroke: var(--sky-ink); stroke-width: 1.8; }
+.proto .p-light { fill: color-mix(in srgb, var(--ink) 18%, transparent); }
+.proto .p-ok-fill { fill: var(--p-ok); }
+.proto .p-ok-mark { fill: none; stroke: var(--paper); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.proto .p-warn-fill { fill: var(--p-warn); }
+.proto .p-accent-fill { fill: var(--sky-ink); }
+.proto .p-mute-fill { fill: color-mix(in srgb, var(--ink) 30%, transparent); }
+.proto .p-critter { fill: #a9d4f2; stroke: var(--ink); stroke-width: 1.3; }
+.proto .p-critter-1 { fill: #b9e3a8; }
+.proto .p-critter-2 { fill: #f5b7b1; }
+.proto .p-eye { fill: #1b1c20; }
+.proto .p-mouth { fill: none; stroke: #1b1c20; stroke-width: 1.2; stroke-linecap: round; }
+.proto .p-pointer { fill: var(--ink); stroke: var(--paper); stroke-width: 1.2; stroke-linejoin: round; }
+.proto .p-term { fill: var(--p-term); }
+.proto .p-term-ink { fill: var(--p-term-ink); }
+.proto .p-term-soft { fill: color-mix(in srgb, var(--p-term-ink) 60%, transparent); }
+.proto .p-term-accent { fill: #8ccbef; }
+
+/* Reduced motion: no animation, and each prototype shows its final state. */
+@media (prefers-reduced-motion: reduce) {
+	.proto *,
+	.proto {
+		animation: none !important;
+	}
+
+	.proto .transient {
+		display: none;
+	}
+}

@@ -12,11 +12,12 @@ async function headings(page: Page, level = 'h2'): Promise<string[]> {
 	return page.getByTestId('guide').locator(level).allInnerTexts();
 }
 
-/** Every screenshot in the guide loads. */
+/** Every prototype in the guide draws, with a label for a screen reader. */
 async function shotsLoad(page: Page) {
-	for (const img of await page.locator('img[data-shot]').all()) {
-		await img.scrollIntoViewIfNeeded();
-		await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth)).toBeGreaterThan(0);
+	for (const svg of await page.locator('svg.proto').all()) {
+		await expect(svg).toHaveAttribute('role', 'img');
+		expect((await svg.getAttribute('aria-label'))!.length).toBeGreaterThan(20);
+		expect((await svg.boundingBox())!.height).toBeGreaterThan(100);
 	}
 }
 
@@ -60,7 +61,7 @@ test('Get started goes from the requirements to a first spec, with a screenshot 
 		let current = '';
 		for (const el of root.children) {
 			if (el.tagName === 'H2') current = el.id;
-			else if (current) count[current] = (count[current] ?? 0) + el.querySelectorAll('img[data-shot]').length;
+			else if (current) count[current] = (count[current] ?? 0) + el.querySelectorAll('svg.proto').length;
 		}
 		return count;
 	});
@@ -112,7 +113,7 @@ test('the relay guide gives the steps in order, with the Remote Relay screenshot
 		'Step 5: Pair the Mac',
 		'Step 6: Add the connector in Claude AI'
 	]);
-	await expect(page.locator('img[data-shot][src$="settings-relay.webp"]')).toHaveCount(1);
+	await expect(page.locator('svg.proto[data-proto="settings-relay"]')).toHaveCount(1);
 	await shotsLoad(page);
 });
 
@@ -155,27 +156,43 @@ test('the backends guide covers each Temporal, bucket and run choice', async ({ 
 	await expect(guide.locator('pre code', { hasText: 'docker compose --profile dev up' })).toHaveCount(1);
 });
 
-// R7.S1
+// R7.S1: the guides and their prototypes take the theme from the first paint.
+const paper = { light: 'rgb(246, 241, 230)', dark: 'rgb(26, 25, 23)' };
+const ink = { light: 'rgb(27, 28, 32)', dark: 'rgb(243, 235, 218)' };
 for (const scheme of ['light', 'dark'] as const) {
 	test.describe(`guides in the ${scheme} theme with JavaScript off`, () => {
 		test.use({ colorScheme: scheme, javaScriptEnabled: false });
-		const paper = { light: 'rgb(246, 241, 230)', dark: 'rgb(26, 25, 23)' };
 
 		for (const guide of guides) {
-			test(`${guide.title} has the ${scheme} paper and ${scheme} screenshots`, async ({ page }) => {
+			test(`${guide.title} has the ${scheme} paper and ${scheme} prototypes`, async ({ page }) => {
 				await page.goto(`./guides/${guide.slug}/`);
 				expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe(paper[scheme]);
-				for (const img of await page.locator('img[data-shot]').all()) {
-					await img.scrollIntoViewIfNeeded();
-					await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.currentSrc)).toMatch(/\.webp$/);
-					const src = await img.evaluate((el: HTMLImageElement) => el.currentSrc);
-					if (scheme === 'dark') expect(src).toMatch(/-dark\.webp$/);
-					else expect(src).not.toMatch(/-dark\./);
+				for (const svg of await page.locator('svg.proto').all()) {
+					const colors = await svg.evaluate((el) => ({
+						window: getComputedStyle(el.querySelector('.p-window, .p-sheet')!).fill,
+						text: el.querySelector('text.p-ink') ? getComputedStyle(el.querySelector('text.p-ink')!).fill : null
+					}));
+					expect(colors.window).toBe(paper[scheme]);
+					if (colors.text) expect(colors.text).toBe(ink[scheme]);
 				}
 			});
 		}
 	});
 }
+
+// Reduced motion: no animation, and the final state (no transient parts).
+test.describe('with reduced motion', () => {
+	test.use({ reducedMotion: 'reduce' });
+	test('the prototypes do not move and show their final state', async ({ page }) => {
+		for (const slug of ['get-started', 'app', 'relay']) {
+			await page.goto(`./guides/${slug}/`);
+			const moving = await page.evaluate(() => document.getAnimations().length);
+			expect(moving, slug).toBe(0);
+			const shown = await page.locator('svg.proto .transient').evaluateAll((els) => els.filter((el) => getComputedStyle(el).display !== 'none').length);
+			expect(shown, slug).toBe(0);
+		}
+	});
+});
 
 // R7.S2
 test.describe('on a 390 px phone', () => {

@@ -1,6 +1,7 @@
 import { Marked, type Tokens } from 'marked';
-import { asset, resolve } from '$app/paths';
+import { resolve } from '$app/paths';
 import { latest, installCommand, downloadUrl } from './releases';
+import { proto } from './protos';
 
 /**
  * The guides are Markdown files in src/guides/. Each starts with a front
@@ -102,21 +103,15 @@ function renderer() {
 					`<span class="sr-only" role="status" aria-live="polite" data-copy-status></span></div>\n`
 				);
 			},
-			// Screenshots: shots/name.webp shows shots/name-dark.webp in the
-			// dark theme, from the first paint and with no JavaScript.
 			image({ href, title, text }: Tokens.Image) {
-				if (!href.startsWith('shots/')) {
-					return `<img src="${escape(sitePath(href))}" alt="${escape(text)}" loading="lazy" />`;
+				// A live prototype of the app: proto:<name> draws src/lib/protos/<name>.
+				if (href.startsWith('proto:')) {
+					const svg = proto(href.slice('proto:'.length), text);
+					if (!svg) throw new Error(`No prototype named ${href}`);
+					const caption = title ? `<figcaption>${escape(title)}</figcaption>` : '';
+					return `<figure class="proto-figure">${svg}${caption}</figure>`;
 				}
-				// The shots are added to static/guides/ by scripts/shots.sh, so their names are not in asset()'s list.
-				const light = asset(`guides/${href.slice('shots/'.length)}` as Parameters<typeof asset>[0]);
-				const dark = light.replace(/\.(\w+)$/, '-dark.$1');
-				const caption = title ? `<figcaption>${escape(title)}</figcaption>` : '';
-				return (
-					`<figure class="shot"><picture>` +
-					`<source srcset="${dark}" media="(prefers-color-scheme: dark)" />` +
-					`<img src="${light}" alt="${escape(text)}" loading="lazy" data-shot /></picture>${caption}</figure>`
-				);
+				return `<img src="${escape(sitePath(href))}" alt="${escape(text)}" loading="lazy" />`;
 			},
 			link({ href, title, tokens }: Tokens.Link) {
 				const text = this.parser.parseInline(tokens);

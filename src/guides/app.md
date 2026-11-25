@@ -13,7 +13,7 @@ The window has four parts:
 - **The reader**: the spec, the plan, the changes, the review and the activity of the spec. Claude points the reader at what is new.
 - **The status strip** at the top: the stage, whose turn it is, and the note that Claude sets, for example "Ready for your review."
 
-![The Spec Studio window: the sidebar, the Claude session, the reader and the status strip](shots/window.webp)
+![The Spec Studio window with its four parts: 1 the sidebar, 2 the status strip, 3 the reader, 4 the Claude session](proto:window)
 
 Hide or show each part from the **View** menu: the spec list (⌃⌘S), the reader (⌃⌘R), Claude (⌃⌘C) and the shell (⌃⌘T). ⌘1 to ⌘8 open the sections of the reader. **Help > Keyboard Shortcuts** (⌘/) lists every shortcut.
 
@@ -27,7 +27,7 @@ Each spec goes through five stages, in order. Each stage ends at a gate.
 4. **Check.** Claude runs the self review on each pull request and proves each scenario. At the gate you approve the result, and the pull requests become ready for review.
 5. **Merge.** Claude works through the reviewers' comments with you, and merges the pull requests in merge order when you say so.
 
-![The reader on the plan of a spec](shots/plan.webp)
+![The reader on a plan while Claude writes it: the approach, the steps and the tests come in](proto:plan)
 
 A spec can go back to an earlier stage, for example when the review finds a change that the plan missed.
 
@@ -53,7 +53,7 @@ In Check, the self review reads each pull request with parallel finder agents. A
 
 In Guided, Claude asks you about each finding: fix it, or leave it. In Autopilot, Claude fixes the important findings itself, reviews the new commits again, and lists each finding it left in its summary.
 
-![The review section of the reader, with the findings and their decisions](shots/review.webp)
+![A self review round: gather context, find, vote, filter and rank, report; two findings come in and are fixed, and round 2 finds no issues](proto:review)
 
 ## The shell panel
 

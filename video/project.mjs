@@ -45,7 +45,7 @@ export default {
     serve(root, 4210);
     serve(siteRoot, 4211);
     await new Promise((r) => setTimeout(r, 800));
-    await settle(`${stage}?still=../static/guides/first-open-dark.webp`);
+    await settle(`${stage}?still=stills/first-open-dark.webp`);
   },
   async teardown() {
     for (const server of servers) server.kill();
@@ -59,7 +59,7 @@ export default {
     {
       name: '01-describe', step: '01', title: 'Describe the change', subtitle: 'A title and a few sentences',
       narration: 'Make a spec in any repo. Give it a title and say what a user sees when it is done. In Autopilot, Claude writes the spec and the plan, builds the change and opens a draft pull request, with no question in between.',
-      before: (api) => show(api, 'still=../static/guides/new-spec.webp'),
+      before: (api) => show(api, 'still=stills/new-spec.webp'),
     },
     {
       name: '02-stages', step: '02', title: 'Five stages', subtitle: 'Spec, Plan, Build, Check, Merge',
@@ -70,7 +70,7 @@ export default {
     {
       name: '03-review', step: '03', title: 'A review before yours', subtitle: 'Parallel finders, a two of three vote',
       narration: 'In Check, a self review reads the pull request with parallel finders, and three verifiers vote on each finding. Here it found two problems. Claude fixed both, and a second round found nothing. Then it is over to you.',
-      before: (api) => show(api, 'still=../static/guides/review-dark.webp'),
+      before: (api) => show(api, 'still=stills/review-dark.webp'),
     },
     {
       name: '04-relay-ask', step: '04', title: 'Away from the Mac', subtitle: 'The relay, a remote MCP server you host',

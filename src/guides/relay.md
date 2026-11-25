@@ -70,7 +70,7 @@ It works once, for 24 hours. On the Mac, run:
 
 In Spec Studio, open **Settings** (⌘,) > **Remote Relay**. Enter the relay URL and the code, and click **Pair**.
 
-![The Remote Relay pane in the Settings window, paired with a relay](shots/settings-relay.webp)
+![The Remote Relay pane: the relay URL and the pairing code go in, Pair, and the status changes to Connected](proto:settings-relay)
 
 Or run the command from the log in a terminal:
 
