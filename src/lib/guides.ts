@@ -2,6 +2,7 @@ import { Marked, type Tokens } from 'marked';
 import { resolve } from '$app/paths';
 import { latest, installCommand, downloadUrl } from './releases';
 import { proto } from './protos';
+import { videoFigure, videos, type VideoName } from './videos';
 
 /**
  * The guides are Markdown files in src/guides/. Each starts with a front
@@ -104,6 +105,12 @@ function renderer() {
 				);
 			},
 			image({ href, title, text }: Tokens.Image) {
+				// A video of src/lib/videos.ts: video:<name>.
+				if (href.startsWith('video:')) {
+					const name = href.slice('video:'.length);
+					if (!(name in videos)) throw new Error(`No video named ${href}`);
+					return videoFigure(name as VideoName);
+				}
 				// A live prototype of the app: proto:<name> draws src/lib/protos/<name>.
 				if (href.startsWith('proto:')) {
 					const svg = proto(href.slice('proto:'.length), text);

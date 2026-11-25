@@ -1,30 +1,13 @@
-// The Spec Studio demo video. Build it with demo-video-tool:
+// The Spec Studio demo video: the app and its features. The relay has its own
+// video, in relay/. Build it with demo-video-tool:
 //
-//   npm run build                                  # the site, for the backends scene (build/)
 //   MUSIC=<bed.mp3> <demo-video-tool>/bin/demo all video
 //
-// video/README.md says how the clips in video/clips/ were made.
-import { spawn } from 'node:child_process';
-import { mkdirSync, rmSync, symlinkSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+// video/README.md says how the stills and clips were made.
+import { root, serve, show, spoken, stage, stopServers } from './stage.mjs';
 
-const root = fileURLToPath(new URL('..', import.meta.url));
-const site = fileURLToPath(new URL('../build', import.meta.url));
-// GitHub Pages serves the site under /site/, so the local server does too.
-const siteRoot = fileURLToPath(new URL('./build/serve', import.meta.url));
-const stage = 'http://127.0.0.1:4210/video/stage.html';
-const guide = 'http://127.0.0.1:4211/site/guides/backends/';
-const servers = [];
-
-function serve(dir, port) {
-  servers.push(spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '-d', dir], { stdio: 'ignore' }));
-}
-
-/** Opens a stage page off camera and waits until its clip, still or terminal is ready. */
-async function show({ cut, page }, query) {
-  await cut(`${stage}?${query}`);
-  await page.evaluate(() => window.ready());
-}
+/** A still, or stills in turn (comma-separated), with a slow move in on one point. */
+const still = (names, zoom) => `still=${names.split(',').map((n) => `stills/${n}.webp`).join(',')}${zoom ? `&zoom=${zoom}` : ''}`;
 
 export default {
   name: 'spec-studio',
@@ -33,82 +16,90 @@ export default {
   url: 'spec-studio-app.github.io/site',
   keys: [],
   theme: 'paper',
+  open: 'card',
   music: { path: process.env.MUSIC ?? null },
   browser: { profile: null, headless: true, viewport: { width: 1920, height: 1080 } },
   video: { background: '#16161e' },
   timing: { cardBeats: 6, holdBeats: 4 },
 
   async setup({ settle }) {
-    rmSync(siteRoot, { recursive: true, force: true });
-    mkdirSync(siteRoot, { recursive: true });
-    symlinkSync(site, `${siteRoot}/site`);
     serve(root, 4210);
-    serve(siteRoot, 4211);
     await new Promise((r) => setTimeout(r, 800));
-    await settle(`${stage}?still=stills/first-open-dark.webp`);
+    await settle(`${stage}?${still('first-open-dark')}`);
   },
   async teardown() {
-    for (const server of servers) server.kill();
+    stopServers();
   },
 
   scenes: [
     {
       name: '00-intro', kind: 'intro',
-      narration: 'Spec Studio is a Mac app for spec-driven development with Claude Code. You describe a change, and one Claude session takes it from a spec to reviewed pull requests.',
+      narration: 'Spec Studio is a Mac app for spec-driven development with Claude Code. Each spec gets its own Claude session, and goes through five stages, from a spec to reviewed pull requests.',
     },
     {
-      name: '01-describe', step: '01', title: 'Describe the change', subtitle: 'A title and a few sentences',
-      narration: 'Make a spec in any repo. Give it a title and say what a user sees when it is done. In Autopilot, Claude writes the spec and the plan, builds the change and opens a draft pull request, with no question in between.',
-      before: (api) => show(api, 'still=stills/new-spec.webp'),
+      name: '01-window', step: '01', title: 'One window', subtitle: 'Your repos, the reader and Claude',
+      narration: 'Add a repo, and its specs show in the sidebar, each with its stage and whose turn it is. Beside it are the reader, which shows the spec\'s documents, and the spec\'s Claude session, a real terminal.',
+      before: (api) => show(api, still('plan', '10,14,1.45')),
+      async run({ page, plan }) { await page.evaluate((s) => window.play(s), spoken(plan, '01-window')); },
     },
     {
-      name: '02-stages', step: '02', title: 'Five stages', subtitle: 'Spec, Plan, Build, Check, Merge',
-      narration: 'Every spec moves through five stages. The reader shows each document while Claude writes it: the spec with its scenarios, the plan, the build with its pull request, and the review. The strip at the top says whose turn it is.',
-      before: (api) => show(api, 'clip=stages'),
-      async run({ page }) { await page.evaluate(() => window.play(1)); },
-    },
-    {
-      name: '03-review', step: '03', title: 'A review before yours', subtitle: 'Parallel finders, a two of three vote',
-      narration: 'In Check, a self review reads the pull request with parallel finders, and three verifiers vote on each finding. Here it found two problems. Claude fixed both, and a second round found nothing. Then it is over to you.',
-      before: (api) => show(api, 'still=stills/review-dark.webp'),
-    },
-    {
-      name: '04-relay-ask', step: '04', title: 'Away from the Mac', subtitle: 'The relay, a remote MCP server you host',
-      narration: 'Away from the Mac? The relay is a remote MCP server that you host. Claude AI, or Claude Code on another computer, can list your specs, read them, and send a spec a message.',
-      before: (api) => show(api, 'term=send'),
-      async run({ page }) { await page.evaluate(() => window.replay(14)); },
-    },
-    {
-      name: '05-relay-arrives', step: '05', title: 'The message arrives', subtitle: 'And the answer goes back',
-      narration: 'The message reaches the spec\'s session as a message from Claude AI. Claude makes the change and answers, and the answer goes back through the relay.',
-      before: (api) => show(api, 'clip=relay-message'),
-      async run({ page }) { await page.evaluate(() => window.play(1.4)); },
-      minSeconds: 18,
-    },
-    {
-      name: '06-relay-read', card: false,
-      narration: 'Later, ask again from anywhere. Claude reads the spec through the relay, with its stage, its pull request, and the answer.',
-      before: (api) => show(api, 'term=read'),
-      async run({ page }) { await page.evaluate(() => window.replay(12)); },
-      minSeconds: 16,
-    },
-    {
-      name: '07-backends', step: '06', title: 'Your backends', subtitle: 'A store, a bucket, and how to run it',
-      narration: 'The relay keeps its copy of each spec in JSON files on a volume, or in a Temporal namespace that you choose. Attachments go to any S3 compatible bucket, such as R2, S3 or MinIO. Run it with Docker Compose, Helm, or Docker.',
-      before: ({ cut }) => cut(guide),
-      async run({ page, wait }) {
-        for (const id of ['the-json-store', 'the-attachment-bucket', 'ways-to-run-the-relay']) {
-          await page.evaluate((anchor) => document.getElementById(anchor).scrollIntoView({ behavior: 'smooth' }), id);
-          await wait(4200);
-        }
+      name: '02-new', step: '02', title: 'Describe the change', subtitle: 'A title, a few sentences and a mode',
+      narration: 'Make a spec with a title and a few sentences about what the user sees when it is done. Then choose a mode. Autopilot goes to reviewed draft pull requests with no question in between. Guided interviews you, and stops for your approval at each stage. Loop takes one small change at a time.',
+      before: (api) => show(api, still('new-autopilot,new-guided,new-loop')),
+      async run({ page, plan }) {
+        const s = spoken(plan, '02-new');
+        await page.evaluate((t) => window.play(t), [s * 0.6, s * 0.8]);
       },
     },
     {
-      name: '08-outro', kind: 'outro', subtitle: 'The guides take you through each step',
-      narration: 'Install Spec Studio with Homebrew. The guides on the site take you through the app, the relay, and its backends.',
+      name: '03-spec', step: '03', title: 'Spec', subtitle: 'Requirements with scenarios',
+      narration: 'In Spec, Claude writes the spec: a summary, the scope, and requirements with Given, When, Then scenarios. The reader shows each document as Claude writes it.',
+      before: (api) => show(api, still('spec-scenarios', '22,45,1.3')),
+      async run({ page, plan }) { await page.evaluate((s) => window.play(s), spoken(plan, '03-spec')); },
     },
     {
-      name: '09-end', kind: 'end',
+      name: '04-plan', step: '04', title: 'Plan', subtitle: 'The approach, the steps and the tests',
+      narration: 'In Plan, Claude studies the code. It writes the approach, the repos that change, the steps, and a test for each scenario.',
+      before: (api) => show(api, still('plan,plan-steps')),
+      async run({ page, plan }) { await page.evaluate((s) => window.play([s * 0.5]), spoken(plan, '04-plan')); },
+    },
+    {
+      name: '05-build', step: '05', title: 'Build', subtitle: 'A worktree, a branch, a draft pull request',
+      narration: 'In Build, Claude works in its own worktree and branch. It commits each step, pushes, and opens a draft pull request. The Changes section shows each file and its diff.',
+      before: (api) => show(api, still('build,changes')),
+      async run({ page, plan }) { await page.evaluate((s) => window.play([s * 0.62]), spoken(plan, '05-build')); },
+    },
+    {
+      name: '06-shell', step: '06', title: 'A shell beside Claude', subtitle: 'In the spec\'s worktree',
+      narration: 'Each spec also has a shell in its worktree. Run the tests, the app or git there. The studio command works in any terminal: here it lists the specs that need you.',
+      before: (api) => show(api, still('shell-tests,shell-studio')),
+      async run({ page, plan }) { await page.evaluate((s) => window.play([s * 0.55]), spoken(plan, '06-shell')); },
+    },
+    {
+      name: '07-check', step: '07', title: 'Check', subtitle: 'A review before yours',
+      narration: 'In Check, a self review reads each pull request with parallel finders. Three verifiers vote on each finding, and a finding needs two of three votes. Here, round one found two problems. Claude fixed both, and round two found nothing.',
+      before: (api) => show(api, still('check', '28,42,1.3')),
+      async run({ page, plan }) { await page.evaluate((s) => window.play(s), spoken(plan, '07-check')); },
+    },
+    {
+      name: '08-turn', step: '08', title: 'Over to you', subtitle: 'Then Merge, when you say so',
+      narration: 'The strip at the top says whose turn it is. The Priority panel lists the specs that need you, across all your repos. In Merge, Claude works through the reviewers\' comments with you, and merges when you say so.',
+      before: (api) => show(api, still('priority', '30,10,1.35')),
+      async run({ page, plan }) { await page.evaluate((s) => window.play(s), spoken(plan, '08-turn')); },
+    },
+    {
+      name: '09-themes', step: '09', title: 'Your colors', subtitle: 'The app and its terminals',
+      narration: 'Choose the colors of the app and its terminals from the Ghostty themes, light or dark.',
+      before: (api) => show(api, still('theme,theme-day')),
+      async run({ page, plan }) { await page.evaluate((s) => window.play([s * 0.5]), spoken(plan, '09-themes')); },
+      minSeconds: 9,
+    },
+    {
+      name: '10-outro', kind: 'outro', subtitle: 'The guides take you through each step',
+      narration: 'Install Spec Studio with Homebrew. The guides on the site take you through each step.',
+    },
+    {
+      name: '11-end', kind: 'end',
       lines: ['brew install --cask spec-studio-app/tap/spec-studio', 'Guides: spec-studio-app.github.io/site/guides'],
     },
   ],

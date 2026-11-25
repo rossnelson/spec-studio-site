@@ -1,8 +1,9 @@
 import { statSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
-// R6.S2: the video plays from the site, with a poster and captions.
-for (const path of ['./', './guides/']) {
+// R6.S2: the video plays from the site, with a poster and captions. The app
+// video is on the launch page and the guides; the relay video is on the relay guide.
+for (const path of ['./', './guides/', './guides/relay/']) {
 	test(`the video on ${path} has a poster, captions and plays`, async ({ page, request }) => {
 		await page.goto(path);
 		const video = page.getByTestId('video').locator('video');
@@ -38,7 +39,16 @@ test('the launch page loads no video file until play', async ({ page }) => {
 	await expect(page.getByTestId('video').locator('video')).toHaveAttribute('preload', 'none');
 });
 
-test('the video file is 40 MB or smaller', () => {
-	const size = statSync(new URL('../static/video/spec-studio.mp4', import.meta.url)).size;
-	expect(size).toBeLessThanOrEqual(40 * 1024 * 1024);
+for (const file of ['spec-studio', 'spec-studio-relay']) {
+	test(`the video file ${file}.mp4 is 40 MB or smaller`, () => {
+		const size = statSync(new URL(`../static/video/${file}.mp4`, import.meta.url)).size;
+		expect(size).toBeLessThanOrEqual(40 * 1024 * 1024);
+	});
+}
+
+test('the relay guide shows the relay video, and the launch page the app video', async ({ page }) => {
+	await page.goto('./guides/relay/');
+	await expect(page.getByTestId('video')).toHaveAttribute('data-video', 'relay');
+	await page.goto('./');
+	await expect(page.getByTestId('video')).toHaveAttribute('data-video', 'app');
 });

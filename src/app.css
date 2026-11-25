@@ -322,6 +322,30 @@ img {
 	margin-top: 28px;
 }
 
+/* A video (src/lib/videos.ts), on a page or in a guide. */
+.video {
+	margin: 0;
+}
+
+.prose .video {
+	margin: 1.6em 0;
+}
+
+.video video {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	background: #16161e;
+	border: 1.5px solid var(--rule-strong);
+}
+
+.video figcaption {
+	margin-top: 8px;
+	font-size: max(0.95rem, calc(1.6 * var(--u)));
+	color: var(--ink-soft);
+}
+
 /*
  * The app replicas of the guides (src/lib/protos/): the app's HTML in an SVG
  * <foreignObject>. The colors are the app's Ghostty themes: TokyoNight Day

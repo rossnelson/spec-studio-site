@@ -5,12 +5,14 @@ These scripts make the screen clips and stills of the video (`video/clips/`, `vi
 1. Build the test copy from the app repo: `OUT="$HOME/Library/Caches/Spec Studio/try/marketing" ./scripts/bundle.sh`.
 2. Make its support folder with only the demo repo: `support/repos.json` with `[{"path": "/Users/Shared/spec-studio-demo/notes"}]`.
 3. `swiftc -O -o windows windows.swift` (lists the window IDs of a process).
-4. `./launch "TokyoNight Storm" <support folder> sessions` opens the copy at 1280×800 with a theme, on the demo spec. Its arguments override the theme and the window for this run; see "The settings of the installed app" below.
+4. `./launch "TokyoNight Storm" <support folder> sessions [-key value ...]` opens the copy at 1280×800 with a theme, on the demo spec. Its arguments override the theme and the window for this run; see "The settings of the installed app" below.
 5. `./shoot -dark` (or `./shoot ""` with a light theme such as "TokyoNight Day") points the reader at each section with `studio focus` and takes each window.
 6. `./rec <seconds> <file.mp4>` records the window's area with ffmpeg.
 7. Convert each still to WebP (see "What a person does" below).
 
-`cap` and `rec` start `screencapture` and `ffmpeg` through Ghostty, because macOS refuses a capture from a Claude session inside Spec Studio, and Ghostty has the Screen Recording permission. The New Spec sheet and the Settings window need ⌘N and ⌘,: a person presses them, because the test copy shares its bundle ID with the installed app and a script cannot bring it to the front.
+`cap` and `rec` start `screencapture` and `ffmpeg` through Ghostty, because macOS refuses a capture from a Claude session inside Spec Studio, and Ghostty has the Screen Recording permission.
+
+Keys and menus work the same way: run `osascript` through Ghostty, which has the Accessibility permission. Bring the test copy to the front by its pid (`set frontmost of (first process whose unix id is <pid>) to true`), then press keys (⌃⌘T for the shell, ⌃⌘2 for Priority, ⌘N for the New Spec sheet) or click a menu item (`click menu item "Settings…" of menu 1 of menu bar item 2 of menu bar 1 of …`). A click does not focus a text field: set `focused` of the field through Accessibility, then type. A capture with `-l <sheet window id>` includes the window behind the sheet.
 
 Before a shot or a clip goes in, check every frame for a private repo, spec or session name, an account name, or a path in a home folder.
 
