@@ -1,14 +1,37 @@
 ---
 title: Relay backends
-summary: The Temporal, bucket and hosting choices of the relay, and every setting.
+summary: The store, bucket and hosting choices of the relay, and every setting.
 order: 4
 ---
 
-The relay keeps no state of its own. It plugs into two backends that you choose: a **Temporal** namespace that holds the copy of each spec, the messages and the sign-ins, and an optional **bucket** that holds the attachments. You also choose **how to run** it. This guide gives the settings for each choice. The relay reads every setting from the environment.
+The relay plugs into two backends that you choose: a **store** that holds the copy of each spec, the messages and the sign-ins, and an optional **bucket** that holds the attachments. The store is **JSON files** on a volume (the default) or your own **Temporal** namespace. You also choose **how to run** the relay. This guide gives the settings for each choice. The relay reads every setting from the environment.
 
-## Temporal
+`RELAY_STORE` selects the store: `json` or `temporal`. When `RELAY_STORE` is not set, the relay uses the Temporal store if `TEMPORAL_ADDRESS` is set, else the JSON store. At start, the relay logs the store and the reason (`store_selected`).
 
-The relay needs one Temporal namespace. Two relays can share a namespace when each has its own `DEPLOY_ID`.
+## The JSON store
+
+The JSON store is the default. The relay is one container and a volume, with no other service. There is no Temporal, there are no payload keys and there are no codec endpoints.
+
+The relay keeps its state in `RELAY_DATA_DIR` (default `/data`). Mount a persistent volume there: without a volume, the state is lost with the container. The image runs as uid 1000, and that user must be able to write to the folder. When it cannot, the relay stops at start with a message that names `RELAY_DATA_DIR`.
+
+```sh
+RELAY_STORE=json
+RELAY_DATA_DIR=/data
+```
+
+Both settings are optional: with no Temporal settings, the relay uses the JSON store in `/data`.
+
+The files are not encrypted, and they hold only hashes of the secrets and the tokens. Protect the volume as you protect the relay. Run one relay process on the volume: only that process writes the files. Run `relay pair-code` where the relay runs, on the same data folder.
+
+## The Temporal store
+
+Use the Temporal store when you already run Temporal. Set `TEMPORAL_ADDRESS` (or `RELAY_STORE=temporal` with `TEMPORAL_ADDRESS`), `PAYLOAD_KEYS` and the other Temporal settings below. The relay needs one Temporal namespace. Two relays can share a namespace when each has its own `DEPLOY_ID`.
+
+Make the payload keys. The relay encrypts every Temporal payload with them. Keep a copy in a safe place: without the same keys, the relay cannot read its data. See [PAYLOAD_KEYS](#payload-keys).
+
+```sh
+docker run --rm ghcr.io/spec-studio-app/relay keys
+```
 
 ### Temporal Cloud with an API key
 
@@ -71,11 +94,21 @@ TEMPORAL_NAMESPACE=studio-relay
 TEMPORAL_AUTH=plain
 ```
 
-To try the relay on one machine, Docker Compose can run a local Temporal dev server for you (see [Docker Compose](#docker-compose)).
+To try the Temporal store on one machine, Docker Compose can run a local Temporal dev server for you (see [Docker Compose](#docker-compose)).
+
+## Switch between stores
+
+The relay does not move data from one store to the other. A relay on a new store starts empty:
+
+- The Mac fills the new store with a short first sync of each spec when it pairs again: the state of the spec, its last 20 activity lines and its messages for Claude AI.
+- The messages that wait for the Mac in the old store are lost. The messages for Claude AI that Claude AI did not read are lost too. So switch when no message waits: the Mac is online and has each message, and Claude AI read its messages.
+- The pairing and the sign-ins are in the store too. After the switch, pair the Mac again (see [Pair the Mac](/guides/relay/#step-5-pair-the-mac)), and sign in to the connector in Claude AI again.
+
+An upgrade from relay 0.3 keeps Temporal: the old settings set `TEMPORAL_ADDRESS`, so the relay uses the Temporal store. With the Compose `dev` profile of 0.3, add `TEMPORAL_ADDRESS=temporal:7233` to `.env`, because the 0.4 `compose.yaml` does not set it.
 
 ## The attachment bucket
 
-Attachments go to a private S3-compatible bucket, never into Temporal. The relay deletes the attachments of a spec when the spec is merged or dropped. Set all four of `BUCKET_ENDPOINT`, `BUCKET_NAME`, `BUCKET_ACCESS_KEY` and `BUCKET_SECRET_KEY`, or none.
+Attachments go to a private S3-compatible bucket, never into the store. The relay deletes the attachments of a spec when the spec is merged or dropped. Set all four of `BUCKET_ENDPOINT`, `BUCKET_NAME`, `BUCKET_ACCESS_KEY` and `BUCKET_SECRET_KEY`, or none.
 
 ### Cloudflare R2
 
@@ -129,51 +162,86 @@ Get `compose.yaml` from the [relay repo](https://github.com/spec-studio-app/rela
 ```sh
 PUBLIC_URL=https://relay.example.com
 OWNER_PASSWORD_HASH='$2b$12$...'
-PAYLOAD_KEYS=data:data-20261123:...,config:config-20261123:...
 ```
 
-To try the relay with a local Temporal dev server (data in a Docker volume, the Temporal Web UI on port 8233 of this machine only, because it has no sign-in):
-
-```sh
-docker compose --profile dev up
-```
-
-With your own Temporal, set `TEMPORAL_ADDRESS` and the other Temporal settings in `.env`, then:
+Then run:
 
 ```sh
 docker compose up
 ```
 
+The relay uses the JSON store, with its data in the Docker volume `relay-data`.
+
+With your own Temporal, also set `TEMPORAL_ADDRESS`, `PAYLOAD_KEYS` and the other Temporal settings in `.env`, then run `docker compose up`.
+
+To try the Temporal store with a local Temporal dev server (data in a Docker volume, the Temporal Web UI on port 8233 of this machine only, because it has no sign-in), add these settings to `.env`:
+
+```sh
+TEMPORAL_ADDRESS=temporal:7233
+PAYLOAD_KEYS=data:data-20261123:...,config:config-20261123:...
+```
+
+Then run:
+
+```sh
+docker compose --profile dev up
+```
+
 ### Helm
+
+With the JSON store (the default), the chart makes a PersistentVolumeClaim and keeps it when you remove the release:
 
 ```sh
 helm install relay oci://ghcr.io/spec-studio-app/charts/relay --version <version> \
   --set publicUrl=https://relay.example.com \
-  --set temporal.address=temporal-frontend.temporal.svc:7233 \
-  --set temporal.namespace=studio-relay \
   --set bucket.endpoint=https://<account id>.r2.cloudflarestorage.com \
   --set bucket.name=spec-studio-relay \
   --set existingSecret=relay-secrets
 ```
 
-The Secret `existingSecret` has the keys `OWNER_PASSWORD_HASH`, `PAYLOAD_KEYS`, and as needed `TEMPORAL_API_KEY`, `TEMPORAL_TLS_CERT`, `TEMPORAL_TLS_KEY`, `BUCKET_ACCESS_KEY` and `BUCKET_SECRET_KEY`. Or leave `existingSecret` empty and set `secrets.*` in your values: the chart then makes the Secret. Set `ingress.enabled=true` and `ingress.host` for an Ingress. The chart's `values.yaml` lists every value.
+These values set the volume:
+
+- `persistence.size`: the size of the claim. Default `1Gi`.
+- `persistence.storageClass`: the storage class. Empty: the default storage class of the cluster.
+- `persistence.existingClaim`: the name of a claim that you made. Empty: the chart makes the claim.
+
+The chart runs one replica with the `Recreate` strategy, so an old pod and a new pod never write the files at the same time.
+
+With the Temporal store, set `store=temporal` and the Temporal values:
+
+```sh
+helm install relay oci://ghcr.io/spec-studio-app/charts/relay --version <version> \
+  --set publicUrl=https://relay.example.com \
+  --set store=temporal \
+  --set temporal.address=temporal-frontend.temporal.svc:7233 \
+  --set temporal.namespace=studio-relay \
+  --set existingSecret=relay-secrets
+```
+
+When `store` is empty, the chart uses the rule of the relay: `temporal` when `temporal.address` is set, else `json`.
+
+The Secret `existingSecret` has the key `OWNER_PASSWORD_HASH`, and as needed `PAYLOAD_KEYS` (Temporal store), `TEMPORAL_API_KEY`, `TEMPORAL_TLS_CERT`, `TEMPORAL_TLS_KEY`, `BUCKET_ACCESS_KEY` and `BUCKET_SECRET_KEY`. Or leave `existingSecret` empty and set `secrets.*` in your values: the chart then makes the Secret. Set `ingress.enabled=true` and `ingress.host` for an Ingress. The chart's `values.yaml` lists every value.
 
 ### Docker
 
 ```sh
-docker run -d --name relay -p 8760:8760 --env-file relay.env ghcr.io/spec-studio-app/relay:<version>
+docker run -d --name relay -p 8760:8760 -v relay-data:/data --env-file relay.env ghcr.io/spec-studio-app/relay:<version>
 ```
+
+The volume `relay-data` holds the files of the JSON store. With the Temporal store, the relay does not use it.
 
 ## Every setting
 
-A setting that is missing or not valid stops the start. The message names the setting and never shows its value.
+A setting that is missing or not valid stops the start. The message names the setting and never shows its value. The settings marked "Temporal" are required only with the Temporal store. The JSON store ignores the Temporal settings.
 
 | Setting | Required | Description |
 |---|---|---|
 | `PUBLIC_URL` | yes | The public origin of the relay. It is the OAuth issuer. |
 | `OWNER_PASSWORD_HASH` | yes | The bcrypt hash of the owner password. |
-| `PAYLOAD_KEYS` | yes | The codec keys, from `relay keys`. See below. |
-| `TEMPORAL_ADDRESS` | yes | `host:port` of Temporal. |
+| `RELAY_STORE` | no | `json` or `temporal`. Default: `temporal` when `TEMPORAL_ADDRESS` is set, else `json`. |
+| `RELAY_DATA_DIR` | no | The folder of the JSON store. Default `/data`. |
+| `PAYLOAD_KEYS` | Temporal | The codec keys, from `relay keys`. See below. |
+| `TEMPORAL_ADDRESS` | Temporal | `host:port` of Temporal. |
 | `TEMPORAL_NAMESPACE` | no | The namespace. Default `default`. |
 | `TEMPORAL_AUTH` | no | `plain`, `tls`, `mtls` or `api-key`. Default: from the other Temporal settings, else `plain`. |
 | `TEMPORAL_API_KEY` | no | The API key (Temporal Cloud). |
@@ -183,14 +251,14 @@ A setting that is missing or not valid stops the start. The message names the se
 | `BUCKET_ENDPOINT`, `BUCKET_NAME`, `BUCKET_ACCESS_KEY`, `BUCKET_SECRET_KEY` | no | The attachment bucket. Set all four, or none. |
 | `BUCKET_REGION` | no | The bucket region. Default `auto` (R2). |
 | `ATTACHMENT_MAX_BYTES` | no | The largest attachment. Default 10485760 (10 MB). |
-| `UI_ORIGIN` | no | The origin of the Temporal Web UI for the codec endpoints. |
+| `UI_ORIGIN` | no | The origin of the Temporal Web UI for the codec endpoints (Temporal store). |
 | `EXTRA_REDIRECT_URIS` | no | Comma-separated OAuth redirect URIs, besides the claude.ai and claude.com callbacks and loopback addresses. |
 | `PORT` | no | The HTTP port. Default 8760. |
 | `CALL_TIMEOUT_MS` | no | How long a tool call waits for the Mac. Default 90000. |
 
 ### PAYLOAD_KEYS
 
-A comma-separated list of `<scope>:<key id>:<base64 key>`. The scope is `data` (the spec workflows) or `config` (the relay-config workflow). Each key is 32 random bytes; `relay keys` makes a new value. The first key of each scope encrypts. All keys of a scope decrypt, so you can change a key: put the new key first and keep the old key after it.
+The Temporal store only. A comma-separated list of `<scope>:<key id>:<base64 key>`. The scope is `data` (the spec workflows) or `config` (the relay-config workflow). Each key is 32 random bytes; `relay keys` makes a new value. The first key of each scope encrypts. All keys of a scope decrypt, so you can change a key: put the new key first and keep the old key after it.
 
 ```sh
 PAYLOAD_KEYS=data:data-2:<new>,data:data-1:<old>,config:config-1:<key>
