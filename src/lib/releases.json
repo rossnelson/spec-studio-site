@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.2.1",
+    "date": "2026-11-25",
+    "notes": "Repos inside other repos update again.\n\n- When one repo in the sidebar is inside another (for example ~/code and ~/code/tool), a change in the inner repo now updates its own specs. Before, the app updated the outer repo, and the inner repo's specs showed an old stage and old text until the app restarted.",
+    "dmg": "Spec-Studio-0.2.1.dmg"
+  },
+  {
     "version": "0.2.0",
     "date": "2026-11-25",
     "notes": "Messages from Claude AI, a matching app and relay, and a themed Settings window.\n\n- Messages from Claude AI go into a session whenever Claude is idle, also while an autopilot spec works.\n- New command studio inbox: a session reads its new messages and marks them read. studio message --reply-to marks the message it answers.\n- The app and the agent stay in sync, and Settings tells you when the app and the relay do not match.\n- Works with the pluggable relay store in relay 0.4.0.\n- Settings, the Changes repo tabs and the New Spec mode tabs use the app's own look, not the macOS controls.\n- The site has how-to guides and a demo video.\n- Needs relay 0.3.0 or later.",
