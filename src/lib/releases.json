@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.1.1",
+    "date": "2026-11-25",
+    "notes": "Lighter relay sync.\n\n- The relay sync sends one frame per spec per drain, with all its new lines, so a long spec no longer makes hundreds of relay updates.\n- A spec's first sync sends only its last 20 activity lines and its messages.\n- The state goes to the relay only when it changed.\n- Needs relay 0.3.0 or later: Settings says when the relay is too old.\n- The app gets the login PATH, so the PR poll finds gh.",
+    "dmg": "Spec-Studio-0.1.1.dmg"
+  },
+  {
     "version": "0.1.0",
     "date": "2026-11-24",
     "notes": "First release of Spec Studio.\n\n- Run a spec through five stages with one Claude session: Spec, Plan, Build, Check and Merge.\n- Autopilot takes a description to reviewed draft PRs with one approval at the end. Guided mode asks at each gate.\n- Loop mode: one ask, one change, its proof.\n- The self review runs parallel finders and a 2-of-3 verifier vote on each PR.\n- A shell panel beside each session, themes, and a Settings window.\n- The remote relay (self-hosted, in spec-studio-app/relay) lets Claude AI read specs and send messages while the Mac is offline.",
