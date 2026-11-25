@@ -1,12 +1,18 @@
-// Writes WebVTT captions from the narration of project.mjs and the times in
+// Writes WebVTT captions from the narration of a project and the times in its
 // build/plan.json and build/durations.json (after `bin/demo build`).
 // Each sentence gets a share of its clip's time by its length.
+//
+//   node captions.mjs <project folder> <out.vtt>     (the folder: . or relay)
 import { readFileSync, writeFileSync } from 'node:fs';
-import project from './project.mjs';
+import { pathToFileURL } from 'node:url';
+import { resolve } from 'node:path';
 
-const out = process.argv[2] ?? new URL('../static/video/spec-studio.vtt', import.meta.url);
-const plan = JSON.parse(readFileSync(new URL('./build/plan.json', import.meta.url), 'utf8'));
-const durations = Object.fromEntries(JSON.parse(readFileSync(new URL('./build/durations.json', import.meta.url), 'utf8')));
+const dir = resolve(process.argv[2] ?? '.');
+const out = process.argv[3];
+if (!out) throw new Error('usage: node captions.mjs <project folder> <out.vtt>');
+const { default: project } = await import(pathToFileURL(`${dir}/project.mjs`).href);
+const plan = JSON.parse(readFileSync(`${dir}/build/plan.json`, 'utf8'));
+const durations = Object.fromEntries(JSON.parse(readFileSync(`${dir}/build/durations.json`, 'utf8')));
 
 const stamp = (s) => {
   const ms = Math.round(s * 1000);
