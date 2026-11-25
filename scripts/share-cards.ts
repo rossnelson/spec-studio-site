@@ -30,8 +30,8 @@ export const cards: Card[] = [
 	{
 		slug: 'home',
 		kicker: 'A Mac app for Claude Code',
-		title: 'Spec-driven development, in one calm window.',
-		summary: 'Write a spec with Claude. Spec Studio moves it through five stages, with a clear approval gate at each one.'
+		title: 'Spec-driven development, in one window.',
+		summary: 'Write a spec with Claude. Claude plans it, builds it, reviews it and merges it. You choose where it stops.'
 	},
 	{
 		slug: 'guides',

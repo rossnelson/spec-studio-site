@@ -35,9 +35,9 @@
 	</div>
 
 	<div class="lead">
-		<h1>Spec-driven development with Claude Code, in one calm window.</h1>
+		<h1>Spec-driven development with Claude Code, in one window.</h1>
 		<div class="aside">
-			<p>Write a spec with Claude. Spec Studio moves it through five stages, with a clear approval gate at each one.</p>
+			<p>Write a spec with Claude. Claude plans it, builds it, reviews it and merges it. You choose where it stops.</p>
 			<Sketch
 				class="peek"
 				light={asset('stages/hero.webp')}
