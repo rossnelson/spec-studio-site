@@ -12,7 +12,7 @@ export const videos = {
 	relay: {
 		file: 'spec-studio-relay',
 		caption: 'The relay in 3 minutes: what it does, its store (JSON files by default, or Temporal) and attachments with an S3 bucket.',
-		size: '19 MB'
+		size: '33 MB'
 	}
 } as const;
 
