@@ -28,8 +28,14 @@
     // the words lift and fade, the hairlines draw back, then the paper slides up and fades.
     // Each starts a little after the one before, so the exit reads.
     const exit = (anim) => (out < Infinity ? `, ${anim}` : '');
-    const enter = o.afterCard ? 'opacity:1' : `opacity:0;animation:demoFadeIn ${0.8 * B}ms ease forwards`;
-    const leave = o.keep ? '' : exit(`demoPaperOut ${1.15 * B}ms cubic-bezier(.55,0,.35,1) ${out + 0.8 * B}ms forwards`);
+    // The paper: it fades in unless a card is already up (o.afterCard), and it
+    // slides up and off unless the next card keeps it (o.keep) or it is the
+    // end card (out is Infinity). One list, so a card after a card still leaves.
+    const paper = [];
+    if (!o.afterCard) paper.push(`demoFadeIn ${0.8 * B}ms ease forwards`);
+    if (!o.keep && out < Infinity) paper.push(`demoPaperOut ${1.15 * B}ms cubic-bezier(.55,0,.35,1) ${out + 0.8 * B}ms forwards`);
+    const enter = `opacity:${o.afterCard ? 1 : 0}`;
+    const leave = paper.length ? `;animation:${paper.join(', ')}` : '';
     return `<style>
 :host{position:fixed;inset:0;z-index:2147483647;pointer-events:none}
 .demo{position:absolute;inset:0;font-family:${F.serif};background:${T.bg};color:${T.text};${enter}${leave}}

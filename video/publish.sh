@@ -2,10 +2,17 @@
 # publish.sh [relay]: after `bin/demo all video` (or `bin/demo all video/relay`),
 # writes the files the site serves into static/video/: the MP4, the poster and
 # the captions. The MP4 is 1280x720 H.264 (a 2-pass encode at a fixed bit rate).
+# It runs check-frames.mjs first, and publishes nothing when the check fails.
 set -e
 cd "$(dirname "$0")"
 DIR=.; NAME=spec-studio
 if [ "$1" = relay ]; then DIR=relay; NAME=spec-studio-relay; fi
+# check-frames.mjs exits 3 when the video has blank paper, and 1 when it cannot run.
+node check-frames.mjs "$DIR" || {
+  if [ $? = 3 ]; then echo "publish.sh: $(cd "$DIR" && pwd)/build/$NAME.mp4 fails the frame check, so nothing is published. See $(cd "$DIR" && pwd)/build/contact-sheet.png." >&2
+  else echo "publish.sh: the frame check could not run (see its error above), so nothing is published." >&2; fi
+  exit 1
+}
 OUT=$(pwd)/../static/video
 mkdir -p "$OUT"
 cd "$DIR"

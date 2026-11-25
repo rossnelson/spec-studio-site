@@ -28,8 +28,12 @@ Both record `stage.html`, which shows one thing for each scene:
 export MUSIC=<an instrumental bed, at least 3 minutes> PLAYWRIGHT_DIR=$PWD
 <demo-video-tool>/bin/demo all video
 <demo-video-tool>/bin/demo all video/relay
+node video/check-frames.mjs video          # video/build/contact-sheet.png
+node video/check-frames.mjs video/relay    # video/relay/build/contact-sheet.png
 video/publish.sh          # static/video/spec-studio.*
 video/publish.sh relay    # static/video/spec-studio-relay.*
 ```
+
+Run `check-frames.mjs` on each video before `publish.sh`, and look at every frame of its contact sheet: one frame for each second, with its time. The check fails on 3 seconds or more of plain paper or one flat color outside the intro, outro and end cards (a card that never left, a scene that never drew). `publish.sh` runs the same check first and publishes nothing when it fails.
 
 Then set the length and size of each video in `src/lib/videos.ts`.
