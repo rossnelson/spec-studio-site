@@ -8,7 +8,7 @@
 			light: asset('stages/spec.webp'),
 			dark: asset('stages/spec-dark.webp'),
 			name: 'Spec',
-			text: 'Write the spec with Claude, one question at a time.',
+			text: 'Claude asks you questions and writes the spec with you.',
 			alt: 'The critter writes on a sheet of paper.'
 		},
 		{
@@ -16,7 +16,7 @@
 			light: asset('stages/plan.webp'),
 			dark: asset('stages/plan-dark.webp'),
 			name: 'Plan',
-			text: 'Claude studies the code and plans each repo’s change and merge order.',
+			text: 'Claude reads the code and plans the change in each repo, and the order to merge them.',
 			alt: 'The critter reads an open map.'
 		},
 		{
@@ -32,7 +32,7 @@
 			light: asset('stages/check.webp'),
 			dark: asset('stages/check-dark.webp'),
 			name: 'Check',
-			text: 'A self-review swarm and scenario checks prove each requirement.',
+			text: 'New Claude agents review each pull request, and Claude checks each scenario in the spec.',
 			alt: 'The critter holds a clipboard of check marks.'
 		},
 		{
@@ -40,14 +40,14 @@
 			light: asset('stages/merge.webp'),
 			dark: asset('stages/merge-dark.webp'),
 			name: 'Merge',
-			text: 'Merge in order, clean up the worktrees, and the critter gets a party hat.',
+			text: 'Claude answers the review comments and merges in order. Then the critter gets a party hat.',
 			alt: 'The critter cheers in a party hat.'
 		}
 	];
 </script>
 
 <section class="stages page" aria-labelledby="stages-title">
-	<h2 id="stages-title">Five stages. One calm window.</h2>
+	<h2 id="stages-title">The five stages</h2>
 	<ol>
 		{#each stages as stage, i (stage.id)}
 			<li data-testid="stage">

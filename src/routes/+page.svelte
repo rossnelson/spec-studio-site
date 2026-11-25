@@ -7,7 +7,7 @@
 	import Share from '../lib/layout/Share.svelte';
 
 	const description =
-		'Spec Studio is a native macOS app for spec-driven development with Claude Code. Write a spec with Claude, and move it through five stages with an approval gate at each one.';
+		'Spec Studio is a Mac app for spec-driven development with Claude Code. Write a spec with Claude, then plan, build, review and merge it in one window.';
 </script>
 
 <svelte:head>
