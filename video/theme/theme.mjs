@@ -18,5 +18,8 @@ export default {
     mono: '"IBM Plex Mono Critter", "SF Mono", Menlo, monospace',
   },
   pad: '#f6f1e6',
+  // The cards animate from one card to the next themselves (demo-video-tool's
+  // handover): the words and the critter change, the paper stays.
+  handover: true,
   options: { base: '' },
 };
