@@ -100,9 +100,9 @@ To try the Temporal store on one machine, Docker Compose can run a local Tempora
 
 The relay does not move data from one store to the other. A relay on a new store starts empty:
 
-- The Mac fills the new store with a short first sync of each spec when it pairs again: the state of the spec, its last 20 activity lines and its messages for Claude AI.
+- The Mac fills the new store with a short first sync of each spec (the state of the spec, its last 20 activity lines and its messages for Claude AI) when it has no sync cursors. So on the Mac, run `studio agent unpair --force` (it removes the pairing and the cursors on this Mac only), then pair again (see [Pair the Mac](/guides/relay/#step-5-pair-the-mac)).
 - The messages that wait for the Mac in the old store are lost. The messages for Claude AI that Claude AI did not read are lost too. So switch when no message waits: the Mac is online and has each message, and Claude AI read its messages.
-- The pairing and the sign-ins are in the store too. After the switch, pair the Mac again (see [Pair the Mac](/guides/relay/#step-5-pair-the-mac)), and sign in to the connector in Claude AI again.
+- The pairing and the sign-ins are in the store too. After the switch, sign in to the connector in Claude AI again.
 
 An upgrade from relay 0.3 keeps Temporal: the old settings set `TEMPORAL_ADDRESS`, so the relay uses the Temporal store. With the Compose `dev` profile of 0.3, add `TEMPORAL_ADDRESS=temporal:7233` to `.env`, because the 0.4 `compose.yaml` does not set it.
 
