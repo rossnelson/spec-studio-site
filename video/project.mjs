@@ -93,11 +93,11 @@ export default {
       minSeconds: 16,
     },
     {
-      name: '07-backends', step: '06', title: 'Your backends', subtitle: 'Temporal, a bucket, and how to run it',
-      narration: 'The relay keeps its copy of each spec in a Temporal namespace: Temporal Cloud, or a Temporal that you host. Attachments go to any S3 compatible bucket, such as R2, S3 or MinIO. Run it with Docker Compose, Helm, or Docker.',
+      name: '07-backends', step: '06', title: 'Your backends', subtitle: 'A store, a bucket, and how to run it',
+      narration: 'The relay keeps its copy of each spec in JSON files on a volume, or in a Temporal namespace that you choose. Attachments go to any S3 compatible bucket, such as R2, S3 or MinIO. Run it with Docker Compose, Helm, or Docker.',
       before: ({ cut }) => cut(guide),
       async run({ page, wait }) {
-        for (const id of ['temporal', 'the-attachment-bucket', 'ways-to-run-the-relay']) {
+        for (const id of ['the-json-store', 'the-attachment-bucket', 'ways-to-run-the-relay']) {
           await page.evaluate((anchor) => document.getElementById(anchor).scrollIntoView({ behavior: 'smooth' }), id);
           await wait(4200);
         }
