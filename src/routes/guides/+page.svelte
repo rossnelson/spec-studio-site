@@ -3,6 +3,7 @@
 	import TopBar from '../../lib/layout/TopBar.svelte';
 	import Footer from '../../lib/layout/Footer.svelte';
 	import Video from '../../lib/Video.svelte';
+	import Share from '../../lib/layout/Share.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -13,6 +14,8 @@
 	<meta name="description" content="How to use Spec Studio, host the relay and choose its backends." />
 	<meta name="color-scheme" content="light dark" />
 </svelte:head>
+
+<Share slug="guides" path="/guides/" title="Spec Studio guides" description="How to use Spec Studio, host the relay and choose its backends." />
 
 <TopBar />
 

@@ -3,6 +3,7 @@
 	import TopBar from '../../../lib/layout/TopBar.svelte';
 	import Footer from '../../../lib/layout/Footer.svelte';
 	import { copyButtons } from '../../../lib/copy';
+	import Share from '../../../lib/layout/Share.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -14,6 +15,8 @@
 	<meta name="description" content={guide.summary} />
 	<meta name="color-scheme" content="light dark" />
 </svelte:head>
+
+<Share slug={guide.slug} path={`/guides/${guide.slug}/`} title={`${guide.title} · Spec Studio guides`} description={guide.summary} />
 
 <TopBar />
 
