@@ -82,7 +82,7 @@ export class Replica {
 	/** The SVG around the replica's HTML. `label` is what a screen reader says. */
 	svg(width: number, height: number, label: string, html: string, cls = ''): string {
 		return (
-			`<svg class="proto" data-proto="${this.name}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(label)}">` +
+			`<svg class="proto" data-proto="${this.name}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(label)}" style="max-width:${width}px">` +
 			`<style>${this.rules.join('')}</style>` +
 			`<foreignObject x="0" y="0" width="${width}" height="${height}">` +
 			`<div class="rp ${cls}" style="width:${width}px;height:${height}px">${html}</div>` +
