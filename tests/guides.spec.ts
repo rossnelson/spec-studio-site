@@ -14,7 +14,7 @@ async function headings(page: Page, level = 'h2'): Promise<string[]> {
 
 /** Every prototype in the guide draws, with a label for a screen reader. */
 async function shotsLoad(page: Page) {
-	for (const svg of await page.locator('svg.proto').all()) {
+	for (const svg of await page.locator('.proto').all()) {
 		await expect(svg).toHaveAttribute('role', 'img');
 		expect((await svg.getAttribute('aria-label'))!.length).toBeGreaterThan(20);
 		expect((await svg.boundingBox())!.height).toBeGreaterThan(100);
@@ -61,7 +61,7 @@ test('Get started goes from the requirements to a first spec, with a screenshot 
 		let current = '';
 		for (const el of root.children) {
 			if (el.tagName === 'H2') current = el.id;
-			else if (current) count[current] = (count[current] ?? 0) + el.querySelectorAll('svg.proto').length;
+			else if (current) count[current] = (count[current] ?? 0) + el.querySelectorAll('.proto').length;
 		}
 		return count;
 	});
@@ -113,7 +113,7 @@ test('the relay guide gives the steps in order, with the Remote Relay screenshot
 		'Step 5: Pair the Mac',
 		'Step 6: Add the connector in Claude AI'
 	]);
-	await expect(page.locator('svg.proto[data-proto="settings-relay"]')).toHaveCount(1);
+	await expect(page.locator('.proto[data-proto="settings-relay"]')).toHaveCount(1);
 	await shotsLoad(page);
 });
 
@@ -168,7 +168,7 @@ for (const scheme of ['light', 'dark'] as const) {
 			test(`${guide.title} has the ${scheme} paper and ${scheme} replicas`, async ({ page }) => {
 				await page.goto(`./guides/${guide.slug}/`);
 				expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe(paper[scheme]);
-				for (const svg of await page.locator('svg.proto').all()) {
+				for (const svg of await page.locator('.proto').all()) {
 					const bg = await svg.evaluate((el) => getComputedStyle(el.querySelector('.rp:not(.rp-backdrop), .rp-sheet')!).backgroundColor);
 					expect(bg).toBe(appBg[scheme]);
 				}
@@ -185,7 +185,7 @@ test.describe('with reduced motion', () => {
 			await page.goto(`./guides/${slug}/`);
 			const moving = await page.evaluate(() => document.getAnimations().length);
 			expect(moving, slug).toBe(0);
-			const shown = await page.locator('svg.proto .transient').evaluateAll((els) => els.filter((el) => getComputedStyle(el).display !== 'none').length);
+			const shown = await page.locator('.proto .transient').evaluateAll((els) => els.filter((el) => getComputedStyle(el).display !== 'none').length);
 			expect(shown, slug).toBe(0);
 		}
 	});

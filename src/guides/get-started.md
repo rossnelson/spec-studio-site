@@ -33,7 +33,7 @@ Click **Add a Repo…**, or choose **File > Add Repository…** (⌘O), and choo
 
 1. Choose **File > New Spec…** (⌘N).
 2. Leave the mode on **Autopilot**.
-3. Give the spec a title of a few words, and describe the change in a few sentences: what a user sees when it is done.
+3. Give the spec a title of a few words, and describe the change in a few sentences: what a user sees when it is done. The slug, the name of the spec's folder, follows the title; you can make it shorter, as `open-count` here.
 4. Click **Create**.
 
 ![The New Spec sheet in Autopilot: the title and the description are typed in, the slug follows the title, and the pointer clicks Create](proto:new-spec)

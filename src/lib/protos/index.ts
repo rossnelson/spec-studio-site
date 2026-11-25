@@ -34,7 +34,8 @@ function firstOpen(label: string): string {
 	const r = new Replica('first-open', 8);
 	const press = r.press(0.5);
 	const hello = r.at(0.08, 0.4);
-	const moods = ['working', 'working', 'yours', 'yours', 'asleep', 'working', 'yours'] as const;
+	// As in CritterParty.swift: the napper sleeps, the one with the laptop works, the rest look up at you.
+	const moods = ['yours', 'working', 'yours', 'yours', 'asleep', 'yours', 'yours'] as const;
 	const crew = CREW.map((name, i) => `<span class="rp-crewmate">${crit(name, moods[i], 40)}</span>`).join('');
 	const html =
 		titlebar('Spec Studio') +
@@ -56,27 +57,27 @@ function firstOpen(label: string): string {
 	return r.svg(720, 400, label, html, 'rp-window');
 }
 
-/** The Repos panel: the repo appears, then its first spec, working. */
+/** The Repos panel: the repo appears, with no spec yet. */
 function repoAdded(label: string): string {
 	const r = new Replica('repo-added', 9);
-	const repo = r.at(0.16);
-	const spec = r.at(0.36);
-	const press = r.press(0.1);
+	const repo = r.at(0.22);
+	const press = r.press(0.12);
 	const html =
 		titlebar('Spec Studio') +
 		`<aside class="rp-sidebar" style="height:302px">` +
 		`<div class="rp-sidehead"><span>REPOS</span><span class="${press}">${icon.folderAdd}</span></div>` +
 		`<div class="rp-repo ${repo}">${icon.chevron}${icon.folder}<span>notes</span><em>${icon.chat}${icon.plus}</em></div>` +
-		`<div class="${spec}">${specRow(SPEC, 'working', '<span class="accent">Spec · Claude is working</span>')}</div>` +
+		`<div class="rp-none ${repo}">No specs yet</div>` +
 		`<div style="flex:1"></div>${panelBar()}</aside>`;
 	return r.svg(320, 330, label, html, 'rp-window');
 }
 
-/** The New Spec sheet: Autopilot, the title and the description typed in, the slug follows, then Create. */
+/** The New Spec sheet: Autopilot, the title and the description typed in, the slug shortened to open-count, then Create. */
 function newSpec(label: string): string {
 	const r = new Replica('new-spec', 12);
 	const title = r.typed(0.06, 0.2);
-	const slug = r.typed(0.2, 0.26);
+	const slugAuto = r.at(0.2, 0.64);
+	const slugTyped = r.typed(0.66, 0.72);
 	const d1 = r.typed(0.3, 0.48);
 	const d2 = r.typed(0.48, 0.62);
 	const create = r.press(0.78);
@@ -94,8 +95,8 @@ function newSpec(label: string): string {
 		`<span class="${d2}">next to the Notes heading, and the count in the page title.</span></div>` +
 		`<p class="rp-help">Claude writes the spec and the plan from this, with no interview, and continues to reviewed draft PRs.</p>` +
 		`<label>Slug</label>` +
-		`<div class="rp-field mono"><span class="${slug}">count-the-open-notes</span></div>` +
-		`<p class="rp-help">The folder name: specs/count-the-open-notes. Lowercase letters, digits and hyphens.</p>` +
+		`<div class="rp-field mono rp-swap"><span class="transient ${slugAuto}">count-the-open-notes</span><span class="${slugTyped}">open-count</span></div>` +
+		`<p class="rp-help rp-swap"><span class="transient ${slugAuto}">The folder name: specs/count-the-open-notes. Lowercase letters, digits and hyphens.</span><span class="${r.at(0.72)}">The folder name: specs/open-count. Lowercase letters, digits and hyphens.</span></p>` +
 		`<div class="rp-sheet-buttons"><span class="rp-btn">Cancel</span><span class="rp-btn primary ${create}">Create</span></div>` +
 		`</div>` +
 		r.pointer([
@@ -150,59 +151,51 @@ function reviewRound(n: number, kind: string, done: number, summary: string): st
 /** The whole window, with its four parts named in turn. */
 function windowParts(label: string): string {
 	const r = new Replica('window', 12);
-	const parts: Array<[string, number, number, number, number]> = [
-		['Sidebar', 0, 28, 240, 452],
-		['Status strip', 240, 28, 860, 110],
-		['Reader', 240, 138, 420, 342],
-		['Claude session', 660, 138, 440, 342]
-	];
-	const glows = parts
-		.map(
-			([name, x, y, w, h], i) =>
-				`<div class="rp-glow transient ${r.at(i * 0.25, i * 0.25 + 0.24)}" style="left:${x + 3}px;top:${y + 3}px;width:${w - 6}px;height:${h - 6}px"></div>` +
-				`<div class="rp-tag" style="left:${i === 1 ? x + w - 110 : x + w / 2}px;top:${i === 1 ? y + 62 : y + h - 46}px">${i + 1}&nbsp; ${name}</div>`
-		)
-		.join('');
+	// A glow and a name tag inside each part, so they always match its box.
+	const mark = (i: number, name: string, tagStyle = '') =>
+		`<div class="rp-glow transient ${r.at(i * 0.25, i * 0.25 + 0.24)}"></div><div class="rp-tag" style="${tagStyle}">${i + 1}&nbsp; ${name}</div>`;
 	const html =
 		titlebar('Spec Studio') +
 		`<div class="rp-row" style="height:452px">` +
-		`<aside class="rp-sidebar" style="width:240px"><div class="rp-sidehead"><span>REPOS</span>${icon.folderAdd}</div>` +
+		`<aside class="rp-sidebar rp-part" style="width:240px"><div class="rp-sidehead"><span>REPOS</span>${icon.folderAdd}</div>` +
 		`<div class="rp-repo">${icon.chevron}${icon.folder}<span>notes</span><em>${icon.chat}${icon.plus}</em></div>` +
 		specRow(SPEC, 'yours', '<span class="yellow">Check · Over to you</span>') +
-		`<div style="flex:1"></div>${panelBar(1)}</aside>` +
+		`<div style="flex:1"></div>${panelBar(1)}${mark(0, 'Sidebar', 'bottom:56px')}</aside>` +
 		`<div class="rp-col" style="flex:1">` +
+		`<div class="rp-part">` +
 		`<div class="rp-header">${icon.sidebar}${crit(SPEC, 'yours', 32)}<span class="rp-spectitle">Count the open notes</span><span class="mono faint">${SPEC}</span>` +
 		`<span class="rp-chip">Autopilot</span><span style="flex:1"></span>${stages(3)}</div>` +
 		`<div class="rp-banner"><span class="yellow">${icon.person}</span><div><div class="rp-banner-head yellow">Over to you</div><div class="rp-banner-note">Ready for your review.</div></div></div>` +
+		`${mark(1, 'Status strip', 'left:auto;right:30px;bottom:22px;transform:none')}</div>` +
 		`<div class="rp-row" style="flex:1;min-height:0;border-top:1px solid var(--border)">` +
-		`<section class="rp-reader" style="width:420px"><div class="rp-panehead">${icon.expand}<b>Check</b><span style="flex:1"></span>${icon.lines}</div>` +
+		`<section class="rp-reader rp-part" style="width:420px"><div class="rp-panehead">${icon.expand}<b>Check</b><span style="flex:1"></span>${icon.lines}</div>` +
 		`<div class="rp-pad"><div class="rp-subhead">Self review</div>` +
 		reviewRound(2, 'backoff-2', 5, 'No issues found.') +
 		reviewRound(1, 'standard', 5, '2 findings: 1 important, 1 nit. No candidate was ignored.') +
-		`</div></section>` +
-		`<section class="rp-term" style="flex:1"><div class="rp-panehead">${icon.expand}<span class="rp-dot yellow"></span><b>Claude</b><span class="dim">Over to you</span><span style="flex:1"></span><span class="mono faint">${SPEC}</span></div>` +
+		`</div>${mark(2, 'Reader')}</section>` +
+		`<section class="rp-term rp-part" style="flex:1"><div class="rp-panehead">${icon.expand}<span class="rp-dot yellow"></span><b>Claude</b><span class="dim">Over to you</span><span style="flex:1"></span><span class="mono faint">${SPEC}</span></div>` +
 		`<div class="rp-termbody">` +
 		`<p>● I added the test command to the PR body and sent the answer back to Claude AI with <span class="accent">studio message</span>.</p>` +
 		`<p><b>PR:</b> <span class="accent">github.com/spec-studio-app/notes-demo/pull/1</span></p>` +
 		`<p class="dim">✻ Worked for 11s · done 4:20 PM</p>` +
-		`<div style="flex:1"></div><div class="rp-prompt">❯ <span class="rp-caret"></span></div></div></section>` +
-		`</div></div></div>` +
-		glows;
+		`<div style="flex:1"></div><div class="rp-prompt">❯ <span class="rp-caret"></span></div></div>${mark(3, 'Claude session')}</section>` +
+		`</div></div></div>`;
 	return r.svg(1100, 480, label, html, 'rp-window');
 }
 
 /** The reader on the plan, as Claude writes it. */
 function plan(label: string): string {
 	const r = new Replica('plan', 12);
+	const c = (code: string) => `<span class="rp-code">${esc(code)}</span>`;
 	const html =
 		`<section class="rp-reader" style="height:100%"><div class="rp-panehead">${icon.expand}<b>Plan</b><span style="flex:1"></span>${icon.lines}</div>` +
-		`<div class="rp-doc"><h1>Plan: Count the open notes</h1>` +
-		`<h2 class="${r.at(0.04)}">Approach</h2>` +
-		`<p class="${r.at(0.1)}">The app draws the whole list in one function, <code>render()</code> in <code>app.js</code>. Every change (page load, a new note, Done, Undo) ends with a <code>render()</code> call. So the count goes into <code>render()</code>: it counts the notes with <code>done === false</code>, writes the number into a badge element, hides the badge when the count is 0, and sets <code>document.title</code> to <code>Notes (N)</code> or <code>Notes</code>.</p>` +
-		`<h2 class="${r.at(0.32)}">Steps</h2>` +
-		`<ol><li class="${r.at(0.38)}">notes: Add the badge element to the heading in <code>index.html</code> and its style in <code>style.css</code>. Covers R1.</li>` +
-		`<li class="${r.at(0.48)}">notes: In <code>app.js</code>, add <code>openCount(notes)</code> and call a new <code>updateCount()</code> from <code>render()</code>. Covers R1, R2.</li>` +
-		`<li class="${r.at(0.58)}">notes: Add <code>test/open-count.test.js</code>, a <code>node --test</code> script with a stub DOM, for each scenario. Covers R1, R2.</li></ol>` +
+		`<div class="rp-doc"><div class="rp-h1">Plan: Count the open notes</div>` +
+		`<div class="rp-h2 ${r.at(0.04)}">Approach</div>` +
+		`<div class="rp-para ${r.at(0.1)}">The app draws the whole list in one function, ${c('render()')} in ${c('app.js')}. Every change (page load, a new note, Done, Undo) ends with a ${c('render()')} call. So the count goes into ${c('render()')}: it counts the notes with ${c('done === false')}, writes the number into a badge element, hides the badge when the count is 0, and sets ${c('document.title')} to ${c('Notes (N)')} or ${c('Notes')}.</div>` +
+		`<div class="rp-h2 ${r.at(0.32)}">Steps</div>` +
+		`<div class="rp-ol"><div class="rp-li ${r.at(0.38)}"><span>notes: Add the badge element to the heading in ${c('index.html')} and its style in ${c('style.css')}. Covers R1.</span></div>` +
+		`<div class="rp-li ${r.at(0.48)}"><span>notes: In ${c('app.js')}, add ${c('openCount(notes)')} and call a new ${c('updateCount()')} from ${c('render()')}. Covers R1, R2.</span></div>` +
+		`<div class="rp-li ${r.at(0.58)}"><span>notes: Add ${c('test/open-count.test.js')}, a ${c('node --test')} script with a stub DOM, for each scenario. Covers R1, R2.</span></div></div>` +
 		`</div></section>`;
 	return r.svg(460, 420, label, html, 'rp-window');
 }
@@ -241,12 +234,13 @@ function review(label: string): string {
 	return r.svg(520, 560, label, html, 'rp-window');
 }
 
-/** Settings > Remote Relay: the relay URL and the code go in, Pair, and it connects. */
+/** Settings > Remote Relay: the relay URL and the code go in, Pair, and it connects (RemoteRelayPane.swift). */
 function settingsRelay(label: string): string {
 	const r = new Replica('settings-relay', 11);
 	const url = r.typed(0.06, 0.24);
 	const code = r.typed(0.28, 0.38);
 	const pair = r.press(0.46);
+	const paired = 0.58;
 	const html =
 		`<div class="rp-settings-top">${titlebar('')}<span class="rp-tab">Remote Relay</span></div>` +
 		`<div class="rp-pad">` +
@@ -254,18 +248,17 @@ function settingsRelay(label: string): string {
 		`<p class="accent small">Deploy your own relay ↗</p>` +
 		`<div class="rp-caps">STATUS</div>` +
 		`<div class="rp-card rp-status rp-swap">` +
-		`<div class="transient ${r.at(0, 0.46)}"><span class="rp-dot faint"></span><b class="dim">Not paired</b></div>` +
-		`<div class="transient ${r.at(0.46, 0.58)}"><span class="rp-dot yellow rp-blink"></span><b class="yellow">Connecting…</b></div>` +
-		`<div class="${r.at(0.58)}"><span class="rp-dot green"></span><b>Connected</b> <span class="mono dim">wss://relay.example.com/agent</span><div class="dim small">Relay version: 0.2.1.</div></div>` +
+		`<div class="transient ${r.at(0, paired)}"><span class="rp-dot faint"></span><b>Not paired</b></div>` +
+		`<div class="${r.at(paired)}"><span class="rp-dot green"></span><b>Connected</b><div class="mono dim small">wss://relay.example.com/agent</div><div class="dim small">Relay version: 0.2.1.</div></div>` +
 		`</div>` +
-		`<div class="rp-caps">PAIR</div>` +
+		`<div class="rp-caps rp-swap"><span class="transient ${r.at(0, paired)}">PAIR</span><span class="${r.at(paired)}">PAIR AGAIN</span></div>` +
 		`<div class="rp-card">` +
 		`<label>Relay URL</label><div class="rp-field mono"><span class="${url}">wss://relay.example.com/agent</span></div>` +
 		`<label>Pairing code</label><div class="rp-field mono"><span class="${code}">K7QM-2XRD-9VHP</span></div>` +
-		`<span class="rp-btn primary small ${pair}">Pair</span></div>` +
-		`<div class="rp-caps">MCP URL FOR CLAUDE AI</div>` +
+		`<div class="rp-pairrow"><span class="rp-btn primary small ${pair}">Pair</span><span class="rp-spinner transient ${r.at(0.46, paired)}"></span></div></div>` +
+		`<div class="${r.at(paired)}"><div class="rp-caps">MCP URL FOR CLAUDE AI</div>` +
 		`<div class="rp-card rp-mcp"><div><span class="mono">https://relay.example.com/mcp</span><span class="rp-btn small">Copy</span></div>` +
-		`<div class="dim small">Add this URL as a custom connector in Claude AI.</div></div>` +
+		`<div class="dim small">Add this URL as a custom connector in Claude AI.</div></div></div>` +
 		`</div>`;
 	return r.svg(480, 570, label, html, 'rp-window');
 }

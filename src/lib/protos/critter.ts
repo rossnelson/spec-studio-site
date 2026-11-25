@@ -269,7 +269,9 @@ export function critter(name: string, mood: Mood, size = 22, animated = true): s
 	let extras = '';
 	if (mood === 'asleep') {
 		for (const [shift, s] of [[0, 11], [0.5, 7]]) {
-			const phase = 0.25 + shift * 0.9;
+			// A still shows each z partway up, as the app's still does. A moving z starts at the
+			// bottom of its path (85, 24) and the animation (app.css, .cr-z) carries it up and out.
+			const phase = animated ? 0 : 0.25 + shift * 0.9;
 			const x = 85 + phase * 8;
 			const y = 24 - phase * 17;
 			const z = `M${n(x - s / 2)} ${n(y - s / 2)}L${n(x + s / 2)} ${n(y - s / 2)}L${n(x - s / 2)} ${n(y + s / 2)}L${n(x + s / 2)} ${n(y + s / 2)}`;

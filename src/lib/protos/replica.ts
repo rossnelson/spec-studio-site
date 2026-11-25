@@ -1,11 +1,11 @@
 /**
- * The kit of the app replicas: an SVG whose viewBox is the replica's size in
- * app points, with the app's HTML inside a <foreignObject>. The picture
- * scales with the page like an image, and the text lays out like the app's.
+ * The kit of the app replicas: the app's HTML at its own size in app points,
+ * scaled to the page with CSS like an image, so the text lays out like the
+ * app's. (Not an SVG <foreignObject>: Safari does not scale its HTML.)
  *
  * Colors: the app takes its colors from a Ghostty theme. The replicas use
  * TokyoNight Day in the light scheme and TokyoNight Storm in the dark one
- * (app.css, `.rp`). Fonts: the system UI font and the system mono font.
+ * (app.css, `.rp`): a light and a dark Ghostty theme, as a user can set. Fonts: the system UI font and the system mono font.
  *
  * Motion: each replica loops over `cycle` seconds. `at(from, to)` shows an
  * element between two fractions of the cycle; `typed` reveals text from left
@@ -79,14 +79,16 @@ export class Replica {
 		);
 	}
 
-	/** The SVG around the replica's HTML. `label` is what a screen reader says. */
+	/**
+	 * The replica: the app's HTML at its own size in app points, scaled to the
+	 * column with CSS only (app.css, `.proto-scale`), so it scales the same in
+	 * every browser and needs no JavaScript. `label` is what a screen reader says.
+	 */
 	svg(width: number, height: number, label: string, html: string, cls = ''): string {
 		return (
-			`<svg class="proto" data-proto="${this.name}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(label)}" style="max-width:${width}px">` +
+			`<div class="proto" data-proto="${this.name}" role="img" aria-label="${esc(label)}" style="--w:${width};--h:${height}">` +
 			`<style>${this.rules.join('')}</style>` +
-			`<foreignObject x="0" y="0" width="${width}" height="${height}">` +
-			`<div class="rp ${cls}" style="width:${width}px;height:${height}px">${html}</div>` +
-			`</foreignObject></svg>`
+			`<div class="proto-scale"><div class="rp ${cls}" style="width:${width}px;height:${height}px">${html}</div></div></div>`
 		);
 	}
 }
