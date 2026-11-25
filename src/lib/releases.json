@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.2.0",
+    "date": "2026-11-25",
+    "notes": "Messages from Claude AI, a matching app and relay, and a themed Settings window.\n\n- Messages from Claude AI go into a session whenever Claude is idle, also while an autopilot spec works.\n- New command studio inbox: a session reads its new messages and marks them read. studio message --reply-to marks the message it answers.\n- The app and the agent stay in sync, and Settings tells you when the app and the relay do not match.\n- Works with the pluggable relay store in relay 0.4.0.\n- Settings, the Changes repo tabs and the New Spec mode tabs use the app's own look, not the macOS controls.\n- The site has how-to guides and a demo video.\n- Needs relay 0.3.0 or later.",
+    "dmg": "Spec-Studio-0.2.0.dmg"
+  },
+  {
     "version": "0.1.1",
     "date": "2026-11-25",
     "notes": "Lighter relay sync.\n\n- The relay sync sends one frame per spec per drain, with all its new lines, so a long spec no longer makes hundreds of relay updates.\n- A spec's first sync sends only its last 20 activity lines and its messages.\n- The state goes to the relay only when it changed.\n- Needs relay 0.3.0 or later: Settings says when the relay is too old.\n- The app gets the login PATH, so the PR poll finds gh.",
