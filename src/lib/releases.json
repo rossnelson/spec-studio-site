@@ -1,5 +1,11 @@
 [
   {
+    "version": "0.3.0",
+    "date": "2026-11-25",
+    "notes": "Messages to each repo's desk, relay threads that stay current, and merges that Spec Studio does not miss.\n\n- Claude AI can message the desk of a repo through the relay, as it messages a spec. Turn it on per repo in Settings, Remote Relay (\"Claude AI can message this desk\"). It is off by default.\n- When you answer in a spec's terminal after a message from Claude AI, your answer also goes into the relay thread, so Claude AI sees that the spec does not still wait.\n- A PR that merges on GitHub now always moves its spec out of Merge. A stuck gh call no longer stops the PR checks, a failed check shows \"cannot read\" in the status strip with the reason, and the new command studio pr refresh checks a spec's PRs at once.\n- Desk messages and local answers need relay 0.5.0. Older relays from 0.3.0 still work for everything else.",
+    "dmg": "Spec-Studio-0.3.0.dmg"
+  },
+  {
     "version": "0.2.1",
     "date": "2026-11-25",
     "notes": "Repos inside other repos update again.\n\n- When one repo in the sidebar is inside another (for example ~/code and ~/code/tool), a change in the inner repo now updates its own specs. Before, the app updated the outer repo, and the inner repo's specs showed an old stage and old text until the app restarted.",
