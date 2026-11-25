@@ -1,0 +1,16 @@
+#!/bin/sh
+# rec <seconds> <out.mp4|out.webm>: records the test copy's window area (100,122 1280x800 points)
+# with ffmpeg, started through Ghostty, which has the Screen Recording permission.
+S=$(cd "$(dirname "$0")" && pwd)
+# Ghostty runs the script in its own folder: make the output path absolute.
+case "$2" in /*) OUT="$2" ;; *) OUT="$PWD/$2" ;; esac
+# Record with a fast H.264 encoder, which keeps up with 30 frames per second. For a .webm
+# name (what video/stage.html plays: Playwright's Chromium has no H.264), convert after.
+case "$OUT" in *.webm) TAKE="${OUT%.webm}.take.mp4" ;; *) TAKE="$OUT" ;; esac
+cat > "$S/rec-run.sh" <<RUN
+#!/bin/sh
+nohup sh -c '/opt/homebrew/bin/ffmpeg -nostdin -y -hide_banner -loglevel error -f avfoundation -capture_cursor 0 -framerate 30 -i "3:none" -t $1 -vf "crop=2560:1600:200:244,scale=1920:1200" -c:v libx264 -preset ultrafast -crf 18 -pix_fmt yuv420p "$TAKE" && if [ "$TAKE" != "$OUT" ]; then /opt/homebrew/bin/ffmpeg -nostdin -y -hide_banner -loglevel error -i "$TAKE" -c:v libvpx-vp9 -b:v 3M -an "$OUT" && rm -f "$TAKE"; fi' > "$S/rec.log" 2>&1 &
+sleep 1
+RUN
+chmod +x "$S/rec-run.sh"
+open -na Ghostty --args --quit-after-last-window-closed=true -e "$S/rec-run.sh"

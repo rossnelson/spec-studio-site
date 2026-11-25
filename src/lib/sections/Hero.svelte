@@ -24,10 +24,15 @@
 </script>
 
 <header class="hero page" data-testid="hero">
-	<a class="brand" href={resolve('/')}>
-		<Sketch class="logo" light={asset('logo.png')} dark={asset('logo-dark.png')} alt="" width={256} height={256} />
-		<span>Spec Studio</span>
-	</a>
+	<div class="top">
+		<a class="brand" href={resolve('/')}>
+			<Sketch class="logo" light={asset('logo.png')} dark={asset('logo-dark.png')} alt="" width={256} height={256} />
+			<span>Spec Studio</span>
+		</a>
+		<nav aria-label="Site">
+			<a href={resolve('/guides')}>Guides</a>
+		</nav>
+	</div>
 
 	<div class="lead">
 		<h1>Spec-driven development with Claude Code, in one calm window.</h1>
@@ -76,6 +81,23 @@
 <style>
 	.hero {
 		padding-top: max(20px, calc(3 * var(--u)));
+	}
+
+	.top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+	}
+
+	nav a {
+		font-size: max(1.0625rem, calc(1.95 * var(--u)));
+		text-decoration: none;
+	}
+
+	nav a:hover {
+		text-decoration: underline;
+		text-underline-offset: 3px;
 	}
 
 	.brand {

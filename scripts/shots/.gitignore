@@ -1,0 +1,8 @@
+xdg/
+shots/
+try.pid
+defaults-backup.txt
+windows
+*.log
+*-run.sh
+*-run.scpt

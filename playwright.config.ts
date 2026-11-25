@@ -9,6 +9,8 @@ export default defineConfig({
 	projects: [
 		// The site with two releases (tests/fixtures/two.json).
 		{ name: 'releases', testIgnore: /empty\.spec\.ts/, use: { baseURL: 'http://127.0.0.1:4101/site/' } },
+		// Safari's engine, for the replicas' scaling.
+		{ name: 'webkit', testMatch: /replicas\.spec\.ts/, use: { ...devices['Desktop Safari'], baseURL: 'http://127.0.0.1:4101/site/' } },
 		// The site before the first release (tests/fixtures/empty.json).
 		{ name: 'empty', testMatch: /empty\.spec\.ts/, use: { baseURL: 'http://127.0.0.1:4102/site/' } }
 	],

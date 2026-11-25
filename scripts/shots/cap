@@ -1,0 +1,11 @@
+#!/bin/sh
+# cap <screencapture args...>: runs screencapture through Ghostty, which has the
+# Screen Recording permission (a capture from the Spec Studio session is refused).
+S=$(cd "$(dirname "$0")" && pwd)
+q=""; for a in "$@"; do q="$q '$(printf %s "$a" | sed "s/'/'\\\\''/g")'"; done
+# Quote the log path too, so a checkout path with a space works.
+printf '#!/bin/sh\nscreencapture %s > "%s/cap.log" 2>&1; echo "exit $?" >> "%s/cap.log"\n' "$q" "$S" "$S" > "$S/cap-run.sh"
+chmod +x "$S/cap-run.sh"; rm -f "$S/cap.log"
+open -na Ghostty --args --quit-after-last-window-closed=true -e "$S/cap-run.sh"
+for i in $(seq 1 120); do grep -qs '^exit' "$S/cap.log" && break; sleep 0.5; done
+cat "$S/cap.log"; grep -q '^exit 0' "$S/cap.log"

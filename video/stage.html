@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Spec Studio video stage</title>
+<style>
+  /* The page that demo-video-tool records. Each scene shows one thing:
+     a screen clip of the app (?clip), a still screenshot (?still), or a
+     terminal that replays a real Claude Code transcript (?term). */
+  html, body { margin: 0; height: 100%; background: #16161e; overflow: hidden; }
+  body { display: grid; place-items: center; font: 16px/1.4 -apple-system, system-ui, sans-serif; }
+  .frame { height: 1000px; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden;
+           box-shadow: 0 30px 80px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(255 255 255 / 0.06); background: #1a1b26; }
+  .frame video, .frame img { width: 100%; height: 100%; display: block; object-fit: cover; }
+
+  .term { width: 1500px; height: 900px; border-radius: 14px; background: #1a1b26; color: #c0caf5;
+          box-shadow: 0 30px 80px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(255 255 255 / 0.06);
+          font: 25px/1.5 "SF Mono", Menlo, monospace; display: flex; flex-direction: column; overflow: hidden; }
+  .term .bar { height: 44px; background: #16161e; display: flex; align-items: center; gap: 10px; padding: 0 18px;
+               color: #565f89; font: 15px system-ui; }
+  .term .bar i { width: 13px; height: 13px; border-radius: 50%; background: #3b3f57; display: inline-block; }
+  .term .bar span { margin-left: 14px; }
+  .term .body { padding: 26px 34px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; flex: 1; }
+  .prompt { color: #c0caf5; }
+  .prompt b { color: #7aa2f7; font-weight: 600; }
+  .tool { color: #9ece6a; margin-top: 14px; }
+  .tool small { color: #565f89; font-size: 22px; }
+  .answer { margin-top: 16px; white-space: pre-wrap; color: #a9b1d6; }
+  .answer code { color: #e0af68; }
+  .answer strong { color: #c0caf5; }
+  .answer blockquote { margin: 6px 0; padding-left: 18px; border-left: 3px solid #3b4261; color: #bb9af7; }
+  .caret { display: inline-block; width: 13px; height: 28px; background: #7aa2f7; vertical-align: -5px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+</style>
+</head>
+<body>
+<script>
+  const params = new URLSearchParams(location.search);
+  const html = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // A little Markdown for the answers: code, bold, quotes, list dashes.
+  const md = (s) => html(s)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/^&gt; (.*)$/gm, '<blockquote>$1</blockquote>');
+
+  if (params.has('clip')) {
+    document.body.innerHTML = `<div class="frame"><video muted playsinline preload="auto" src="clips/${params.get('clip')}.webm"></video></div>`;
+    const video = document.querySelector('video');
+    // The scene's run() calls play(rate). The clip holds its last frame at the end.
+    window.play = (rate = 1) => { video.playbackRate = rate; return video.play(); };
+    window.ready = () => new Promise((ok) => video.readyState >= 2 ? ok() : video.addEventListener('loadeddata', ok, { once: true }));
+  } else if (params.has('still')) {
+    document.body.innerHTML = `<div class="frame"><img src="${params.get('still')}" alt=""></div>`;
+    window.ready = () => document.querySelector('img').decode();
+  } else if (params.has('term')) {
+    document.body.innerHTML = `<div class="term"><div class="bar"><i></i><i></i><i></i><span>claude · another computer</span></div><div class="body"></div></div>`;
+    const body = document.querySelector('.body');
+    window.ready = async () => {};
+    // replay(): types the prompt, shows each tool call, then the answer, over `seconds`.
+    window.replay = async (seconds = 20) => {
+      const t = (await (await fetch('transcripts.json')).json())[params.get('term')];
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const prompt = document.createElement('div');
+      prompt.className = 'prompt';
+      prompt.innerHTML = '<b>&gt;</b> <span></span><span class="caret"></span>';
+      body.append(prompt);
+      const typed = prompt.querySelector('span');
+      const typeMs = Math.min(45, (seconds * 1000 * 0.3) / t.prompt.length);
+      for (const ch of t.prompt) { typed.textContent += ch; await sleep(typeMs); }
+      prompt.querySelector('.caret').remove();
+      await sleep(600);
+      for (const step of t.steps) {
+        const el = document.createElement('div');
+        if (step.tool) {
+          el.className = 'tool';
+          const args = Object.keys(step.input).length ? ` <small>${html(JSON.stringify(step.input))}</small>` : '';
+          el.innerHTML = `● spec-studio · ${html(step.tool)}${args}`;
+          body.append(el);
+          await sleep(seconds * 1000 * 0.12);
+        } else {
+          el.className = 'answer';
+          el.innerHTML = md(step.text);
+          body.append(el);
+        }
+      }
+    };
+  }
+</script>
+</body>
+</html>
