@@ -11,6 +11,8 @@
 // or one flat color), except inside the intro, outro and end cards, which are
 // cards on purpose. A frame is flat when fewer than FLAT_SHARE of the pixels of
 // a small copy differ from the frame's median color by more than FLAT_DIFF.
+//
+// Exit codes: 0 pass, 3 a flat stretch (the video fails), 1 the check could not run.
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -29,6 +31,9 @@ const { default: project } = await import(pathToFileURL(`${dir}/project.mjs`).hr
 const build = `${dir}/build`;
 const plan = JSON.parse(readFileSync(`${build}/plan.json`, 'utf8'));
 const video = `${build}/${project.name}.mp4`;
+// No sheet from an earlier build: a crash below leaves no sheet at all.
+rmSync(`${build}/contact-sheet.png`, { force: true });
+rmSync(`${build}/contact-sheet.html`, { force: true });
 
 const ffmpeg = (args, opts = {}) => {
   const r = spawnSync('ffmpeg', ['-v', 'error', ...args], { maxBuffer: 1 << 30, ...opts });
@@ -116,6 +121,6 @@ console.log(`skipped (cards on purpose): ${skipped.map((s) => `${s.name} ${clock
 for (const s of stretches) console.log(`  flat ${clock(s.start)}-${clock(s.end)} (${(s.end - s.start).toFixed(1)} s, ${s.color})`);
 if (failures.length) {
   for (const s of failures) console.error(`FAIL: ${(s.end - s.start).toFixed(1)} s of plain ${s.color} from ${clock(s.start)} to ${clock(s.end)}`);
-  process.exit(1);
+  process.exit(3);
 }
 console.log(`pass: no flat stretch of ${FAIL_SECONDS} s or more`);

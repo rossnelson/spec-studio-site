@@ -7,7 +7,12 @@ set -e
 cd "$(dirname "$0")"
 DIR=.; NAME=spec-studio
 if [ "$1" = relay ]; then DIR=relay; NAME=spec-studio-relay; fi
-node check-frames.mjs "$DIR" || { echo "publish.sh: $DIR/build/$NAME.mp4 fails the frame check, so nothing is published. See $DIR/build/contact-sheet.png." >&2; exit 1; }
+# check-frames.mjs exits 3 when the video has blank paper, and 1 when it cannot run.
+node check-frames.mjs "$DIR" || {
+  if [ $? = 3 ]; then echo "publish.sh: $(cd "$DIR" && pwd)/build/$NAME.mp4 fails the frame check, so nothing is published. See $(cd "$DIR" && pwd)/build/contact-sheet.png." >&2
+  else echo "publish.sh: the frame check could not run (see its error above), so nothing is published." >&2; fi
+  exit 1
+}
 OUT=$(pwd)/../static/video
 mkdir -p "$OUT"
 cd "$DIR"
