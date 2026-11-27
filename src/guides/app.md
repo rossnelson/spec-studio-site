@@ -116,7 +116,7 @@ Archive a repo that you do not use now. Archive never deletes a file.
 ### Archive a project
 
 - Choose **Archive** in the project view or in its context menu. A Done or Canceled project archives at once. For other projects, Spec Studio asks you to pause the open specs first, or to cancel.
-- An archived project leaves the Projects section and the project filters. It moves to a folded **Archived** row at the bottom of the Projects section. The project picker of the New Spec sheet lists it under **Archived projects**. Its specs keep their link to it.
+- An archived project leaves the project list and the project filters. It moves to a folded **Archived** row at the bottom of the Projects section. The project picker of the New Spec sheet lists it under **Archived projects**. Its specs keep their link to it.
 - The view of an archived project is read-only, with an **Unarchive** button.
 - In a terminal, run `studio project archive <name>` or `studio project unarchive <name>`. `studio project list --archived` lists the archived projects.
 
