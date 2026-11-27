@@ -101,7 +101,7 @@ Pause a spec when it must wait, for example for an API that is not ready. A paus
 - A paused spec shows dimmed, with a pause mark, in a folded **Paused** row at the bottom of its repo. You can still open it and read it. Its terminal shows the last screen and a **Resume** button.
 - Messages from the relay wait in the inbox of the spec. Claude AI gets the answer "The spec is paused", with the reason.
 - Choose **Resume** in the menu, in the header or in the terminal, or run `studio resume`. The session starts again, and the app types the messages that came while the spec was paused.
-- To pause all the open specs of a project, choose **Pause specs…** in the project view. A list of the specs shows first. This does not change the status of the project.
+- To pause all the open specs of a project, choose **Pause Specs…** in the project view. A list of the specs shows first. This does not change the status of the project.
 
 ### Archive a repo
 
