@@ -84,15 +84,17 @@ The Temporal plugin needs a Temporal server. When the server does not answer, a 
    temporal server start-dev --db-filename ~/temporal-offline.db
    ```
 
-2. In **Settings > Backend**, write down the settings of the Temporal plugin. You need them to go back.
+2. In **Settings > Backend**, write down the settings of the Temporal plugin. You need them to go back. The pane does not show a secret value (`api_key`, `tls_key`, `bucket_access_key`, `bucket_secret_key`), so keep those values where you can get them again.
 3. Change these settings:
    - Set `address` to `localhost:7233`.
    - Set `namespace` to `default`.
-   - If you use Temporal Cloud, click **Remove** next to `api_key`. Clear `auth`, `tls_cert` and `tls_key` if they have a value. The dev server needs no key and no TLS.
-   - If you use a bucket, clear the four bucket settings and set `blob_dir` to a local folder. A bucket does not answer while you are offline.
+   - If you use an API key or TLS (Temporal Cloud or your own server), click **Remove** next to `api_key` and next to `tls_key`. Clear `auth` and `tls_cert`. The dev server needs no key and no TLS.
+   - If you use a bucket, click **Remove** next to `bucket_access_key` and `bucket_secret_key`. Clear `bucket_endpoint` and `bucket_name`, and set `blob_dir` to a local folder. A bucket does not answer while you are offline.
 4. Click **Save**. The plugin starts again and connects to the dev server.
 
-To go back, set the settings that you wrote down again and click **Save**. Type the API key again: **Remove** deleted it from the keychain. Your own server has your specs as they were before you went offline.
+A secret setting does not clear when you empty its field: only **Remove** deletes it from the keychain. If a secret stays, the plugin refuses its settings and shows **Not reachable**.
+
+To go back, set the settings that you wrote down again and click **Save**. Type each secret that you removed again (`api_key`, `tls_key`, `bucket_access_key`, `bucket_secret_key`): **Remove** deleted it from the keychain. Your own server has your specs as they were before you went offline.
 
 The work that you did on the dev server stays on the dev server. Spec Studio cannot move it to your own server:
 
