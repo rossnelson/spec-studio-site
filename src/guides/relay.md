@@ -43,10 +43,12 @@ read -rs RELAY_PASSWORD && printf '%s' "$RELAY_PASSWORD" | docker run --rm -i gh
 
 ## Step 2: Choose the store
 
-The relay keeps its copy of the specs, the messages and the sign-ins in one of two stores. `RELAY_STORE` selects the store: `json` or `temporal`. When `RELAY_STORE` is not set, the relay uses the Temporal store if `TEMPORAL_ADDRESS` is set, else the JSON store.
+The relay keeps its copy of the specs, the messages and the sign-ins in one of two stores. `RELAY_STORE` selects the store: `json` or `temporal`. When `RELAY_STORE` is not set, the relay uses the Temporal store if `TEMPORAL_ADDRESS` is set, else the JSON store. When `RELAY_PLUGIN` or `RELAY_PLUGIN_URL` is set, the store is that plugin instead.
 
 - **The JSON store** (the default): JSON files in `RELAY_DATA_DIR` (default `/data`). Mount a persistent volume there. The relay is one container and a volume, with no other service. There are no payload keys and no codec endpoints. See [The JSON store](/guides/backends/#the-json-store).
 - **The Temporal store**: your own Temporal namespace, on Temporal Cloud or on a Temporal that you host. Use it when you already run Temporal. This store also needs the payload keys. See [The Temporal store](/guides/backends/#the-temporal-store).
+
+The store can also be a backend plugin for your own storage, with `RELAY_PLUGIN` or `RELAY_PLUGIN_URL`. You do not need one: the JSON store is the default. The official plugins, [plugin-json](https://github.com/spec-studio-app/plugin-json) and [plugin-temporal](https://github.com/spec-studio-app/plugin-temporal), come with a later relay version, behind the same `RELAY_STORE` settings. See [Store plugins](/guides/backends/#store-plugins).
 
 To use the Temporal store, make the payload keys. The relay encrypts every Temporal payload with them. Keep a copy in a safe place: without the same keys, the relay cannot read its data.
 
@@ -92,6 +94,16 @@ The code works once. For a new code, run `relay pair-code` where the relay runs.
 docker compose exec relay relay pair-code
 kubectl exec deploy/relay -- relay pair-code
 ```
+
+With a plugin from `RELAY_PLUGIN` that locks its storage, `relay pair-code` cannot run next to the relay. Stop the relay, run the command in a new container with the same settings, and start the relay again (see [Store plugins](/guides/backends/#store-plugins)):
+
+```sh
+docker compose stop relay
+docker compose run --rm relay pair-code
+docker compose start relay
+```
+
+With Helm, scale the relay to 0 replicas, run `relay pair-code` in a one-off pod with the same settings and volume, then scale it back to 1. A sidecar plugin (`RELAY_PLUGIN_URL`) needs none of this: use the commands above.
 
 The relay keeps only the SHA-256 of the Mac's secret. To unpair, use the Remote Relay pane, or run `studio agent unpair`.
 

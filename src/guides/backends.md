@@ -4,9 +4,9 @@ summary: The store, bucket and hosting choices of the relay, and every setting.
 order: 4
 ---
 
-The relay plugs into two backends that you choose: a **store** that holds the copy of each spec, the messages and the sign-ins, and an optional **bucket** that holds the attachments. The store is **JSON files** on a volume (the default) or your own **Temporal** namespace. You also choose **how to run** the relay. This guide gives the settings for each choice. The relay reads every setting from the environment.
+The relay plugs into two backends that you choose: a **store** that holds the copy of each spec, the messages and the sign-ins, and an optional **bucket** that holds the attachments. The store is **JSON files** on a volume (the default) or your own **Temporal** namespace. The store can also be a **backend plugin** (see [Store plugins](#store-plugins)). You also choose **how to run** the relay. This guide gives the settings for each choice. The relay reads every setting from the environment.
 
-`RELAY_STORE` selects the store: `json` or `temporal`. When `RELAY_STORE` is not set, the relay uses the Temporal store if `TEMPORAL_ADDRESS` is set, else the JSON store. At start, the relay logs the store and the reason (`store_selected`).
+`RELAY_STORE` selects the store: `json` or `temporal`. When `RELAY_STORE` is not set, the relay uses the Temporal store if `TEMPORAL_ADDRESS` is set, else the JSON store. When `RELAY_PLUGIN` or `RELAY_PLUGIN_URL` is set, the store is that plugin, and `RELAY_STORE` must be empty (see [Store plugins](#store-plugins)). At start, the relay logs the store and the reason (`store_selected`).
 
 ## The JSON store
 
@@ -95,6 +95,41 @@ TEMPORAL_AUTH=plain
 ```
 
 To try the Temporal store on one machine, Docker Compose can run a local Temporal dev server for you (see [Docker Compose](#docker-compose)).
+
+## Store plugins
+
+The relay can keep its state in a backend plugin: a separate program that stores the relay's data. The relay keeps all the rules; the plugin only stores. The plugin protocol (`PROTOCOL.md` in [plugin-sdk](https://github.com/spec-studio-app/plugin-sdk)) defines the calls, so you can write a plugin for your own storage.
+
+You do not need a plugin. **The JSON store stays the default**, and with no plugin setting, nothing changes.
+
+The official plugins:
+
+- [plugin-json](https://github.com/spec-studio-app/plugin-json): JSON files, as the JSON store.
+- [plugin-temporal](https://github.com/spec-studio-app/plugin-temporal): Temporal, with the full history of each spec.
+
+A later relay version uses them for `RELAY_STORE=json` and `RELAY_STORE=temporal`, with the same data and no step for you. Until then, those settings use the relay's built-in stores.
+
+To use another plugin, set one of these, and leave `RELAY_STORE` empty:
+
+- `RELAY_PLUGIN`: a plugin command, with its arguments. The relay starts it and talks to it on its stdin and stdout.
+- `RELAY_PLUGIN_URL` and `RELAY_PLUGIN_TOKEN`: a plugin that runs as a sidecar, over HTTP. Give the plugin the same token (its `--token` flag or its `PLUGIN_TOKEN` variable): the plugin refuses a call with no token or another token. A plugin with no token listens only on a loopback address, so a sidecar in its own container always needs the token.
+
+```sh
+# A plugin command in the relay's container
+RELAY_PLUGIN="/usr/local/bin/plugin-mine --data /data"
+
+# A plugin sidecar
+RELAY_PLUGIN_URL=http://plugin:7070/rpc
+RELAY_PLUGIN_TOKEN=<a long random string, for example from openssl rand -hex 32>
+```
+
+The relay splits `RELAY_PLUGIN` into words as a shell does. In a shell or a Compose `.env` file, quote the value as above. In a `docker run --env-file` file, write it with no quotes: that file keeps the quotes as part of the value.
+
+Each `RELAY_PLUGIN_<NAME>` setting goes to the plugin as the setting `<name>`, in lowercase. For example, `RELAY_PLUGIN_ADDRESS=temporal:7233` is the plugin setting `address`. The plugin's README names its settings. With Docker Compose, add each of these settings to the `environment` of the `relay` service in `compose.yaml`: the file passes only `RELAY_PLUGIN`, `RELAY_PLUGIN_URL` and `RELAY_PLUGIN_TOKEN` from `.env`.
+
+At start, the relay logs the plugin's name, version, repo and capabilities. When the plugin does not start or refuses its settings, the relay stops with a message that gives the reason and what to check. When a plugin command stops, the relay starts it again; meanwhile, the tools say that the relay's store is not available. `compose.yaml` has an example of a sidecar in comments. For Helm, see [Helm](#helm).
+
+With a plugin from `RELAY_PLUGIN`, the plugin can lock its storage while the relay runs. Then `relay pair-code` cannot open the storage: stop the relay, run `relay pair-code` with the same settings, and start the relay again. A sidecar plugin does not need this.
 
 ## Switch between stores
 
@@ -220,7 +255,15 @@ helm install relay oci://ghcr.io/spec-studio-app/charts/relay --version <version
 
 When `store` is empty, the chart uses the rule of the relay: `temporal` when `temporal.address` is set, else `json`.
 
-The Secret `existingSecret` has the key `OWNER_PASSWORD_HASH`, and as needed `PAYLOAD_KEYS` (Temporal store), `TEMPORAL_API_KEY`, `TEMPORAL_TLS_CERT`, `TEMPORAL_TLS_KEY`, `BUCKET_ACCESS_KEY` and `BUCKET_SECRET_KEY`. Or leave `existingSecret` empty and set `secrets.*` in your values: the chart then makes the Secret. Set `ingress.enabled=true` and `ingress.host` for an Ingress. The chart's `values.yaml` lists every value.
+For a [store plugin](#store-plugins), leave `store` empty and set one of these values:
+
+- `plugin.command`: a plugin command in the image (`RELAY_PLUGIN`). The pod gets the volume at `/data` for its files.
+- `plugin.url`: the URL of a plugin that runs as its own service (`RELAY_PLUGIN_URL`), with the token in `secrets.pluginToken` when the plugin has one.
+- `plugin.sidecar.enabled=true` with `plugin.sidecar.image`: the plugin in a second container of the pod. It needs `secrets.pluginToken`. For a plugin that keeps files, set `plugin.sidecar.dataPath` (for example `/data`): the sidecar then gets the volume there.
+
+`plugin.settings` holds the plugin's settings: each name becomes `RELAY_PLUGIN_<NAME>`. Put no secret there.
+
+The Secret `existingSecret` has the key `OWNER_PASSWORD_HASH`, and as needed `PAYLOAD_KEYS` (Temporal store), `TEMPORAL_API_KEY`, `TEMPORAL_TLS_CERT`, `TEMPORAL_TLS_KEY`, `BUCKET_ACCESS_KEY`, `BUCKET_SECRET_KEY` and `PLUGIN_TOKEN` (a plugin sidecar, or a plugin service with a token). Or leave `existingSecret` empty and set `secrets.*` in your values: the chart then makes the Secret. Set `ingress.enabled=true` and `ingress.host` for an Ingress. The chart's `values.yaml` lists every value.
 
 ### Docker
 
@@ -240,6 +283,10 @@ A setting that is missing or not valid stops the start. The message names the se
 | `OWNER_PASSWORD_HASH` | yes | The bcrypt hash of the owner password. |
 | `RELAY_STORE` | no | `json` or `temporal`. Default: `temporal` when `TEMPORAL_ADDRESS` is set, else `json`. |
 | `RELAY_DATA_DIR` | no | The folder of the JSON store. Default `/data`. |
+| `RELAY_PLUGIN` | no | A backend plugin command, with its arguments. See [Store plugins](#store-plugins). Not with `RELAY_STORE` or `RELAY_PLUGIN_URL`. |
+| `RELAY_PLUGIN_URL` | no | The URL of a backend plugin sidecar, for example `http://plugin:7070/rpc`. Not with `RELAY_STORE` or `RELAY_PLUGIN`. |
+| `RELAY_PLUGIN_TOKEN` | no | The token of the plugin sidecar. |
+| `RELAY_PLUGIN_<NAME>` | no | The plugin setting `<name>` (in lowercase). |
 | `PAYLOAD_KEYS` | Temporal | The codec keys, from `relay keys`. See below. |
 | `TEMPORAL_ADDRESS` | Temporal | `host:port` of Temporal. |
 | `TEMPORAL_NAMESPACE` | no | The namespace. Default `default`. |
