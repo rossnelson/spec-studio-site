@@ -88,12 +88,22 @@ Or run the command from the log in a terminal:
 studio agent pair wss://relay.example.com/agent K7QM-2XRD-9VHP
 ```
 
-The code works once. For a new code, run `relay pair-code` where the relay runs. With the JSON store, run it on the same data folder as the relay. With a plugin from `RELAY_PLUGIN` that locks its storage, stop the relay first (see [Store plugins](/guides/backends/#store-plugins)):
+The code works once. For a new code, run `relay pair-code` where the relay runs. With the JSON store, run it on the same data folder as the relay:
 
 ```sh
 docker compose exec relay relay pair-code
 kubectl exec deploy/relay -- relay pair-code
 ```
+
+With a plugin from `RELAY_PLUGIN` that locks its storage, `relay pair-code` cannot run next to the relay. Stop the relay, run the command in a new container with the same settings, and start the relay again (see [Store plugins](/guides/backends/#store-plugins)):
+
+```sh
+docker compose stop relay
+docker compose run --rm relay pair-code
+docker compose start relay
+```
+
+With Helm, scale the relay to 0 replicas, run `relay pair-code` in a one-off pod with the same settings and volume, then scale it back to 1. A sidecar plugin (`RELAY_PLUGIN_URL`) needs none of this: use the commands above.
 
 The relay keeps only the SHA-256 of the Mac's secret. To unpair, use the Remote Relay pane, or run `studio agent unpair`.
 
