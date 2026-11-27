@@ -157,6 +157,20 @@ test('the backends guide covers each store, bucket and run choice', async ({ pag
 	await expect(guide.locator('pre code', { hasText: 'docker compose --profile dev up' })).toHaveCount(1);
 });
 
+// Backend plugin host, R12.S1
+test('the backend plugins guide explains the pane and links to the three plugin repos', async ({ page }) => {
+	await page.goto('./guides/backend-plugins/');
+	const guide = page.getByTestId('guide');
+	for (const name of ['The two official plugins', 'Install a plugin', 'Choose a plugin in Settings', 'The queue']) {
+		expect(await headings(page)).toContain(name);
+	}
+	for (const repo of ['plugin-json', 'plugin-temporal', 'plugin-sdk']) {
+		await expect(guide.locator(`a[href="https://github.com/spec-studio-app/${repo}"]`)).toHaveCount(1);
+	}
+	await expect(guide).toContainText('Send Now');
+	await expect(guide).toContainText('Use This Plugin');
+});
+
 // R7.S1: the guides and their prototypes take the theme from the first paint.
 const paper = { light: 'rgb(246, 241, 230)', dark: 'rgb(26, 25, 23)' };
 /** The app's Ghostty themes in the replicas: TokyoNight Day and TokyoNight Storm. */
