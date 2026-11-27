@@ -92,10 +92,10 @@ export default {
       name: '09-areas', card: { critter: 'boxes' }, step: '09', title: 'Areas and projects', subtitle: 'Many repos, one goal',
       narration: 'Put your repos in areas, each with its color. Fold an area, and it shows how many specs need you. A project collects specs from many repos, with milestones, and a spec can wait for another spec.',
       before: (api) => show(api, still('areas-sidebar,areas-folded,project-view')),
-      async run({ page, plan }) {
-        const s = spoken(plan, '09-areas');
-        await page.evaluate((t) => window.play(t), [s * 0.3, s * 0.55]);
-      },
+      // The folded still comes with "Fold an area" (3.1 s into the voice), and the
+      // project view with "A project" (6.2 s), less the 0.6 s crossfade. Measure
+      // again after a new narration: ffmpeg -i build/audio/09-areas.mp3 -af silencedetect=n=-35dB:d=0.15 -f null -
+      async run({ page }) { await page.evaluate((t) => window.play(t), [2.6, 5.7]); },
     },
     {
       name: '10-themes', card: { critter: 'palette' }, step: '10', title: 'Your colors', subtitle: 'The app and its terminals',
