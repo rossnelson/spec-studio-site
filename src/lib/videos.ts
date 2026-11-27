@@ -6,8 +6,8 @@ import { asset } from '$app/paths';
 export const videos = {
 	app: {
 		file: 'spec-studio',
-		caption: 'Spec Studio in 3 minutes: the window, the five stages, the three modes and the review.',
-		size: '33 MB'
+		caption: 'Spec Studio in 3 minutes: the window, the five stages, the three modes, the review, and areas and projects.',
+		size: '36 MB'
 	},
 	relay: {
 		file: 'spec-studio-relay',

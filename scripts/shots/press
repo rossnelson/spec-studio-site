@@ -1,0 +1,19 @@
+#!/bin/sh
+# press <key> <modifier...>: brings the test copy (try.pid) to the front and presses a key,
+# through Ghostty, which has the Accessibility permission. Example: ./press c control command
+# hides the Claude pane (Hide Claude, ⌃⌘C).
+S=$(cd "$(dirname "$0")" && pwd)
+KEY=$1; shift
+MODS=""; for m in "$@"; do MODS="$MODS${MODS:+, }$m down"; done
+cat > "$S/press-run.scpt" <<EOF
+tell application "System Events"
+  set frontmost of (first process whose unix id is $(cat "$S/try.pid")) to true
+  delay 0.5
+  keystroke "$KEY" using {$MODS}
+end tell
+EOF
+printf '#!/bin/sh\nosascript "%s/press-run.scpt" > "%s/press.log" 2>&1; echo "exit $?" >> "%s/press.log"\n' "$S" "$S" "$S" > "$S/press-run.sh"
+chmod +x "$S/press-run.sh"; rm -f "$S/press.log"
+open -na Ghostty --args --quit-after-last-window-closed=true -e "$S/press-run.sh"
+for i in $(seq 1 60); do grep -qs '^exit' "$S/press.log" && break; sleep 0.5; done
+cat "$S/press.log"; grep -q '^exit 0' "$S/press.log"

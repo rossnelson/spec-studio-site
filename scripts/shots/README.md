@@ -1,6 +1,6 @@
 # Screenshots and clips of the app
 
-These scripts make the screen clips and stills of the video (`video/clips/`, `video/stills/`) from a test copy of Spec Studio with the demo repo `spec-studio-app/notes-demo` (cloned to `/Users/Shared/spec-studio-demo/notes`, so no home folder name shows). The guides do not use screenshots: they draw live SVG prototypes (`src/lib/protos/`).
+These scripts make the screen clips and stills of the video (`video/clips/`, `video/stills/`) from a test copy of Spec Studio with the demo repo `spec-studio-app/notes-demo` (cloned to `/Users/Shared/spec-studio-demo/notes`, so no home folder name shows). Most figures of the guides are live SVG prototypes (`src/lib/protos/`). The only guide stills are the stills of areas and projects (`static/shots/`, see "Areas and projects" below).
 
 1. Build the test copy from the app repo: `OUT="$HOME/Library/Caches/Spec Studio/try/marketing" ./scripts/bundle.sh`.
 2. Make its support folder with only the demo repo: `support/repos.json` with `[{"path": "/Users/Shared/spec-studio-demo/notes"}]`.
@@ -27,3 +27,12 @@ The test copy shares its settings store with the installed app. `launch` saves t
 ## What a person does
 
 `first-open` needs a support folder with no repo (`./launch <theme> <empty folder>`). `new-spec` needs ⌘N and `settings-relay` needs ⌘, in the test copy, then `./cap -x -o -l <window id> shots/<name>.png`. Convert every shot with `cwebp -q 82 -resize 1600 0 shots/<name>.png -o ../../video/stills/<name>.webp`.
+
+## Areas and projects
+
+The stills of areas and projects (`static/shots/` for the guides, `video/stills/` for the video) use their own demo data, never your support folder:
+
+1. `./demo-areas` makes the support folder `$TRY/support-areas`: two more demo repos (`/Users/Shared/spec-studio-demo/notes-web` and `notes-sync`, local git repos with demo specs), three areas ("Notes app", "Website" and "Sync") and the demo project "Shared lists", with two milestones and a spec that waits for another spec. Run it again to start from the same data.
+2. `./shoot-areas "TokyoNight Day" ""` and `./shoot-areas "TokyoNight Storm" -dark` take `areas-sidebar`, `areas-folded` (the Website area folded, with its badge) and `project-view` (opened with `-selectedSpec project:<id>`) into `shots/`. The test copy starts no Claude session, so the script hides the empty Claude pane with Hide Claude (⌃⌘C), through `./press`.
+3. `./restore`.
+4. Convert with `cwebp -q 82`. The guide still `areas-sidebar` is the sidebar only, so its text stays readable on a phone: `-crop 0 0 520 1220`, light and dark, to `static/shots/areas-sidebar.webp` and `areas-sidebar-dark.webp`. `project-view` gets `-resize 1600 0`, to `static/shots/project-view.webp` and `project-view-dark.webp`. The three dark stills get `-resize 1600 0`, to `video/stills/<name>.webp`.
