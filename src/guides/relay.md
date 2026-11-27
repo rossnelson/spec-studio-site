@@ -43,12 +43,12 @@ read -rs RELAY_PASSWORD && printf '%s' "$RELAY_PASSWORD" | docker run --rm -i gh
 
 ## Step 2: Choose the store
 
-The relay keeps its copy of the specs, the messages and the sign-ins in one of two stores. `RELAY_STORE` selects the store: `json` or `temporal`. When `RELAY_STORE` is not set, the relay uses the Temporal store if `TEMPORAL_ADDRESS` is set, else the JSON store.
+The relay keeps its copy of the specs, the messages and the sign-ins in one of two stores. `RELAY_STORE` selects the store: `json` or `temporal`. When `RELAY_STORE` is not set, the relay uses the Temporal store if `TEMPORAL_ADDRESS` is set, else the JSON store. When `RELAY_PLUGIN` or `RELAY_PLUGIN_URL` is set, the store is that plugin instead.
 
 - **The JSON store** (the default): JSON files in `RELAY_DATA_DIR` (default `/data`). Mount a persistent volume there. The relay is one container and a volume, with no other service. There are no payload keys and no codec endpoints. See [The JSON store](/guides/backends/#the-json-store).
 - **The Temporal store**: your own Temporal namespace, on Temporal Cloud or on a Temporal that you host. Use it when you already run Temporal. This store also needs the payload keys. See [The Temporal store](/guides/backends/#the-temporal-store).
 
-The store can also be a backend plugin: [plugin-json](https://github.com/spec-studio-app/plugin-json), [plugin-temporal](https://github.com/spec-studio-app/plugin-temporal), or a plugin for your own storage, with `RELAY_PLUGIN` or `RELAY_PLUGIN_URL`. You do not need one: the JSON store is the default. See [Store plugins](/guides/backends/#store-plugins).
+The store can also be a backend plugin for your own storage, with `RELAY_PLUGIN` or `RELAY_PLUGIN_URL`. You do not need one: the JSON store is the default. The official plugins, [plugin-json](https://github.com/spec-studio-app/plugin-json) and [plugin-temporal](https://github.com/spec-studio-app/plugin-temporal), come with a later relay version, behind the same `RELAY_STORE` settings. See [Store plugins](/guides/backends/#store-plugins).
 
 To use the Temporal store, make the payload keys. The relay encrypts every Temporal payload with them. Keep a copy in a safe place: without the same keys, the relay cannot read its data.
 
@@ -88,7 +88,7 @@ Or run the command from the log in a terminal:
 studio agent pair wss://relay.example.com/agent K7QM-2XRD-9VHP
 ```
 
-The code works once. For a new code, run `relay pair-code` where the relay runs. With the JSON store, run it on the same data folder as the relay:
+The code works once. For a new code, run `relay pair-code` where the relay runs. With the JSON store, run it on the same data folder as the relay. With a plugin from `RELAY_PLUGIN` that locks its storage, stop the relay first (see [Store plugins](/guides/backends/#store-plugins)):
 
 ```sh
 docker compose exec relay relay pair-code
