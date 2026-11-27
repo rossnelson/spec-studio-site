@@ -78,11 +78,20 @@ The Priority panel lists the specs that need you, across all your repos.
 00:02:21.440 --> 00:02:27.143
 In Merge, Claude works through the reviewers' comments with you, and merges when you say so.
 
-00:02:33.645 --> 00:02:38.103
+00:02:33.645 --> 00:02:36.209
+Put your repos in areas, each with its color.
+
+00:02:36.209 --> 00:02:39.171
+Fold an area, and it shows how many specs need you.
+
+00:02:39.171 --> 00:02:44.698
+A project collects specs from many repos, with milestones, and a spec can wait for another spec.
+
+00:02:50.549 --> 00:02:55.007
 Choose the colors of the app and its terminals from the Ghostty themes, light or dark.
 
-00:02:42.097 --> 00:02:43.862
+00:02:59.001 --> 00:03:00.766
 Install Spec Studio with Homebrew.
 
-00:02:43.862 --> 00:02:46.509
+00:03:00.766 --> 00:03:03.413
 The guides on the site take you through each step.

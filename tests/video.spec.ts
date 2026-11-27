@@ -1,4 +1,4 @@
-import { statSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
 // R6.S2: the video plays from the site, with a poster and captions. The app
@@ -51,4 +51,22 @@ test('the relay guide shows the relay video, and the launch page the app video',
 	await expect(page.getByTestId('video')).toHaveAttribute('data-video', 'relay');
 	await page.goto('./');
 	await expect(page.getByTestId('video')).toHaveAttribute('data-video', 'app');
+});
+
+// specs/areas-and-projects-media R5.S2: the size in src/lib/videos.ts is the
+// file's size in MB (1024 × 1024 bytes), rounded. videos.ts needs SvelteKit's
+// $app/paths, so the test reads it as text.
+const videosSource = readFileSync(new URL('../src/lib/videos.ts', import.meta.url), 'utf8');
+for (const [name, file] of [['app', 'spec-studio'], ['relay', 'spec-studio-relay']]) {
+	test(`the size of the ${name} video in videos.ts matches ${file}.mp4`, () => {
+		const entry = new RegExp(`${name}: \\{[^}]*file: '${file}'[^}]*size: '(\\d+) MB'`).exec(videosSource);
+		expect(entry, name).not.toBeNull();
+		const size = statSync(new URL(`../static/video/${file}.mp4`, import.meta.url)).size;
+		expect(Number(entry![1])).toBe(Math.round(size / 1024 / 1024));
+	});
+}
+
+test('the caption of the app video names areas and projects', () => {
+	const caption = /app: \{[^}]*caption: '([^']*)'/.exec(videosSource)![1];
+	expect(caption).toMatch(/areas and projects/i);
 });
