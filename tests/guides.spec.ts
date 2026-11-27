@@ -161,13 +161,14 @@ test('the backends guide covers each store, bucket and run choice', async ({ pag
 test('the backend plugins guide explains the pane and links to the three plugin repos', async ({ page }) => {
 	await page.goto('./guides/backend-plugins/');
 	const guide = page.getByTestId('guide');
-	for (const name of ['The two official plugins', 'Install a plugin', 'Choose a plugin in Settings', 'The queue']) {
+	for (const name of ['The two official plugins', 'Install the Temporal plugin', 'Choose a plugin in Settings', 'Work offline with Temporal']) {
 		expect(await headings(page)).toContain(name);
 	}
 	for (const repo of ['plugin-json', 'plugin-temporal', 'plugin-sdk']) {
 		await expect(guide.locator(`a[href="https://github.com/spec-studio-app/${repo}"]`)).toHaveCount(1);
 	}
-	await expect(guide).toContainText('Send Now');
+	await expect(guide).toContainText('Move my data');
+	await expect(guide).not.toContainText('Send Now');
 	await expect(guide).toContainText('Use This Plugin');
 });
 
