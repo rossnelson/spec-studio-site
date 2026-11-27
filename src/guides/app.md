@@ -1,6 +1,6 @@
 ---
 title: The app
-summary: The five stages, the three modes, the review, the panels and the studio command.
+summary: The five stages, the three modes, the review, the panels, areas and projects, and the studio command.
 order: 2
 ---
 
@@ -64,6 +64,32 @@ Each spec has a shell beside its Claude session, in the spec's worktree. Use it 
 - **Repos** (⌃⌘1): each repo and its open specs, with the stage and the turn of each spec.
 - **Priority** (⌃⌘2): the specs that need you first, across all repos. The panel's icon shows how many need you.
 - **Shipped** (⌃⌘3): the merged specs, newest first, with a filter.
+
+## Areas and projects
+
+An **area** is a group of repos, for example all the repos of one client. A repo is in one area, or in none.
+
+- Make an area with **New Area…** in the context menu of the Repos panel. Rename it, pick its color or delete it from the context menu of its header. When you delete an area, its repos stay in Spec Studio.
+- Drag a repo into an area, between areas, or below the last area to remove it from all areas. Drag an area header to change the order.
+- Click a header to fold the area. Option-click a header to fold all the other areas. A folded area shows how many of its specs need you.
+- When you add a repo, Spec Studio can suggest an area: an area with the same GitHub owner, the same parent folder, or shared specs. Click **Add** or **Dismiss**. Spec Studio never moves a repo by itself.
+- The Priority panel can show one area only. A notification names the area of its spec.
+
+A **project** is a goal that ends, with specs from one or more repos. It has a description, a status (Planned, In progress, Paused, Done or Canceled), an optional target date, optional milestones and project updates.
+
+- Make a project with **New Project…** in the context menu of the Repos panel, or with the flag button at the top of the panel. The **Projects** section at the top of the Repos panel then lists the projects. Click a project to open its view: the progress, the milestones, the specs with their stage and turn, and the newest update.
+- A spec can **wait for** other specs of its project. The sidebar shows "waits for" under a waiting spec. Spec Studio does not start a spec by itself.
+- A Planned project moves to In progress when one of its specs starts. A Paused or Canceled project keeps its status. When all its specs ship, the project view offers **Mark as Done**.
+- Pick a project in the New Spec sheet, or make the spec from the project view.
+
+Areas and projects are personal. They stay on your Mac, in the app's support folder, and not in your repos. The `studio project` commands change projects from any terminal, and Claude AI reads them through the relay:
+
+```sh
+studio specs --area Acme
+studio project new "Backend plugins" --description "Plugins for the backend."
+studio project add "Backend plugins" plugin-json --repo ~/code/plugin-json
+studio project update "Backend plugins" --health on-track "The protocol is done."
+```
 
 ## Settings
 
