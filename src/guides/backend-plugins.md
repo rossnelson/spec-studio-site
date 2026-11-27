@@ -4,6 +4,8 @@ summary: Keep a copy of each spec and its history in a plugin, and choose the pl
 order: 5
 ---
 
+> **Coming soon.** The JSON and Temporal plugins are not released yet. The Backend pane is in the app now, and it shows **Not reachable** until you install a plugin. This guide shows how the plugins will work.
+
 ## What a backend plugin keeps
 
 A backend plugin is a small program that keeps data for Spec Studio. The app starts one plugin and sends it a copy of each spec. The plugin keeps these items:
@@ -29,7 +31,7 @@ The **Temporal plugin** keeps the state of each spec and the full history of its
 
 ## Install a plugin
 
-Install the plugin that you want to use with Homebrew. The JSON plugin is the default:
+The plugins are coming soon. When they are released, install the plugin that you want to use with Homebrew. The JSON plugin is the default:
 
 ```sh
 brew install spec-studio-app/tap/plugin-json
