@@ -5,11 +5,16 @@ import { asset } from '$app/paths';
  * (scripts/shots/). Each one has a light file (TokyoNight Day) and a dark file
  * (TokyoNight Storm) in static/shots/: <name>.webp and <name>-dark.webp.
  * A guide shows one with `![<alt text>](shot:<name> "<caption>")`.
+ * A narrow still (a crop of one panel) shows at its own width, so that its
+ * text stays readable on a phone and does not grow too large on a desktop.
  */
+type Shot = { width: number; height: number; narrow?: boolean };
+
 export const shots = {
-	'areas-sidebar': { width: 1600, height: 1000 },
+	// The sidebar only (a 520 × 1220 crop of the window, at 2× scale).
+	'areas-sidebar': { width: 520, height: 1220, narrow: true },
 	'project-view': { width: 1600, height: 1000 }
-} as const;
+} satisfies Record<string, Shot>;
 
 export type ShotName = keyof typeof shots;
 
@@ -22,11 +27,11 @@ const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').rep
  * loads lazily, and its width and height keep the page from moving.
  */
 export function shotFigure(name: ShotName, alt: string, caption?: string): string {
-	const { width, height } = shots[name];
+	const { width, height, narrow }: Shot = shots[name];
 	const light = escape(asset(`shots/${name}.webp` as Asset));
 	const dark = escape(asset(`shots/${name}-dark.webp` as Asset));
 	return (
-		`<figure class="shot" data-testid="shot" data-shot="${name}">` +
+		`<figure class="shot${narrow ? ' narrow' : ''}" data-testid="shot" data-shot="${name}">` +
 		`<picture>` +
 		`<source srcset="${dark}" media="(prefers-color-scheme: dark)" />` +
 		`<img src="${light}" alt="${escape(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async" />` +

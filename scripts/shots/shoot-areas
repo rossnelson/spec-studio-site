@@ -16,6 +16,8 @@ window() { "$S/launch" "$1" "$SUPPORT" - -sidebarPanel 0 "$2" "$3" | head -1 | c
 mkdir -p "$S/shots"
 fold none
 W=$(window "$1" -selectedSpec "/Users/Shared/spec-studio-demo/notes#open-count")
+# The test copy starts no Claude session: hide the empty Claude pane (Hide Claude, ⌃⌘C).
+"$S/press" c control command >/dev/null; sleep 1
 "$S/cap" -x -o -l "$W" "$S/shots/areas-sidebar$2.png"
 fold Website
 "$S/cap" -x -o -l "$W" "$S/shots/areas-folded$2.png"

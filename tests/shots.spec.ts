@@ -87,4 +87,12 @@ test.describe('on a 375 px phone', () => {
 		await loadAll(page);
 		expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
 	});
+	// The sidebar still is a crop of the sidebar, so it shows at least at half
+	// of its 2× pixels: its text stays as large as in the app.
+	test('the sidebar still is at least half its pixel width', async ({ page }) => {
+		await page.goto('./guides/app/');
+		const img = page.locator('[data-shot="areas-sidebar"] img');
+		await img.scrollIntoViewIfNeeded();
+		expect((await img.boundingBox())!.width).toBeGreaterThanOrEqual(520 / 2);
+	});
 });
