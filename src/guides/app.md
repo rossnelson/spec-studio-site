@@ -77,15 +77,15 @@ An **area** is a group of repos, for example all the repos of one client. A repo
 
 A **project** is a goal that ends, with specs from one or more repos. It has a description, a status (Planned, In progress, Paused, Done or Canceled), an optional target date, optional milestones and project updates.
 
-- The **Projects** section at the top of the Repos panel lists the projects. Click a project to open its view: the progress, the milestones, the specs with their stage and turn, and the newest update.
+- Make a project with **New Project…** in the context menu of the Repos panel, or with the flag button at the top of the panel. The **Projects** section at the top of the Repos panel then lists the projects. Click a project to open its view: the progress, the milestones, the specs with their stage and turn, and the newest update.
 - A spec can **wait for** other specs of its project. The sidebar shows "waits for" under a waiting spec. Spec Studio does not start a spec by itself.
-- A project moves to In progress when one of its specs starts. When all its specs ship, the project view offers **Mark as Done**.
+- A Planned project moves to In progress when one of its specs starts. A Paused or Canceled project keeps its status. When all its specs ship, the project view offers **Mark as Done**.
 - Pick a project in the New Spec sheet, or make the spec from the project view.
 
 Areas and projects are personal. They stay on your Mac, in the app's support folder, and not in your repos. The `studio project` commands change projects from any terminal, and Claude AI reads them through the relay:
 
 ```sh
-studio specs --area Vendgogh
+studio specs --area Acme
 studio project new "Backend plugins" --description "Plugins for the backend."
 studio project add "Backend plugins" plugin-json --repo ~/code/plugin-json
 studio project update "Backend plugins" --health on-track "The protocol is done."
