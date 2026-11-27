@@ -11,7 +11,10 @@ A backend plugin is a small program that keeps data for Spec Studio. The plugin 
 The plugin keeps these items:
 
 - The state of each spec.
-- The activity of each spec, one event for each line. Only a plugin with history keeps these.
+- The activity of each spec, one event for each line. These events are the history of the spec.
+- The review rounds, the desks, the inbox, the areas and the projects.
+
+Each change of a spec writes the new state and its events in one atomic step. So the state and the history never disagree. If another writer changed the spec first, the plugin writes nothing, and Spec Studio reads the spec again and tries again.
 
 If the backend is not available, a change fails. The `studio` command exits with a message that names the plugin, the cause and what to do. The app shows the same cause in the strip of the spec and in **Settings > Backend**. Nothing is saved in another place.
 
@@ -19,15 +22,17 @@ The relay has its own store. See [Relay backends](/guides/backends/). A backend 
 
 ## The two official plugins
 
-The **JSON plugin** is built in. Spec Studio ships plugin-json inside the app. You do not install it with Homebrew, and it needs no setup. It is the default. Its data is in the support folder of the app, in the folder `backend/json`.
+The **JSON plugin** is built in. Spec Studio ships plugin-json inside the app. You do not install it with Homebrew, and it needs no setup. It is the default. It keeps the state and the history of each spec in files on your Mac, in the folder `backend/json` of the app's support folder: `~/Library/Application Support/Spec Studio/backend/json`.
 
-The **Temporal plugin** keeps the state of each spec and the full history of its activity. With the history, a later version of the app can replay a spec from its start. The plugin uses a Temporal namespace that you give. This can be Temporal Cloud or your own Temporal.
+The **Temporal plugin** keeps the state and the history of each spec in Temporal. The plugin uses a Temporal namespace that you give. This can be Temporal Cloud or your own Temporal.
+
+Both plugins keep the history. To replay a spec from its start, click **History** in the strip of the spec.
 
 | | JSON | Temporal |
 |---|---|---|
 | Built in | Yes | No, install it |
 | State of each spec | Yes | Yes |
-| History and replay | No | Yes |
+| History and replay | Yes | Yes |
 | Needs a Temporal namespace | No | Yes |
 
 ## Install the Temporal plugin
@@ -54,7 +59,7 @@ Choose one of these plugins:
 - **Temporal**.
 - **Other**. Type the path of the binary of your own plugin, then click **Use This Plugin** (or press Return). You can also click **Choose…** and select the binary.
 
-When the plugin that you choose is not installed, the pane says so. It shows the `brew install` command and a button to copy it. Install the plugin, then choose it again.
+When the plugin that you choose is not installed, the pane says so. It shows the `brew install` command and a button to copy it. Install the plugin, then click **Try Again**. The app looks for the plugin again and starts it.
 
 A change of plugin asks for confirmation. Click **Change** to shut down the old plugin and start the new one. Click **Cancel** to keep the old plugin. A change of plugin does not move your data. To move it, see [Move your data to another backend](#move-your-data-to-another-backend).
 
@@ -67,29 +72,50 @@ The pane shows a field for each setting that the plugin declares. It marks the r
 
 When you save a setting, the app restarts the plugin. The plugin then gets the new value.
 
+The pane shows the settings of the plugin in use only. To set up another plugin, change to it, fill in its settings and click **Save**. The app keeps the settings of each plugin, also when you change back.
+
 ## Work offline with Temporal
 
-The Temporal plugin needs a Temporal server. When the server does not answer, a change fails with a clear message. To work offline:
+The Temporal plugin needs a Temporal server. When the server does not answer, a change fails with a clear message. You can use a local Temporal dev server instead. The dev server starts empty: your specs are not on it. Use it for new work while you are offline.
 
-1. Run a local Temporal server: `temporal server start-dev`.
-2. In **Settings > Backend**, point the plugin at it. Set the address to `localhost:7233`.
+1. Run a local Temporal server. Give it a file, so that it keeps its data when it stops. Without `--db-filename`, the dev server keeps its data in memory only.
 
-```sh
-temporal server start-dev
-```
+   ```sh
+   temporal server start-dev --db-filename ~/temporal-offline.db
+   ```
 
-To go back, set the address of your own Temporal server again in **Settings > Backend**. The local dev server keeps its own data. Move the data if you need it on your server (see below).
+2. In **Settings > Backend**, write down the settings of the Temporal plugin. You need them to go back.
+3. Change these settings:
+   - Set `address` to `localhost:7233`.
+   - Set `namespace` to `default`.
+   - If you use Temporal Cloud, click **Remove** next to `api_key`. Clear `auth`, `tls_cert` and `tls_key` if they have a value. The dev server needs no key and no TLS.
+   - If you use a bucket, clear the four bucket settings and set `blob_dir` to a local folder. A bucket does not answer while you are offline.
+4. Click **Save**. The plugin starts again and connects to the dev server.
+
+To go back, set the settings that you wrote down again and click **Save**. Type the API key again: **Remove** deleted it from the keychain. Your own server has your specs as they were before you went offline.
+
+The work that you did on the dev server stays on the dev server. Spec Studio cannot move it to your own server:
+
+- A move goes from the plugin in use to another plugin. There is no move from Temporal to Temporal.
+- A move through JSON does not complete either. Your own server has older copies of the desks, the inbox, the areas and the projects. A move does not replace a copy that the new plugin has, so the counts do not match and the backend stays the same.
 
 ## Move your data to another backend
 
-To change the backend and keep your data, use the move. It copies everything to the new plugin, checks the counts, then switches. If a count is wrong, the setting stays on the old plugin and the command names the spec and the counts.
+To change the backend and keep your data, use the move. It copies everything to the new plugin, checks the counts, then switches. If a count is wrong, the setting stays on the old plugin and the command names the spec and the counts. The data also stays in the old plugin.
+
+Before a move, install the new plugin and set it up. The move starts the new plugin with its saved settings. To set up Temporal when JSON is in use:
+
+1. Install plugin-temporal (see [Install the Temporal plugin](#install-the-temporal-plugin)).
+2. Change to **Temporal** and click **Change**. Fill in its settings and click **Save**. Wait for **Connected**.
+3. Change back to **JSON** and click **Change**.
+4. Move your data to Temporal.
 
 ```sh
 studio backend move --to temporal
 studio backend move --to json
 ```
 
-You can also click **Move my data** in **Settings > Backend**. Click it, confirm, and the app does the same move. It shows the counts or the error.
+You can also use the **Move my data** section of **Settings > Backend**. It has a button for each plugin that is not in use, for example **Move My Data to Temporal…**. Click it, click **Move** to confirm, and the app does the same move. It shows the counts or the error. The buttons are off until the plugin in use is **Connected**.
 
 ## Links
 

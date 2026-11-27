@@ -170,6 +170,13 @@ test('the backend plugins guide explains the pane and links to the three plugin 
 	await expect(guide).toContainText('Move my data');
 	await expect(guide).not.toContainText('Send Now');
 	await expect(guide).toContainText('Use This Plugin');
+	await expect(guide).toContainText('Try Again');
+	await expect(guide).not.toContainText('choose it again');
+	await expect(guide).toContainText('Move My Data to Temporal…');
+	await expect(guide.locator('pre code', { hasText: 'temporal server start-dev --db-filename' })).toHaveCount(1);
+	await expect(guide.locator('tr', { hasText: 'History and replay' }).locator('td')).toHaveText(['History and replay', 'Yes', 'Yes']);
+	await expect(guide).toContainText('one atomic step');
+	await expect(guide).toContainText('~/Library/Application Support/Spec Studio/backend/json');
 });
 
 // R7.S1: the guides and their prototypes take the theme from the first paint.
