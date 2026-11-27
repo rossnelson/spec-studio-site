@@ -8,7 +8,8 @@ const pages = [
 	['./guides/get-started/', 'get-started'],
 	['./guides/app/', 'app'],
 	['./guides/relay/', 'relay'],
-	['./guides/backends/', 'backends']
+	['./guides/backends/', 'backends'],
+	['./guides/backend-plugins/', 'backend-plugins']
 ];
 
 /** Width and height of a PNG, from its IHDR chunk. */

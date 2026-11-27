@@ -4,7 +4,8 @@ const guides = [
 	{ slug: 'get-started', title: 'Get started' },
 	{ slug: 'app', title: 'The app' },
 	{ slug: 'relay', title: 'The relay' },
-	{ slug: 'backends', title: 'Relay backends' }
+	{ slug: 'backends', title: 'Relay backends' },
+	{ slug: 'backend-plugins', title: 'Backend plugins' }
 ];
 
 /** The h2 headings of the guide, in order. */
@@ -22,10 +23,10 @@ async function shotsLoad(page: Page) {
 }
 
 // R1.S1
-test('the index lists the four guides in order, each with a summary', async ({ page }) => {
+test('the index lists the five guides in order, each with a summary', async ({ page }) => {
 	await page.goto('./guides/');
 	const items = page.getByTestId('guide-list').locator('li');
-	await expect(items).toHaveCount(4);
+	await expect(items).toHaveCount(guides.length);
 	for (const [index, guide] of guides.entries()) {
 		const item = items.nth(index);
 		await expect(item.getByRole('link')).toHaveText(guide.title);
@@ -154,6 +155,20 @@ test('the backends guide covers each store, bucket and run choice', async ({ pag
 		'RepoKey', 'SpecSlug', 'SpecTitle', 'Stage', 'Status', 'Mode', 'NeedsYou', 'PendingForMac', 'PendingForCoordinator', 'RelayDeployId'
 	]);
 	await expect(guide.locator('pre code', { hasText: 'docker compose --profile dev up' })).toHaveCount(1);
+});
+
+// Backend plugin host, R12.S1
+test('the backend plugins guide explains the pane and links to the three plugin repos', async ({ page }) => {
+	await page.goto('./guides/backend-plugins/');
+	const guide = page.getByTestId('guide');
+	for (const name of ['The two official plugins', 'Install a plugin', 'Choose a plugin in Settings', 'The queue']) {
+		expect(await headings(page)).toContain(name);
+	}
+	for (const repo of ['plugin-json', 'plugin-temporal', 'plugin-sdk']) {
+		await expect(guide.locator(`a[href="https://github.com/spec-studio-app/${repo}"]`)).toHaveCount(1);
+	}
+	await expect(guide).toContainText('Send Now');
+	await expect(guide).toContainText('Use This Plugin');
 });
 
 // R7.S1: the guides and their prototypes take the theme from the first paint.
