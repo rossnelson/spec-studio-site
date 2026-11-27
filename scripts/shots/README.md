@@ -27,3 +27,12 @@ The test copy shares its settings store with the installed app. `launch` saves t
 ## What a person does
 
 `first-open` needs a support folder with no repo (`./launch <theme> <empty folder>`). `new-spec` needs ⌘N and `settings-relay` needs ⌘, in the test copy, then `./cap -x -o -l <window id> shots/<name>.png`. Convert every shot with `cwebp -q 82 -resize 1600 0 shots/<name>.png -o ../../video/stills/<name>.webp`.
+
+## Areas and projects
+
+The stills of areas and projects (`static/shots/` for the guides, `video/stills/` for the video) use their own demo data, never your support folder:
+
+1. `./demo-areas` makes the support folder `$TRY/support-areas`: two more demo repos (`/Users/Shared/spec-studio-demo/notes-web` and `notes-sync`, local git repos with demo specs), three areas ("Notes app", "Website" and "Sync") and the demo project "Shared lists", with two milestones and a spec that waits for another spec. Run it again to start from the same data.
+2. `./shoot-areas "TokyoNight Day" ""` and `./shoot-areas "TokyoNight Storm" -dark` take `areas-sidebar`, `areas-folded` (the Website area folded, with its badge) and `project-view` (opened with `-selectedSpec project:<id>`) into `shots/`.
+3. `./restore`.
+4. Convert with `cwebp -q 82 -resize 1600 0`: the light and dark `areas-sidebar` and `project-view` go to `static/shots/<name>.webp` and `<name>-dark.webp`; the three dark stills go to `video/stills/<name>.webp`.
