@@ -29,14 +29,19 @@ The **Temporal plugin** keeps the state of each spec and the full history of its
 
 ## Install a plugin
 
-Install the plugins with Homebrew. The JSON plugin is the default, so install it first.
+Install the plugin that you want to use with Homebrew. The JSON plugin is the default:
 
 ```sh
 brew install spec-studio-app/tap/plugin-json
+```
+
+For history and replay, install the Temporal plugin:
+
+```sh
 brew install spec-studio-app/tap/plugin-temporal
 ```
 
-Install only the plugin that you want to use. The app looks for the plugin in `/opt/homebrew/bin` and then in `/usr/local/bin`.
+The app looks for the plugin in `/opt/homebrew/bin` and then in `/usr/local/bin`.
 
 ## Choose a plugin in Settings
 
@@ -50,9 +55,9 @@ Choose one of these plugins:
 
 - **JSON** (the default).
 - **Temporal**.
-- **Other**. Type the path of the binary of your own plugin.
+- **Other**. Type the path of the binary of your own plugin, then click **Use This Plugin** (or press Return). You can also click **Choose…** and select the binary.
 
-When the plugin that you choose is not installed, the pane says so. It shows the `brew install` command and a button to copy it.
+When the plugin that you choose is not installed, the pane says so. It shows the `brew install` command and a button to copy it. After you install the plugin, click **Send Now**. The app looks for the plugin again and starts it.
 
 A change of plugin asks for confirmation. Click **Change** to shut down the old plugin and start the new one. Click **Cancel** to keep the old plugin.
 
@@ -71,7 +76,9 @@ The app puts each item in a queue on disk before it sends the item to the plugin
 
 It is safe to work offline. When the plugin is not reachable, the items stay in the queue. When the plugin is back, the app sends them in order. Nothing is lost when you quit the app or restart the Mac.
 
-When the plugin stops, the app starts it again. It waits a short time and then a longer time each time, up to 30 seconds. The pane shows the number of items in the queue. To skip the wait, click **Send now**. The app then connects at once and sends the queue.
+When the plugin stops, the app starts it again. It waits a short time and then a longer time each time, up to 30 seconds. The pane shows the number of items in the queue. To skip the wait, click **Send Now**. The app then connects at once and sends the queue.
+
+The app does not try again by itself when the problem needs you: the plugin is not installed, a setting is wrong, or the plugin refuses the app's protocol version. The pane shows the reason. Fix the problem, then save the settings or click **Send Now**.
 
 ## The first contact sends the history
 
