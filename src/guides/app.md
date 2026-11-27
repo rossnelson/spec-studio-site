@@ -86,7 +86,7 @@ A **project** is a goal that ends, with specs from one or more repos. It has a d
 
 ![The project view of the project Shared lists: its description, its target date, the progress, the newest update, the milestones Sync and Sharing, and its four specs. The spec sync-conflicts waits for sync-lists.](shot:project-view "The project view: the progress, the newest update, the milestones and the specs. One spec waits for another spec.")
 
-Areas and projects are personal. They stay on your Mac, in the app's support folder, and not in your repos. The `studio project` commands change projects from any terminal, and Claude AI reads them through the relay:
+Areas and projects are personal. They are in the backend plugin, not in your repos. With the JSON plugin they are on your Mac. With the Temporal plugin they are in Temporal. See [Backend plugins](/guides/backend-plugins/). The `studio project` commands change projects from any terminal, and Claude AI reads them through the relay:
 
 ```sh
 studio specs --area Acme
