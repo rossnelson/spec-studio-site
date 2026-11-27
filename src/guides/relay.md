@@ -48,6 +48,8 @@ The relay keeps its copy of the specs, the messages and the sign-ins in one of t
 - **The JSON store** (the default): JSON files in `RELAY_DATA_DIR` (default `/data`). Mount a persistent volume there. The relay is one container and a volume, with no other service. There are no payload keys and no codec endpoints. See [The JSON store](/guides/backends/#the-json-store).
 - **The Temporal store**: your own Temporal namespace, on Temporal Cloud or on a Temporal that you host. Use it when you already run Temporal. This store also needs the payload keys. See [The Temporal store](/guides/backends/#the-temporal-store).
 
+The store can also be a backend plugin: [plugin-json](https://github.com/spec-studio-app/plugin-json), [plugin-temporal](https://github.com/spec-studio-app/plugin-temporal), or a plugin for your own storage, with `RELAY_PLUGIN` or `RELAY_PLUGIN_URL`. You do not need one: the JSON store is the default. See [Store plugins](/guides/backends/#store-plugins).
+
 To use the Temporal store, make the payload keys. The relay encrypts every Temporal payload with them. Keep a copy in a safe place: without the same keys, the relay cannot read its data.
 
 ```sh

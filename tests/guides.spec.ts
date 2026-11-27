@@ -132,7 +132,7 @@ test('the tools table gives each tool online and offline', async ({ page }) => {
 // R5.S1, R5.S2 and R5.S3
 test('the backends guide covers each store, bucket and run choice', async ({ page }) => {
 	await page.goto('./guides/backends/');
-	expect(await headings(page)).toEqual(['The JSON store', 'The Temporal store', 'Switch between stores', 'The attachment bucket', 'Ways to run the relay', 'Every setting']);
+	expect(await headings(page)).toEqual(['The JSON store', 'The Temporal store', 'Store plugins', 'Switch between stores', 'The attachment bucket', 'Ways to run the relay', 'Every setting']);
 	expect(await headings(page, 'h3')).toEqual([
 		'Temporal Cloud with an API key',
 		'Temporal Cloud with mTLS',
