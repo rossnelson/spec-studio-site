@@ -89,18 +89,27 @@ export default {
       async run({ page, plan }) { await page.evaluate((s) => window.play(s), spoken(plan, '08-turn')); },
     },
     {
-      name: '09-themes', card: { critter: 'palette' }, step: '09', title: 'Your colors', subtitle: 'The app and its terminals',
+      name: '09-areas', card: { critter: 'boxes' }, step: '09', title: 'Areas and projects', subtitle: 'Many repos, one goal',
+      narration: 'Put your repos in areas, each with its color. Fold an area, and it shows how many specs need you. A project collects specs from many repos, with milestones, and a spec can wait for another spec.',
+      before: (api) => show(api, still('areas-sidebar,areas-folded,project-view')),
+      async run({ page, plan }) {
+        const s = spoken(plan, '09-areas');
+        await page.evaluate((t) => window.play(t), [s * 0.3, s * 0.55]);
+      },
+    },
+    {
+      name: '10-themes', card: { critter: 'palette' }, step: '10', title: 'Your colors', subtitle: 'The app and its terminals',
       narration: 'Choose the colors of the app and its terminals from the Ghostty themes, light or dark.',
       before: (api) => show(api, still('theme,theme-day')),
-      async run({ page, plan }) { await page.evaluate((s) => window.play([s * 0.5]), spoken(plan, '09-themes')); },
+      async run({ page, plan }) { await page.evaluate((s) => window.play([s * 0.5]), spoken(plan, '10-themes')); },
       minSeconds: 9,
     },
     {
-      name: '10-outro', card: { critter: 'thumbsup' }, kind: 'outro', subtitle: 'The guides take you through each step',
+      name: '11-outro', card: { critter: 'thumbsup' }, kind: 'outro', subtitle: 'The guides take you through each step',
       narration: 'Install Spec Studio with Homebrew. The guides on the site take you through each step.',
     },
     {
-      name: '11-end', card: { critter: 'merge' }, kind: 'end',
+      name: '12-end', card: { critter: 'merge' }, kind: 'end',
       lines: ['brew install --cask spec-studio-app/tap/spec-studio', 'Guides: spec-studio-app.github.io/site/guides'],
     },
   ],
