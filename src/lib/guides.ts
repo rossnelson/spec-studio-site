@@ -3,6 +3,7 @@ import { resolve } from '$app/paths';
 import { latest, installCommand, downloadUrl } from './releases';
 import { proto } from './protos';
 import { videoFigure, videos, type VideoName } from './videos';
+import { shotFigure, shots, type ShotName } from './shots';
 
 /**
  * The guides are Markdown files in src/guides/. Each starts with a front
@@ -110,6 +111,13 @@ function renderer() {
 					const name = href.slice('video:'.length);
 					if (!(name in videos)) throw new Error(`No video named ${href}`);
 					return videoFigure(name as VideoName);
+				}
+				// A still of the app in light and dark, from src/lib/shots.ts: shot:<name>.
+				if (href.startsWith('shot:')) {
+					const name = href.slice('shot:'.length);
+					if (!(name in shots)) throw new Error(`No still named ${href}`);
+					if (!text) throw new Error(`The still ${href} needs an alt text`);
+					return shotFigure(name as ShotName, text, title ?? undefined);
 				}
 				// A live prototype of the app: proto:<name> draws src/lib/protos/<name>.
 				if (href.startsWith('proto:')) {

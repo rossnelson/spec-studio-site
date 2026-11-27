@@ -346,6 +346,25 @@ img {
 	color: var(--ink-soft);
 }
 
+/* A still of the app (src/lib/shots.ts): light or dark from the system setting. */
+.shot {
+	margin: 1.6em 0;
+}
+
+.shot img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 10px;
+	box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 12px 32px -8px rgb(0 0 0 / 0.28);
+}
+
+.shot figcaption {
+	margin-top: 8px;
+	font-size: 0.9rem;
+	color: var(--ink-soft);
+}
+
 /*
  * The app replicas of the guides (src/lib/protos/): the app's HTML in an SVG
  * <foreignObject>. The colors are the app's Ghostty themes: TokyoNight Day

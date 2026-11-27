@@ -75,12 +75,16 @@ An **area** is a group of repos, for example all the repos of one client. A repo
 - When you add a repo, Spec Studio can suggest an area: an area with the same GitHub owner, the same parent folder, or shared specs. Click **Add** or **Dismiss**. Spec Studio never moves a repo by itself.
 - The Priority panel can show one area only. A notification names the area of its spec.
 
+![The Repos panel with three areas: Notes app in blue, Website in green and Sync in orange. Each area shows its repos and their specs. The spec sync-conflicts shows "waits for sync-lists".](shot:areas-sidebar "The Repos panel with three areas. Each area has its color, and its repos and specs are under it.")
+
 A **project** is a goal that ends, with specs from one or more repos. It has a description, a status (Planned, In progress, Paused, Done or Canceled), an optional target date, optional milestones and project updates.
 
 - Make a project with **New Project…** in the context menu of the Repos panel, or with the flag button at the top of the panel. The **Projects** section at the top of the Repos panel then lists the projects. Click a project to open its view: the progress, the milestones, the specs with their stage and turn, and the newest update.
 - A spec can **wait for** other specs of its project. The sidebar shows "waits for" under a waiting spec. Spec Studio does not start a spec by itself.
 - A Planned project moves to In progress when one of its specs starts. A Paused or Canceled project keeps its status. When all its specs ship, the project view offers **Mark as Done**.
 - Pick a project in the New Spec sheet, or make the spec from the project view.
+
+![The project view of the project Shared lists: its description, its target date, the progress, the newest update, the milestones Sync and Sharing, and its four specs. The spec sync-conflicts waits for sync-lists.](shot:project-view "The project view: the progress, the newest update, the milestones and the specs. One spec waits for another spec.")
 
 Areas and projects are personal. They stay on your Mac, in the app's support folder, and not in your repos. The `studio project` commands change projects from any terminal, and Claude AI reads them through the relay:
 
