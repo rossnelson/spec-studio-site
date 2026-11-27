@@ -1,6 +1,6 @@
 ---
 title: The app
-summary: The five stages, the three modes, the review, the panels, areas and projects, and the studio command.
+summary: The five stages, the three modes, the review, the panels, areas and projects, pause and archive, and the studio command.
 order: 2
 ---
 
@@ -90,6 +90,35 @@ studio project new "Backend plugins" --description "Plugins for the backend."
 studio project add "Backend plugins" plugin-json --repo ~/code/plugin-json
 studio project update "Backend plugins" --health on-track "The protocol is done."
 ```
+
+### Pause a spec
+
+Pause a spec when it must wait, for example for an API that is not ready. A pause deletes nothing.
+
+- Pick **Pause…** in the context menu of the spec, or in its header. You can type a reason. In a terminal, run `studio pause --note "Waiting for the API"`. Add `--spec <slug>` outside the session of the spec.
+- The session of the spec stops at the next safe point. The worktree, the branch, the pull requests, the documents and the history stay. The spec keeps its stage and its status.
+- A paused spec never counts as "needs you". It is not in the Priority panel, the area badge, the Dock badge or a notification. Autopilot does not move it, and it does not start when you open the app.
+- A paused spec shows dimmed, with a pause mark, in a folded **Paused** row at the bottom of its repo. You can still open it and read it. Its terminal shows the last screen and a **Resume** button.
+- Messages from the relay wait in the inbox of the spec. Claude AI gets the answer "The spec is paused", with the reason.
+- Choose **Resume** in the menu, in the header or in the terminal, or run `studio resume`. The session starts again, and the app types the messages that came while the spec was paused.
+- To pause all the open specs of a project, choose **Pause Specs…** in the project view. A list of the specs shows first. This does not change the status of the project.
+
+### Archive a repo
+
+Archive a repo that you do not use now. Archive never deletes a file.
+
+- Choose **Archive…** in the context menu of the repo. If the repo has open specs that are not paused, the confirmation offers to pause them first. In a terminal, run `studio repo archive <path>`. Add `--pause-specs` to pause the open specs. Run `studio repo unarchive <path>` to undo it.
+- An archived repo moves to a folded **Archived** row at the bottom of its area. It has no session, and its specs never count as "needs you".
+- The relay leaves an archived repo out of its lists, unless the call has `archived: true`. The relay keeps what it has already.
+- **Unarchive** puts the repo back in its place in the area. Its paused specs stay paused.
+- When a repo has had no open spec and no event for 30 days, Spec Studio shows a quiet "Archive this repo?" suggestion once. Spec Studio never archives a repo by itself.
+
+### Archive a project
+
+- Choose **Archive** in the project view or in its context menu. A Done or Canceled project archives at once. For other projects, Spec Studio asks you to pause the open specs first, or to cancel.
+- An archived project leaves the project list and the project filters. It moves to a folded **Archived** row at the bottom of the Projects section. The project picker of the New Spec sheet lists it under **Archived projects**. Its specs keep their link to it.
+- The view of an archived project is read-only, with an **Unarchive** button.
+- In a terminal, run `studio project archive <name>` or `studio project unarchive <name>`. `studio project list --archived` lists the archived projects.
 
 ## Settings
 
