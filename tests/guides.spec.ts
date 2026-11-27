@@ -123,7 +123,7 @@ test('the tools table gives each tool online and offline', async ({ page }) => {
 	const table = page.getByTestId('guide').locator('h2#the-tools ~ .table table').first();
 	await expect(table.locator('thead th')).toHaveText(['Tool', 'Mac online', 'Mac offline']);
 	const tools = await table.locator('tbody tr td:first-child').allInnerTexts();
-	expect(tools).toEqual(['list_repos', 'list_specs', 'read_spec', 'make_spec', 'start_spec', 'send_message', 'read_messages', 'upload_attachment']);
+	expect(tools).toEqual(['list_repos', 'list_specs', 'list_projects', 'read_spec', 'make_spec', 'start_spec', 'send_message', 'read_messages', 'upload_attachment']);
 	for (const row of await table.locator('tbody tr').all()) {
 		for (const cell of await row.locator('td').all()) expect((await cell.innerText()).trim().length).toBeGreaterThan(0);
 	}
