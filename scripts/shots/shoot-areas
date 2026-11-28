@@ -1,11 +1,12 @@
 #!/bin/sh
-# shoot-areas <theme> <suffix>: the three stills of areas and projects, from the
-# demo data of ./demo-areas, into shots/: areas-sidebar, areas-folded and
-# project-view, each with <suffix> ("" for light, "-dark" for dark).
+# shoot-areas <theme> <suffix>: the two stills of areas and collections, from the
+# demo data of ./demo-areas, into shots/: areas-sidebar and areas-folded, each
+# with <suffix> ("" for light, "-dark" for dark). TRY names the test copy's folder.
 # Example: ./shoot-areas "TokyoNight Day" "" && ./shoot-areas "TokyoNight Storm" -dark
 set -e
 S=$(cd "$(dirname "$0")" && pwd)
-SUPPORT="$HOME/Library/Caches/Spec Studio/try/marketing/support-areas"
+TRY="${TRY:-$HOME/Library/Caches/Spec Studio/try/marketing}"
+SUPPORT="$TRY/support-areas"
 fold() { python3 -c "
 import json, sys
 path, name = sys.argv[1], sys.argv[2]
@@ -22,7 +23,4 @@ W=$(window "$1" -selectedSpec "/Users/Shared/spec-studio-demo/notes#open-count")
 fold Website
 "$S/cap" -x -o -l "$W" "$S/shots/areas-folded$2.png"
 fold none
-ID=$(python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['projects'][0]['id'])" "$SUPPORT/projects.json")
-W=$(window "$1" -selectedSpec "project:$ID")
-"$S/cap" -x -o -l "$W" "$S/shots/project-view$2.png"
 ls "$S/shots"

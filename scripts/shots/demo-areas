@@ -1,16 +1,16 @@
 #!/bin/sh
-# demo-areas: the demo data of the areas and projects stills, in its own support
-# folder ($TRY/support-areas), never in your own. It makes:
+# demo-areas: the demo data of the areas and collections stills, in its own
+# support folder ($TRY/support-areas), never in your own. It makes:
 #   - two more demo repos next to the notes demo, local git repos with no remote:
 #     /Users/Shared/spec-studio-demo/notes-web and notes-sync, each with demo specs;
 #   - repos.json with the three repos;
 #   - areas.json with three areas: "Notes app", "Website" and "Sync";
-#   - the demo project "Shared lists", with two milestones and a spec that waits
-#     for another spec, made with `studio project`.
-# Run it again to start from the same data. It prints the project's ID, for
-# `./launch <theme> "$TRY/support-areas" - -selectedSpec project:<id>`.
+#   - the demo collections "Shared lists" and "Website launch", with specs from
+#     the three repos, made with `studio collection`, and a spec that waits for
+#     another spec, made with `studio wait`.
+# Run it again to start from the same data. TRY names the test copy's folder.
 set -e
-TRY="$HOME/Library/Caches/Spec Studio/try/marketing"
+TRY="${TRY:-$HOME/Library/Caches/Spec Studio/try/marketing}"
 SUPPORT="$TRY/support-areas"
 DEMO=/Users/Shared/spec-studio-demo
 NOTES=$DEMO/notes WEB=$DEMO/notes-web SYNC=$DEMO/notes-sync
@@ -62,11 +62,11 @@ cat > "$SUPPORT/areas.json" <<JSON
 JSON
 
 P="Shared lists"
-st project new "$P" --description "Share a list with other people, and keep it the same on each Mac." --area "Notes app" --target 2027-02-15 >/dev/null
-st project add "$P" sync-lists sync-conflicts --repo "$SYNC" --milestone Sync >/dev/null
-st project add "$P" share-link --repo "$WEB" --milestone Sharing >/dev/null
-st project add "$P" open-count --repo "$NOTES" --milestone Sharing >/dev/null
-st project wait sync-conflicts --on sync-lists --repo "$SYNC" >/dev/null
-st project status "$P" in-progress >/dev/null
-st project update "$P" "Sync works between two Macs. Conflicts are next." --health on-track --by Demo >/dev/null
-st project show "$P" --json | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])'
+st collection new "$P" --color blue --description "Share a list with other people, and keep it the same on each Mac." >/dev/null
+st collection add "$P" sync-lists sync-conflicts --repo "$SYNC" >/dev/null
+st collection add "$P" share-link --repo "$WEB" >/dev/null
+st collection add "$P" open-count --repo "$NOTES" >/dev/null
+st collection new "Website launch" --color green >/dev/null
+st collection add "Website launch" share-link list-pages --repo "$WEB" >/dev/null
+st wait sync-conflicts --on sync-lists --repo "$SYNC" >/dev/null
+st collection list
