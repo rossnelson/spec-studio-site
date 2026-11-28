@@ -12,8 +12,7 @@ type Shot = { width: number; height: number; narrow?: boolean };
 
 export const shots = {
 	// The sidebar only (a 520 × 1220 crop of the window, at 2× scale).
-	'areas-sidebar': { width: 520, height: 1220, narrow: true },
-	'project-view': { width: 1600, height: 1000 }
+	'areas-sidebar': { width: 520, height: 1220, narrow: true }
 } satisfies Record<string, Shot>;
 
 export type ShotName = keyof typeof shots;

@@ -118,10 +118,10 @@ Then ask Claude, for example: "Which of my specs need me?" or "Tell the notes sp
 | Tool | Mac online | Mac offline |
 |---|---|---|
 | `list_repos` | The Mac answers. Each repo shows its area. `area` shows the repos of one area. | The repos from the last connection of the Mac, with its time. The `area` filter needs the Mac online. |
-| `list_specs` | The Mac answers. Each spec shows its area and its project. `area` and `project` filter the list. | The relay's copy of each spec, with the time of its last sync. The `area` and `project` filters need the Mac online. |
-| `list_projects` | The Mac answers: each project with its status, progress, target date and newest update. | Fails at once. |
+| `list_specs` | The Mac answers. Each spec shows its area and its collections. `area` and `collection` filter the list. | The relay's copy of each spec, with the time of its last sync. The `area` and `collection` filters need the Mac online. |
+| `list_collections` | The Mac answers: each collection with its color, description, link and progress. | Fails at once. |
 | `read_spec` | The Mac answers. | The state, the turn and the last 20 events. No `spec.md` or `plan.md` text. |
-| `make_spec` | The Mac answers. `project` puts the new spec in a project. | Fails at once. |
+| `make_spec` | The Mac answers. `collections` puts the new spec in one or more collections. | Fails at once. |
 | `start_spec` | The Mac answers. | Fails at once. |
 | `send_message` | The relay keeps the message and sends it to the Mac. | The relay keeps the message until the Mac connects. |
 | `read_messages` | The messages that the sessions sent with `studio message`. | The same. |

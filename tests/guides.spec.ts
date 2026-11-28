@@ -124,7 +124,7 @@ test('the tools table gives each tool online and offline', async ({ page }) => {
 	const table = page.getByTestId('guide').locator('h2#the-tools ~ .table table').first();
 	await expect(table.locator('thead th')).toHaveText(['Tool', 'Mac online', 'Mac offline']);
 	const tools = await table.locator('tbody tr td:first-child').allInnerTexts();
-	expect(tools).toEqual(['list_repos', 'list_specs', 'list_projects', 'read_spec', 'make_spec', 'start_spec', 'send_message', 'read_messages', 'upload_attachment']);
+	expect(tools).toEqual(['list_repos', 'list_specs', 'list_collections', 'read_spec', 'make_spec', 'start_spec', 'send_message', 'read_messages', 'upload_attachment']);
 	for (const row of await table.locator('tbody tr').all()) {
 		for (const cell of await row.locator('td').all()) expect((await cell.innerText()).trim().length).toBeGreaterThan(0);
 	}
@@ -237,4 +237,15 @@ test('the copy button of a code block copies its command', async ({ page, contex
 	await expect(block.getByRole('status')).toHaveText('Copied to the clipboard.');
 	expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('docker compose --profile dev up');
 	await expect(button).toHaveText('Copy', { timeout: 4000 });
+});
+
+// specs/collections R13.S2 (in the app repo)
+test('the app guide has the section Areas and collections, and no project view', async ({ page }) => {
+	await page.goto('./guides/app/');
+	const guide = page.getByTestId('guide');
+	await expect(guide.locator('h2#areas-and-collections')).toHaveText('Areas and collections');
+	await expect(guide.locator('h2#areas-and-projects')).toHaveCount(0);
+	await expect(guide.locator('h3#archive-a-collection')).toHaveCount(1);
+	await expect(guide.locator('[data-shot="project-view"]')).toHaveCount(0);
+	await expect(guide).toContainText('studio collection new');
 });

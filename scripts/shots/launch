@@ -7,7 +7,7 @@
 # (the selected spec, the window frame). So the first launch saves those keys, and `./restore`
 # puts them back when you are done.
 S=$(cd "$(dirname "$0")" && pwd)
-TRY="$HOME/Library/Caches/Spec Studio/try/marketing"
+TRY="${TRY:-$HOME/Library/Caches/Spec Studio/try/marketing}"
 DOMAIN=dev.local.spec-studio
 if [ ! -f "$S/defaults-backup.txt" ]; then
   # Each line: key, type and value, so restore writes the value with the type the app reads.

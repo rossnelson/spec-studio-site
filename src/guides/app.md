@@ -1,6 +1,6 @@
 ---
 title: The app
-summary: The five stages, the three modes, the review, the panels, areas and projects, pause and archive, and the studio command.
+summary: The five stages, the three modes, the review, the panels, areas and collections, pause and archive, and the studio command.
 order: 2
 ---
 
@@ -65,7 +65,7 @@ Each spec has a shell beside its Claude session, in the spec's worktree. Use it 
 - **Priority** (⌃⌘2): the specs that need you first, across all repos. The panel's icon shows how many need you.
 - **Shipped** (⌃⌘3): the merged specs, newest first, with a filter.
 
-## Areas and projects
+## Areas and collections
 
 An **area** is a group of repos, for example all the repos of one client. A repo is in one area, or in none.
 
@@ -75,25 +75,30 @@ An **area** is a group of repos, for example all the repos of one client. A repo
 - When you add a repo, Spec Studio can suggest an area: an area with the same GitHub owner, the same parent folder, or shared specs. Click **Add** or **Dismiss**. Spec Studio never moves a repo by itself.
 - The Priority panel can show one area only. A notification names the area of its spec.
 
-![The Repos panel with three areas: Notes app in blue, Website in green and Sync in orange. Each area shows its repos and their specs. The spec sync-conflicts shows "waits for sync-lists".](shot:areas-sidebar "The Repos panel with three areas. Each area has its color, and its repos and specs are under it.")
+![The Repos panel: the Collections section at the top with Shared lists (4 specs) and Website launch (2 specs), each with its progress pie, then three areas: Notes app in blue, Website in green and Sync in orange. Each area shows its repos and their specs. The spec sync-conflicts shows "waits for sync-lists".](shot:areas-sidebar "The Repos panel: two collections at the top, then three areas. Each area has its color, and its repos and specs are under it.")
 
-A **project** is a goal that ends, with specs from one or more repos. It has a description, a status (Planned, In progress, Paused, Done or Canceled), an optional target date, optional milestones and project updates.
+A **collection** is a set of specs from any repo and any area, open or shipped. A spec can be in many collections. A collection has a name, a color, an optional description and an optional link, for example to a Linear project. It has no status and no dates: it is not a second tracker.
 
-- Make a project with **New Project…** in the context menu of the Repos panel, or with the flag button at the top of the panel. The **Projects** section at the top of the Repos panel then lists the projects. Click a project to open its view: the progress, the milestones, the specs with their stage and turn, and the newest update.
-- A spec can **wait for** other specs of its project. The sidebar shows "waits for" under a waiting spec. Spec Studio does not start a spec by itself.
-- A Planned project moves to In progress when one of its specs starts. A Paused or Canceled project keeps its status. When all its specs ship, the project view offers **Mark as Done**.
-- Pick a project in the New Spec sheet, or make the spec from the project view.
+- The **Collections** section at the top of the Repos panel lists the collections in name order. Each row shows a small pie that fills as the specs ship, the name and the number of specs. Point to the pie to read "5 of 7 shipped". A full pie shows a check. Click the header to fold the section.
+- Make a collection with **New Collection…** in the context menu of the Repos panel or of the Collections header.
+- Click a collection to filter the sidebar. The Repos panel then shows only the specs of that collection, under their areas and repos, and the shipped specs in a folded **Shipped** row at the bottom. The Priority panel shows only the specs of the collection too. A bar at the top of each list names the collection, for example "Collection: Shared lists". Click its ×, click the collection again, or press Esc to show all specs again. The main area always shows a spec.
+- The header of a spec shows a small chip for each of its collections. Click a chip to filter by that collection.
+- Add a spec to a collection, or take it out, with **Collections ▸** in the context menu of the spec. You can also drag a spec onto a collection, check collections in the New Spec sheet, or pick **Add Specs…** in the context menu of the collection. A spec that you make while a filter is on goes into that collection.
+- The context menu of a collection has **Rename**, **Color**, **Description and Link…**, **Add Specs…**, **Archive** and **Delete**. Delete keeps the specs.
 
-![The project view of the project Shared lists: its description, its target date, the progress, the newest update, the milestones Sync and Sharing, and its four specs. The spec sync-conflicts waits for sync-lists.](shot:project-view "The project view: the progress, the newest update, the milestones and the specs. One spec waits for another spec.")
+A spec can **wait for** another spec in any repo, in a collection or not. The sidebar shows a line such as "waits for sync-lists" under a waiting spec. Spec Studio does not start a spec by itself.
 
-Areas and projects are personal. They are in the backend plugin, not in your repos. With the JSON plugin they are on your Mac. With the Temporal plugin they are in Temporal. See [Backend plugins](/guides/backend-plugins/). The `studio project` commands change projects from any terminal, and Claude AI reads them through the relay:
+Areas and collections are personal. They are in the backend plugin, not in your repos. With the JSON plugin they are on your Mac. With the Temporal plugin they are in Temporal. See [Backend plugins](/guides/backend-plugins/). The `studio collection` and `studio wait` commands change them from any terminal, and Claude AI reads them through the relay:
 
 ```sh
 studio specs --area Acme
-studio project new "Backend plugins" --description "Plugins for the backend."
-studio project add "Backend plugins" plugin-json --repo ~/code/plugin-json
-studio project update "Backend plugins" --health on-track "The protocol is done."
+studio collection new "Backend plugins" --description "Plugins for the backend."
+studio collection add "Backend plugins" plugin-json --repo ~/code/plugin-json
+studio specs --collection "Backend plugins"
+studio wait plugin-json --on plugin-protocol
 ```
+
+If you used projects before, Spec Studio makes a collection of each project the first time it starts, with the same specs and the color of its area. The status, the dates, the milestones and the updates go to a backup in the backend plugin. For one release, `studio project` still works as `studio collection`.
 
 ### Pause a spec
 
@@ -105,7 +110,6 @@ Pause a spec when it must wait, for example for an API that is not ready. A paus
 - A paused spec shows dimmed, with a pause mark, in a folded **Paused** row at the bottom of its repo. You can still open it and read it. Its terminal shows the last screen and a **Resume** button.
 - Messages from the relay wait in the inbox of the spec. Claude AI gets the answer "The spec is paused", with the reason.
 - Choose **Resume** in the menu, in the header or in the terminal, or run `studio resume`. The session starts again, and the app types the messages that came while the spec was paused.
-- To pause all the open specs of a project, choose **Pause Specs…** in the project view. A list of the specs shows first. This does not change the status of the project.
 
 ### Archive a repo
 
@@ -117,12 +121,11 @@ Archive a repo that you do not use now. Archive never deletes a file.
 - **Unarchive** puts the repo back in its place in the area. Its paused specs stay paused.
 - When a repo has had no open spec and no event for 30 days, Spec Studio shows a quiet "Archive this repo?" suggestion once. Spec Studio never archives a repo by itself.
 
-### Archive a project
+### Archive a collection
 
-- Choose **Archive** in the project view or in its context menu. A Done or Canceled project archives at once. For other projects, Spec Studio asks you to pause the open specs first, or to cancel.
-- An archived project leaves the project list and the project filters. It moves to a folded **Archived** row at the bottom of the Projects section. The project picker of the New Spec sheet lists it under **Archived projects**. Its specs keep their link to it.
-- The view of an archived project is read-only, with an **Unarchive** button.
-- In a terminal, run `studio project archive <name>` or `studio project unarchive <name>`. `studio project list --archived` lists the archived projects.
+- Choose **Archive** in the context menu of the collection. A collection whose open specs are all paused, or all shipped, archives at once. Else Spec Studio asks you to pause the open specs first, or to cancel.
+- An archived collection moves to a folded **Archived** row at the bottom of the Collections section. It is read-only until you choose **Unarchive**. Its specs keep their chips.
+- In a terminal, run `studio collection archive <name>` (add `--pause-specs` to pause the open specs) or `studio collection unarchive <name>`. `studio collection list --archived` lists the archived collections.
 
 ## Settings
 

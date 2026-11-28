@@ -1,17 +1,18 @@
 import { expect, test, type Page } from '@playwright/test';
 import { existsSync } from 'node:fs';
 
-// The stills of areas and projects (specs/areas-and-projects-media/spec.md).
+// The stills of areas and collections (specs/areas-and-projects-media/spec.md;
+// the project view left the guide with specs/collections in the app repo).
 // src/lib/shots.ts is not imported here: it needs SvelteKit's $app/paths.
-const names = ['areas-sidebar', 'project-view'];
+const names = ['areas-sidebar'];
 
-/** The stills in the "Areas and projects" section: between its h2 and the next h2. */
+/** The stills in the "Areas and collections" section: between its h2 and the next h2. */
 async function sectionShots(page: Page) {
 	return page.getByTestId('guide').evaluate((root) => {
 		const found: { name: string; alt: string; loading: string; src: string; width: number; caption: string }[] = [];
 		let inSection = false;
 		for (const el of Array.from(root.querySelectorAll('h2, figure.shot'))) {
-			if (el.tagName === 'H2') inSection = el.id === 'areas-and-projects';
+			if (el.tagName === 'H2') inSection = el.id === 'areas-and-collections';
 			else if (inSection) {
 				const img = el.querySelector('img')!;
 				found.push({
@@ -43,13 +44,13 @@ test('each still of the guide has a light and a dark file', () => {
 			expect(existsSync(new URL(`../static/shots/${file}`, import.meta.url)), file).toBe(true);
 		}
 	}
-	for (const name of [...names, 'areas-folded']) {
+	for (const name of [...names, 'areas-folded', 'project-view']) {
 		expect(existsSync(new URL(`../video/stills/${name}.webp`, import.meta.url)), name).toBe(true);
 	}
 });
 
 // R2.S1 and R2.S3
-test('the Areas and projects section shows two stills, lazily, each with an alt text and a caption', async ({ page }) => {
+test('the Areas and collections section shows its still, lazily, with an alt text and a caption', async ({ page }) => {
 	await page.goto('./guides/app/');
 	await loadAll(page);
 	const shots = await sectionShots(page);
