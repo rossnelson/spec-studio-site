@@ -75,7 +75,7 @@ An **area** is a group of repos, for example all the repos of one client. A repo
 - When you add a repo, Spec Studio can suggest an area: an area with the same GitHub owner, the same parent folder, or shared specs. Click **Add** or **Dismiss**. Spec Studio never moves a repo by itself.
 - The Priority panel can show one area only. A notification names the area of its spec.
 
-![The Repos panel with three areas: Notes app in blue, Website in green and Sync in orange. Each area shows its repos and their specs. The spec sync-conflicts shows "waits for sync-lists".](shot:areas-sidebar "The Repos panel with three areas. Each area has its color, and its repos and specs are under it.")
+![The Repos panel: the Collections section at the top with Shared lists (4 specs) and Website launch (2 specs), each with its progress pie, then three areas: Notes app in blue, Website in green and Sync in orange. Each area shows its repos and their specs. The spec sync-conflicts shows "waits for sync-lists".](shot:areas-sidebar "The Repos panel: two collections at the top, then three areas. Each area has its color, and its repos and specs are under it.")
 
 A **collection** is a set of specs from any repo and any area, open or shipped. A spec can be in many collections. A collection has a name, a color, an optional description and an optional link, for example to a Linear project. It has no status and no dates: it is not a second tracker.
 
