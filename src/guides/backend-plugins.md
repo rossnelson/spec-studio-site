@@ -12,7 +12,7 @@ The plugin keeps these items:
 
 - The state of each spec.
 - The activity of each spec, one event for each line. These events are the history of the spec.
-- The review rounds, the desks, the inbox, the areas and the projects.
+- The review rounds, the desks, the inbox, the areas, the collections and the waits.
 
 Each change of a spec writes the new state and its events in one atomic step. So the state and the history never disagree. If another writer changed the spec first, the plugin writes nothing, and Spec Studio reads the spec again and tries again.
 
@@ -99,7 +99,7 @@ To go back, set the settings that you wrote down again and click **Save**. Type 
 The work that you did on the dev server stays on the dev server. Spec Studio cannot move it to your own server:
 
 - A move goes from the plugin in use to another plugin. There is no move from Temporal to Temporal.
-- A move through JSON does not complete either. Your own server has older copies of the desks, the inbox, the areas and the projects. A move does not replace a copy that the new plugin has, so the counts do not match and the backend stays the same.
+- A move through JSON does not complete either. Your own server has older copies of the desks, the inbox, the areas, the collections and the waits. A move does not replace a copy that the new plugin has, so the counts do not match and the backend stays the same.
 
 ## Move your data to another backend
 
