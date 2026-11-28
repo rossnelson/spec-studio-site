@@ -13,7 +13,8 @@ path, name = sys.argv[1], sys.argv[2]
 data = json.load(open(path))
 for area in data['areas']: area['folded'] = area['name'] == name
 json.dump(data, open(path, 'w'), indent=2)" "$SUPPORT/areas.json" "$1"; sleep 2; }
-window() { "$S/launch" "$1" "$SUPPORT" - -sidebarPanel 0 "$2" "$3" | head -1 | cut -d' ' -f1; }
+# -collectionsFolded NO: the stills show the Collections section open, also when it is folded in your own app.
+window() { "$S/launch" "$1" "$SUPPORT" - -sidebarPanel 0 -collectionsFolded NO "$2" "$3" | head -1 | cut -d' ' -f1; }
 mkdir -p "$S/shots"
 fold none
 W=$(window "$1" -selectedSpec "/Users/Shared/spec-studio-demo/notes#open-count")
