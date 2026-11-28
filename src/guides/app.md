@@ -81,12 +81,12 @@ A **collection** is a set of specs from any repo and any area, open or shipped. 
 
 - The **Collections** section at the top of the Repos panel lists the collections in name order. Each row shows a small pie that fills as the specs ship, the name and the number of specs. Point to the pie to read "5 of 7 shipped". A full pie shows a check. Click the header to fold the section.
 - Make a collection with **New Collection…** in the context menu of the Repos panel or of the Collections header.
-- Click a collection to filter the sidebar. The Repos panel then shows only the specs of that collection, under their areas and repos, and the shipped specs in a folded **Shipped** row at the bottom. The Priority panel shows only the specs of the collection too. A bar at the top of the list says "Collection: <name>". Click its ×, click the collection again, or press Esc to show all specs again. The main area always shows a spec.
+- Click a collection to filter the sidebar. The Repos panel then shows only the specs of that collection, under their areas and repos, and the shipped specs in a folded **Shipped** row at the bottom. The Priority panel shows only the specs of the collection too. A bar at the top of each list names the collection, for example "Collection: Shared lists". Click its ×, click the collection again, or press Esc to show all specs again. The main area always shows a spec.
 - The header of a spec shows a small chip for each of its collections. Click a chip to filter by that collection.
 - Add a spec to a collection, or take it out, with **Collections ▸** in the context menu of the spec. You can also drag a spec onto a collection, check collections in the New Spec sheet, or pick **Add Specs…** in the context menu of the collection. A spec that you make while a filter is on goes into that collection.
 - The context menu of a collection has **Rename**, **Color**, **Description and Link…**, **Add Specs…**, **Archive** and **Delete**. Delete keeps the specs.
 
-A spec can **wait for** another spec in any repo, in a collection or not. The sidebar shows "waits for <spec>" under a waiting spec. Spec Studio does not start a spec by itself.
+A spec can **wait for** another spec in any repo, in a collection or not. The sidebar shows a line such as "waits for sync-lists" under a waiting spec. Spec Studio does not start a spec by itself.
 
 Areas and collections are personal. They stay on your Mac, in the app's support folder, and not in your repos. The `studio collection` and `studio wait` commands change them from any terminal, and Claude AI reads them through the relay:
 
