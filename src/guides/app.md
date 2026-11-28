@@ -88,7 +88,7 @@ A **collection** is a set of specs from any repo and any area, open or shipped. 
 
 A spec can **wait for** another spec in any repo, in a collection or not. The sidebar shows a line such as "waits for sync-lists" under a waiting spec. Spec Studio does not start a spec by itself.
 
-Areas and collections are personal. They stay on your Mac, in the app's support folder, and not in your repos. The `studio collection` and `studio wait` commands change them from any terminal, and Claude AI reads them through the relay:
+Areas and collections are personal. They are in the backend plugin, not in your repos. With the JSON plugin they are on your Mac. With the Temporal plugin they are in Temporal. See [Backend plugins](/guides/backend-plugins/). The `studio collection` and `studio wait` commands change them from any terminal, and Claude AI reads them through the relay:
 
 ```sh
 studio specs --area Acme
@@ -98,7 +98,7 @@ studio specs --collection "Backend plugins"
 studio wait plugin-json --on plugin-protocol
 ```
 
-If you used projects before, Spec Studio makes a collection of each project the first time it starts, with the same specs and the color of its area. The status, the dates, the milestones and the updates go to a backup file, `projects-backup.json`, in the support folder. For one release, `studio project` still works as `studio collection`.
+If you used projects before, Spec Studio makes a collection of each project the first time it starts, with the same specs and the color of its area. The status, the dates, the milestones and the updates go to a backup in the backend plugin. For one release, `studio project` still works as `studio collection`.
 
 ### Pause a spec
 
